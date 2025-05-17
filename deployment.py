@@ -1,10 +1,18 @@
-from common import viz
+import random
+
+from common import viz,data
 import nussl
 from pathlib import Path
 from utils.config import config
 
 
-def deploy(audio_path, output_dir):
+stft_params = nussl.STFTParams(
+    window_length = config.config['STFT_WINDOW_LENGTH'],
+    hop_length = config.config['STFT_HOP_LENGTH'],
+    window_type = config.config['STFT_WINDOW_TYPE'],
+)
+
+def deploy(output_dir, audio_path = None):
     # Cargar modelo
     output_folder = Path('.') / 'models' / 'checkpoints'
     model_path = output_folder / 'latest.model.pth'
@@ -16,13 +24,31 @@ def deploy(audio_path, output_dir):
     )
 
     # Cargar audio
-    audio_signal = nussl.AudioSignal(audio_path)
-    separator.audio_signal = audio_signal
-    estimates = separator()
+    if audio_path != None:
+        audio_signal = nussl.AudioSignal(audio_path)
+        separator.audio_signal = audio_signal
+        estimates = separator()
 
-    residual = audio_signal - estimates[0]
-    residual.stft()
-    estimates.append(residual)
+        residual = audio_signal - estimates[0]
+        residual.stft()
+        estimates.append(residual)
+    else:
+        test_folder = "~/.nussl/tutorial/test/"
+        test_data = data.mixer(stft_params, transform=None,
+                               fg_path=test_folder, num_mixtures=config.config['MAX_MIXTURES'], coherent_prob=1.0)
+        item = test_data[0]
+
+        separator.audio_signal = item['mix']
+        estimates = separator()
+        # Since our model only returns one source, let's tack on the
+        # residual (which should be accompaniment)
+        estimates.append(item['mix'] - estimates[0])
+
+        viz.show_sources(estimates)
+
+        audio_signal = estimates[0]
+
+
 
     # Alinear tamaños
     estimates = align_estimates(estimates)

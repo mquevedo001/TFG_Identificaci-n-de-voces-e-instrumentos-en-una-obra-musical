@@ -1,21 +1,25 @@
-from data.data_loader import  get_data
-from models.mask_inference import MaskInference
+
 from training.evaluation import evaluation
-from training.train import train_data
 from training.train import training
+from mix_generation.generation import generate_mix_generations
 from utils.config import config
 from deployment import deploy
-import os
 import argparse
 import nussl
 from pathlib import Path
 
 
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--mode', choices=['train', 'eval', 'deploy'], required=True)
+    parser.add_argument('--mode', choices=['train', 'eval', 'deploy','mix_generation'], required=True)
+
+
     parser.add_argument('--input', type=str, help='Ruta del archivo de audio para deploy.')
-    parser.add_argument('--maxepochs', type=str, help='Ruta del archivo de audio para deploy.')
+    parser.add_argument('--maxepochs', type=str, help='Numero de iteraciones de entrenamiento')
+    parser.add_argument('--num_generations', type=str, help='Numero de mezclas coherentes/incoherentes a generar')
+    parser.add_argument('--random_deploy',type=str, help='Argumento para separación de pista aleatoria de MUSDB')
+
 
     args = parser.parse_args()
 
@@ -37,19 +41,28 @@ def main():
 
         separator = nussl.separation.deep.DeepMaskEstimation(
             nussl.AudioSignal(),
-            model_path=str(model_path.resolve()),  # <-- importante
+            model_path=str(model_path.resolve()),  
             device=config.config['DEVICE'],
         )
 
         evaluation(frames=5, separator=separator)
     elif args.mode == 'deploy':
+
         if not args.input:
-            raise ValueError('Debes pasar un archivo de audio usando --input <ruta_al_archivo>')
 
-        output_folder = Path('.') / 'Results'
-        output_folder = Path.absolute(output_folder)
+            output_folder = Path('.') / 'Results'
+            output_folder = Path.absolute(output_folder)
+            deploy(output_folder,None)
+        if args.input:
 
-        deploy(args.input, output_folder)
+            output_folder = Path('.') / 'Results'
+            output_folder = Path.absolute(output_folder)
+            deploy(output_folder, args.input)
+
+    elif args.mode == 'mix_generation':
+        if not args.num_generations:
+            raise ValueError('Añade el numero de mezclas a generar <numero_de_mezclas>')
+        generate_mix_generations( int(args.num_generations) )
 
 if __name__ == '__main__':
     main()
