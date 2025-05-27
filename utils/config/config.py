@@ -17,8 +17,8 @@ config = {
     'MODEL_NUM_LAYERS': 1,
     'MODEL_BIDIRECTIONAL': True,
     'MODEL_DROPOUT': 0.0,
-    'MODEL_NUM_SOURCES': 1,
-    'MODEL_ACTIVATION': 'sigmoid',
+    'MODEL_NUM_SOURCES': 2,
+    'MODEL_ACTIVATION': 'softmax',
 
     'EVALUATOR_FRAMES': 5
 }

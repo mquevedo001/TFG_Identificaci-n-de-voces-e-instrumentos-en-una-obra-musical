@@ -8,9 +8,8 @@ def get_data(stft_params , max_mixtures = config.config['MAX_MIXTURES'], coheren
     utils.logger()
 
     tfm = nussl_tfm.Compose([
-        nussl_tfm.SumSources([['bass', 'drums', 'other']]),
+        nussl_tfm.SumSources([['vocals'], ['bass', 'drums', 'other']]),
         nussl_tfm.MagnitudeSpectrumApproximation(),
-        nussl_tfm.IndexSources('source_magnitudes', 1),
         nussl_tfm.ToSeparationModel(),
     ])
 

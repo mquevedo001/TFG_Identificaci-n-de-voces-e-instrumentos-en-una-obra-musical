@@ -38,6 +38,7 @@ def train_step(engine, batch):
     loss = loss_fn(output['estimates'], batch['source_magnitudes'])
     loss.backward()
     optimizer.step()
+
     return {'loss': loss.item()}
 
 def val_step(engine, batch):

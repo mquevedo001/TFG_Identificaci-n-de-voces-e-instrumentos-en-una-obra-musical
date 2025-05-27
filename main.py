@@ -31,7 +31,7 @@ def main():
             training()
 
     elif args.mode == 'eval':
-        output_folder =   Path('.') / 'models' / 'checkpoints'
+        output_folder =   Path('.') / 'checkpoints'
         output_folder = Path.absolute(output_folder)
         model_path = output_folder / 'best.model.pth'
 
