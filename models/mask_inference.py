@@ -1,11 +1,12 @@
 from nussl.ml.networks.modules import AmplitudeToDB, BatchNorm, RecurrentStack, Embedding
 from torch import nn
+from utils.config import config
 import nussl
 
 class MaskInference(nn.Module):
     def __init__(self, num_features, num_audio_channels, hidden_size,
                  num_layers, bidirectional, dropout, num_sources,
-                 activation='sigmoid'):
+                 activation=config.config['MODEL_ACTIVATION']):
         super().__init__()
 
         self.amplitude_to_db = AmplitudeToDB()

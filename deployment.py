@@ -4,6 +4,7 @@ from pathlib import Path
 from utils.config import config
 from common import viz, data
 import matplotlib.pyplot as plt
+import os
 
 stft_params = nussl.STFTParams(
     window_length=config.config['STFT_WINDOW_LENGTH'],
@@ -11,7 +12,7 @@ stft_params = nussl.STFTParams(
     window_type=config.config['STFT_WINDOW_TYPE'],
 )
 
-def deploy(output_dir, audio_path=None):
+def deploy(output_dir=None, audio_path=None):
     # Cargar modelo
     output_folder = Path('.') / 'checkpoints'
     model_path = output_folder / 'best.model.pth'
@@ -49,21 +50,35 @@ def deploy(output_dir, audio_path=None):
     output_dir.mkdir(parents=True, exist_ok=True)
 
     sources_dict = {}
-    for i, estimate in enumerate(estimates):
-        est_dir = output_dir / f'source{i}'
-        est_dir.mkdir(exist_ok=True)
-        file_path = est_dir / f'source{i}.wav'
-        estimate.write_audio_to_file(file_path)
-        sources_dict[f'Source {i}'] = estimate
+    stems = {}
+    if(output_dir != None):
+        for i, estimate in enumerate(estimates):
 
-    # Graficar estimaciones
-    fig = viz.show_sources(sources_dict, return_figure=True)
-    fig.savefig(output_dir / 'sources_plot.png')
-    plt.close(fig)
 
-    # Guardar mezcla original
-    audio_signal.write_audio_to_file(output_dir / 'original.wav')
-    print(f"Resultados guardados en {output_dir}")
+            est_dir = output_dir / f'source{i}'
+            est_dir.mkdir(exist_ok=True)
+            file_path = est_dir / f'source{i}.wav'
+            estimate.write_audio_to_file(file_path)
+            sources_dict[f'Source {i}'] = estimate
+
+            name = estimate.path_to_file or f'stem_{i}.wav'
+            stem_path = output_folder / f'stem_{i}.wav'
+            estimate.write_audio_to_file(stem_path)
+            stems[f'stem_{i}'] = stem_path
+
+        # Graficar estimaciones
+        fig = viz.show_sources(sources_dict, return_figure=True)
+        fig.savefig(output_dir / 'sources_plot.png')
+        plt.close(fig)
+
+        # Guardar mezcla original
+        audio_signal.write_audio_to_file(output_dir / 'original.wav')
+        print(f"Resultados guardados en {output_dir}")
+
+
+    return stems
+
+
 
 
 def align_estimates(estimates):
