@@ -31,11 +31,11 @@ def load_model(model_name='best.model.pth'):
     return separator
 
 def conseguirAudioDatabase(test_folder,stft_params):
-    if not os.listdir(test_folder):
-        test_data = data.mixer(stft_params, transform=None,
-                               fg_path=test_folder,
-                               num_mixtures=config.config['MAX_MIXTURES'],
-                               coherent_prob=1.0)
+
+    test_data = data.mixer(stft_params, transform=None,
+                           fg_path=test_folder,
+                           num_mixtures=config.config['MAX_MIXTURES'],
+                           coherent_prob=1.0)
     item = test_data[0]
     audio_signal = item['mix']
 
