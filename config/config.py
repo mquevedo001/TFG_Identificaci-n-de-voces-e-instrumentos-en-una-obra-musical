@@ -1,11 +1,11 @@
 config = {
     'DEVICE': 'cuda',
-    'MAX_MIXTURES': int(1e8),
-    'MAX_EPOCHS':  25,
-    'EPOCH_LENGTH': 10,
+    'MAX_MIXTURES': int(1e8),                   #Maximo de mezclas generadas (get_data)
+    'MAX_EPOCHS':  25,                          #Maximo de iteraciones (train)
+    'EPOCH_LENGTH': 100,                         #Mezclas por iteración (train)
 
     'LEARNING_RATE': 1e-3,
-    'BATCH_SIZE': 10,
+    'BATCH_SIZE': 10,                           #Número de mezclas procesadas antes de actualizar pesos
     'COHERENT_PROB': 0.5,
 
     'STFT_WINDOW_LENGTH': 512,
@@ -19,6 +19,7 @@ config = {
     'MODEL_DROPOUT': 0.0,
     'MODEL_NUM_SOURCES': 2,
     'MODEL_ACTIVATION': 'softmax',
+    'MODEL_RNN_TYPE': 'lstm',
 
     'EVALUATOR_FRAMES': 5
 }

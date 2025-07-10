@@ -5,9 +5,7 @@ import nussl
 
 from models.mask_inference import MaskInference
 from data.data_loader import get_data
-from utils.config import config
-
-
+from config import config
 
 stft_params = nussl.STFTParams(
     window_length = config.config['STFT_WINDOW_LENGTH'],
@@ -29,9 +27,10 @@ model = MaskInference.build(
 optimizer = torch.optim.Adam(model.parameters(), lr=config.config['LEARNING_RATE'])
 DEVICE = config.config['DEVICE'] if torch.cuda.is_available() else 'cpu'
 
-# 5. Definir steps de entrenamiento y validación
+loss_fn = nussl.ml.train.loss.L1Loss()
+
 def train_step(engine, batch):
-    loss_fn = nussl.ml.train.loss.L1Loss()
+
 
     optimizer.zero_grad()
     output = model(batch)
@@ -42,7 +41,6 @@ def train_step(engine, batch):
     return {'loss': loss.item()}
 
 def val_step(engine, batch):
-    loss_fn = nussl.ml.train.loss.L1Loss()
 
     with torch.no_grad():
         output = model(batch)
@@ -50,21 +48,25 @@ def val_step(engine, batch):
         loss = loss_fn(output['estimates'], batch['source_magnitudes'])
     return {'loss': loss.item()}
 
-# 6. Configurar motores de entrenamiento
 
 def training():
 
     train_data, val_data = get_data(stft_params, config.config['MAX_MIXTURES'], config.config['COHERENT_PROB'])
+
     trainer, validator = nussl.ml.train.create_train_and_validation_engines(
         train_step, val_step, device=DEVICE)
+
     train_dataloader = torch.utils.data.DataLoader(
         train_data, num_workers=1, batch_size=config.config['BATCH_SIZE'])
+
     val_dataloader = torch.utils.data.DataLoader(
         val_data, num_workers=1, batch_size=config.config['BATCH_SIZE'])
 
-    output_folder = Path('.').absolute()
+    output_folder = Path(f'checkpoints/{config.config["MODEL_NUM_SOURCES"]}stems').absolute()
+    output_folder.mkdir(parents=True, exist_ok=True)
 
     nussl.ml.train.add_stdout_handler(trainer, validator)
+
     nussl.ml.train.add_validate_and_checkpoint(output_folder, model, optimizer,
                                                 train_data, trainer, val_dataloader, validator)
 

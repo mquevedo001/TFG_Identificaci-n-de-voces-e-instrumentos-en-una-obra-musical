@@ -7,10 +7,10 @@ root_dir = Path(__file__).resolve().parent
 sys.path.append(str(root_dir))
 
 # Imports locales
-from training.train import training
-from training.evaluation import evaluation
-from deployment import deploy
-from utils.config import config
+from pipeline.train import training
+from pipeline.evaluation import evaluation
+from pipeline.deployment import deploy
+from config import config
 import nussl
 
 # --- Parámetros globales ---
@@ -42,8 +42,18 @@ if uploaded_file:
         st.success("Entrenamiento completado.")
 
     if st.button('Separar (Test)',use_container_width = True):
-        audio_signal = deploy(output_dir=output_folder, audio_path=uploaded_file.name)
+        input_path = output_folder / uploaded_file.name
+
+        with open(input_path, 'wb') as f:
+            f.write(uploaded_file.getbuffer().name)
+
+        stem_outputs = deploy(output_dir=output_folder, audio_path= str(input_path))
+
         st.success("Separación completada. Revisa la carpeta de salida.")
+        st.subheader('Resultados: ')
+        for stem_name,stem_path in stem_outputs:
+            st.markdown(f"**{stem_name.capitalize()}**")
+            st.audio(stem_path)
         st.audio(uploaded_file)
 
     if st.button('Evaluar modelo',use_container_width = True):
@@ -52,3 +62,7 @@ if uploaded_file:
         st.success("Evaluación finalizada.")
 else:
     st.info("Sube un archivo para interactuar con el modelo")
+
+#TODO
+#Añadir parámetros para jugar con el modelo
+#Arreglar display de output del modelo

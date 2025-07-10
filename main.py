@@ -1,9 +1,9 @@
 
-from training.evaluation import evaluation
-from training.train import training
-from mix_generation.generation import generate_mix_generations
-from utils.config import config
-from deployment import deploy
+from pipeline.evaluation import evaluation
+from pipeline.train import training
+from commons.generation import generate_mix_generations
+from config import config
+from pipeline.deployment import deploy
 import argparse
 import nussl
 from pathlib import Path
@@ -31,7 +31,8 @@ def main():
             training()
 
     elif args.mode == 'eval':
-        output_folder =   Path('.') / 'checkpoints'
+        num_sources = config.config['MODEL_NUM_SOURCES']
+        output_folder =   Path('.') /'checkpoints'/f'{num_sources}stems'
         output_folder = Path.absolute(output_folder)
         model_path = output_folder / 'best.model.pth'
 
