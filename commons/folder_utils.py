@@ -19,8 +19,8 @@ def save_sources(estimates,audio_signal,output_dir):
         vocal = estimates[0]
         accompaniment = audio_signal - vocal
 
-        vocal_path = output_dir /'stems'/'vocals.wav'
-        accompaniment_path = output_dir /'stems'/'accompaniment.wav'
+        vocal_path = output_dir /'stems'/'accompaniment.wav'
+        accompaniment_path = output_dir /'stems'/'vocals.wav'
 
         vocal.write_audio_to_file(vocal_path)
         accompaniment.write_audio_to_file(accompaniment_path)

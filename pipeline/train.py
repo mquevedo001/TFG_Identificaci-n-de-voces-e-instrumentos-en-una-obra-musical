@@ -6,6 +6,7 @@ import nussl
 from models.mask_inference import MaskInference
 from data.data_loader import get_data
 from config import config
+from commons.metrics import get_loss_fn
 
 stft_params = nussl.STFTParams(
     window_length = config.config['STFT_WINDOW_LENGTH'],
@@ -27,14 +28,16 @@ model = MaskInference.build(
 optimizer = torch.optim.Adam(model.parameters(), lr=config.config['LEARNING_RATE'])
 DEVICE = config.config['DEVICE'] if torch.cuda.is_available() else 'cpu'
 
-loss_fn = nussl.ml.train.loss.L1Loss()
+loss_fn = get_loss_fn(config.config['MODEL_LOSS_FUNCTION'])  # solo cambias esta línea
 
 def train_step(engine, batch):
 
 
     optimizer.zero_grad()
     output = model(batch)
-    loss = loss_fn(output['estimates'], batch['source_magnitudes'])
+    if config.config['MODEL_LOSS_FUNCTION'] == 'lmrs':
+        loss = loss_fn()
+    loss = loss_fn(output['estimates'],batch['source_magnitudes'])
     loss.backward()
     optimizer.step()
 
@@ -61,8 +64,8 @@ def training():
 
     val_dataloader = torch.utils.data.DataLoader(
         val_data, num_workers=1, batch_size=config.config['BATCH_SIZE'])
-
-    output_folder = Path(f'checkpoints/{config.config["MODEL_NUM_SOURCES"]}stems').absolute()
+    loss_fn = config.config['MODEL_LOSS_FUNCTION']
+    output_folder = Path(f'{loss_fn} checkpoints/{config.config["MODEL_NUM_SOURCES"]}stems').absolute()
     output_folder.mkdir(parents=True, exist_ok=True)
 
     nussl.ml.train.add_stdout_handler(trainer, validator)

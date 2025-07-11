@@ -1,13 +1,16 @@
 import nussl
-import os
 from pathlib import Path
 from common import data
 from config import config
+import torch
 
 
 
 
-
+def spectral_convergence(y_hat, y, eps=1e-8):
+    num = torch.norm(torch.abs(y_hat) - torch.abs(y), p='fro')
+    denom = torch.norm(torch.abs(y), p='fro') + eps
+    return num / denom
 
 
 def align_estimates(estimates):
@@ -19,9 +22,10 @@ def align_estimates(estimates):
 
 def load_model(model_name='best.model.pth'):
 
-
+    loss_fn = config.config['MODEL_LOSS_FUNCTION']
     stem_count = config.config['MODEL_NUM_SOURCES']
-    checkpoint_path = Path(f'checkpoints/{stem_count}stems') / model_name
+
+    checkpoint_path = Path(f'{loss_fn} checkpoints/{stem_count}stems') / model_name
 
     separator = nussl.separation.deep.DeepMaskEstimation(
         nussl.AudioSignal(),
@@ -32,11 +36,15 @@ def load_model(model_name='best.model.pth'):
 
 def conseguirAudioDatabase(test_folder,stft_params):
 
-    test_data = data.mixer(stft_params, transform=None,
-                           fg_path=test_folder,
-                           num_mixtures=config.config['MAX_MIXTURES'],
-                           coherent_prob=1.0)
-    item = test_data[0]
+    test_data = data.mixer(
+       stft_params,
+       transform=None,
+       fg_path=test_folder,
+       num_mixtures=config.config['MAX_MIXTURES'],
+       coherent_prob=1.0
+    )
+
+    item = test_data[1]
     audio_signal = item['mix']
 
     return audio_signal

@@ -20,6 +20,7 @@ config = {
     'MODEL_NUM_SOURCES': 2,
     'MODEL_ACTIVATION': 'softmax',
     'MODEL_RNN_TYPE': 'lstm',
+    'MODEL_LOSS_FUNCTION':'L1',
 
     'EVALUATOR_FRAMES': 5
 }

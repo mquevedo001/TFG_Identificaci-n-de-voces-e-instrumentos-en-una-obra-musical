@@ -20,6 +20,7 @@ def main():
     parser.add_argument('--num_generations', type=str, help='Numero de mezclas coherentes/incoherentes a generar')
     parser.add_argument('--random_deploy',type=str, help='Argumento para separación de pista aleatoria de MUSDB')
 
+    loss_fn = config.config['MODEL_LOSS_FUNCTION']
 
     args = parser.parse_args()
 
@@ -34,7 +35,7 @@ def main():
         num_sources = config.config['MODEL_NUM_SOURCES']
         output_folder =   Path('.') /'checkpoints'/f'{num_sources}stems'
         output_folder = Path.absolute(output_folder)
-        model_path = output_folder / 'best.model.pth'
+        model_path = output_folder / f'{loss_fn} checkpoints'/'best.model.pth'
 
         if not model_path.exists():
             raise FileNotFoundError(
