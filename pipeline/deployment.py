@@ -46,4 +46,4 @@ def deploy(output_dir=None, audio_path=None):
     audio_signal.write_audio_to_file(output_dir / 'original.wav')
     print(f"Resultados guardados en {output_dir.resolve()}")
 
-    return stems
+    return stems,sources_dict

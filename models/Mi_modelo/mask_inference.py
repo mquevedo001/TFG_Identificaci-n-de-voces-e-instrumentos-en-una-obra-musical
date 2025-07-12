@@ -104,7 +104,7 @@ class MaskInference(nn.Module):
 
 #TODO
 '''
-o effectively adjust neural network parameters, focus on two key areas: hyperparameter tuning and weight initialization. Hyperparameters, like learning rate and batch size, are set before training, while weights are adjusted during the training process. Techniques like grid search, random search, and Bayesian optimization can help find optimal hyperparameter combinations. 
+To effectively adjust neural network parameters, focus on two key areas: hyperparameter tuning and weight initialization. Hyperparameters, like learning rate and batch size, are set before training, while weights are adjusted during the training process. Techniques like grid search, random search, and Bayesian optimization can help find optimal hyperparameter combinations. 
 Proper weight initialization, along with learning algorithms like backpropagation, ensures efficient weight updates
 
 

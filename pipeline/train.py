@@ -3,7 +3,7 @@ import torch
 from pathlib import Path
 import nussl
 
-from models.mask_inference import MaskInference
+from models.Mi_modelo.mask_inference import MaskInference
 from data.data_loader import get_data
 from config import config
 from commons.metrics import get_loss_fn
@@ -32,7 +32,8 @@ loss_fn = get_loss_fn(config.config['MODEL_LOSS_FUNCTION'])  # solo cambias esta
 
 def train_step(engine, batch):
 
-
+    #TODO
+    #Hacer un wrapper para mandar el espectrograma mezcla a la función de pérdida lmrs
     optimizer.zero_grad()
     output = model(batch)
     if config.config['MODEL_LOSS_FUNCTION'] == 'lmrs':

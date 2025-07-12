@@ -23,13 +23,14 @@ def align_estimates(estimates):
 def load_model(model_name='best.model.pth'):
 
     loss_fn = config.config['MODEL_LOSS_FUNCTION']
-    stem_count = config.config['MODEL_NUM_SOURCES']
+    num_sources = config.config['MODEL_NUM_SOURCES']
 
-    checkpoint_path = Path(f'{loss_fn} checkpoints/{stem_count}stems') / model_name
+    model_path = Path('.') / 'checkpoints'/f'{loss_fn} checkpoints' / f'{num_sources}stems' /'best.model.pth'
+
 
     separator = nussl.separation.deep.DeepMaskEstimation(
         nussl.AudioSignal(),
-        model_path=str(checkpoint_path.resolve()),
+        model_path= model_path,
         device=config.config['DEVICE']
     )
     return separator

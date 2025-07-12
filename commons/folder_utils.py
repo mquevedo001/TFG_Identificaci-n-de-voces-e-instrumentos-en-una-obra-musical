@@ -1,6 +1,7 @@
 from common import viz
 import matplotlib.pyplot as plt
 from config import config
+from pathlib import Path
 
 
 def generateSourcesGraph(sources_dict,output_dir):
@@ -19,9 +20,9 @@ def save_sources(estimates,audio_signal,output_dir):
         vocal = estimates[0]
         accompaniment = audio_signal - vocal
 
-        vocal_path = output_dir /'stems'/'accompaniment.wav'
-        accompaniment_path = output_dir /'stems'/'vocals.wav'
-
+        vocal_path = Path('.') / 'Results' / 'stems' / 'vocals.wav'
+        accompaniment_path = Path('.') / 'Results' / 'stems' / 'accompaniment.wav'
+        #/home/martin/PycharmProjects/TFG/Results/stems/accompaniment.wav
         vocal.write_audio_to_file(vocal_path)
         accompaniment.write_audio_to_file(accompaniment_path)
 
