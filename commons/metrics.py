@@ -1,13 +1,13 @@
 import json
 import nussl
-from nussl.ml.train.loss import SISDRLoss
-from nussl.ml.train.loss import L1Loss, MSELoss, SISDRLoss
-from asteroid.losses import pairwise_neg_sisdr, multisrc_mse
+import io
+from contextlib import redirect_stdout
 import torch
 import torch.nn.functional as F
 import torchaudio
 from commons.audio_utils import spectral_convergence
-from commons.model_utils import FeatureExtractor,reshape_if_needed
+from commons.model_utils import FeatureExtractor
+from config import config
 
 
 
@@ -37,19 +37,22 @@ def evaluarFrames(frames,test_dataset,output_folder,separator):
         with open(output_file, 'w') as f:
             json.dump(scores, f, indent=4)
 
+def reshape_to_freq(x):  # [B, F, T, S] → [B*S, F, T]
+    B, F, T, S = x.shape
+    return x.permute(0, 3, 1, 2).reshape(B * S, F, T)
 
+def reshape_to_spec(x):  # [B, F, T, S] → [B*S, 1, F, T]
+    B, F, T, S = x.shape
+    return x.permute(0, 3, 1, 2).reshape(B * S, 1, F, T)
 
-def get_loss_fn(loss_type, mixture_phase=None, mix_mag=None):
+def get_loss_fn(loss_type, kwargs):
+
+    if loss_type is None:
+        loss_type = config.config['MODEL_LOSS_FUNCTION']
     loss_type = loss_type.lower()
 
-    def reshape_to_freq(x):  # [B, F, T, S] → [B*S, F, T]
-        B, F, T, S = x.shape
-        return x.permute(0, 3, 1, 2).reshape(B * S, F, T)
-
-    def reshape_to_spec(x):  # [B, F, T, S] → [B*S, 1, F, T]
-        B, F, T, S = x.shape
-        return x.permute(0, 3, 1, 2).reshape(B * S, 1, F, T)
-
+    mixture_phase = kwargs['mixture_phase']
+    mix_mag = kwargs['mix_mag']
     if loss_type == 'l1':
         return lambda est, tgt: torch.mean(torch.abs(est - tgt))
 
@@ -213,3 +216,13 @@ def deep_feature_loss(Y_hat, Y, layers_to_use,phi = FeatureExtractor):
         loss_j = F.mse_loss(F_hat, F_true, reduction='mean')  # Promedio sobre todos los elementos
         loss += loss_j
     return loss / len(layers_to_use)
+
+
+def run_training_and_capture_logs():
+    from pipeline.train import training
+
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        training()  # tu función real que hace prints
+    return buffer.getvalue()
+

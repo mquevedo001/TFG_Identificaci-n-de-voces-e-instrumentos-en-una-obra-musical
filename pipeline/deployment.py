@@ -40,6 +40,7 @@ def deploy(output_dir=None, audio_path=None):
     stems,sources_dict = save_sources(estimates,audio_signal,output_dir)
 
     # Generar y guardar gráfico de fuentes
+    output_dir = Path('.') / 'Results' / 'Graphs'
     generateSourcesGraph(sources_dict, output_dir)
 
     # Guardar mezcla original
