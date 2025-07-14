@@ -14,6 +14,7 @@ from pipeline.evaluation import evaluation
 from pipeline.deployment import deploy
 from config import config
 from config import loss_functions_help  # aquí está el archivo con las funciones que hacen st.latex
+from config import help_quotes
 import nussl
 
 # --- Inicialización de estado de sesión ---
@@ -28,18 +29,31 @@ num_sources = st.sidebar.selectbox("Número de fuentes (stems)", options=[2, 4],
 loss_fn = st.sidebar.selectbox("Función de pérdida", options=[
     'L1', 'L2','L1_freq', 'L2_freq', 'LOGL1_freq', 'LOGL2_freq',
     'LOG_mag', 'LOG_compressed_l2', 'MASK_L1', 'LPSA', 'LPSA_phase',
-    'LMRS', 'L_MRS', 'Deep-feature', 'MSE', 'SDR'
+    'LMRS', 'L_MRS', 'Deep-feature', 'MSE', 'SDR','Deep-feature-EMD'
 ], index=0)
 
 # Mostrar descripción con fórmula renderizada usando funciones en loss_functions_help
-with st.sidebar.expander("Descripción de la función de pérdida", expanded=False):
+with st.sidebar.expander("Sobre la función de pérdida", expanded=True):
     if loss_fn in loss_functions_help.loss_key_map:
         loss_functions_help.loss_key_map[loss_fn]()  # Llama a la función que hace st.latex y st.markdown
     else:
         st.markdown("Sin descripción disponible para esta función de pérdida.")
 
 model_selected = st.sidebar.selectbox("Modelos disponibles", options=['self', 'modelo_de_martin', 'modelo_de_usuario'], index=0)
+
+with st.sidebar.expander("Sobre el modelo", expanded=True):
+    desc = help_quotes.model_descriptions.get(model_selected, "Sin descripción disponible para este modelo.")
+    st.markdown(desc)
+
+# --- Selectbox para bases de datos ---
 database_selection = st.sidebar.selectbox("Bases de datos disponibles", options=['MUSDB18', 'Rock DB', 'HipHop DB'])
+
+# --- Expander con descripción de la base de datos ---
+with st.sidebar.expander("Sobre la base de datos", expanded=True):
+    desc = help_quotes.database_descriptions.get(database_selection, "Sin descripción disponible para esta base de datos.")
+    st.markdown(desc)
+
+
 
 # Aplicar a config global
 config.config['MODEL_LOSS_FUNCTION'] = loss_fn

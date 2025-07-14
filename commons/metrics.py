@@ -45,6 +45,25 @@ def reshape_to_spec(x):  # [B, F, T, S] → [B*S, 1, F, T]
     B, F, T, S = x.shape
     return x.permute(0, 3, 1, 2).reshape(B * S, 1, F, T)
 
+
+def emd_loss(x, y):
+    """
+    Calcula la Earth Mover's Distance (Wasserstein-1) entre dos vectores x e y.
+    x, y: tensores 1D (shape: [D])
+    """
+    x_np = x.detach().cpu().numpy()
+    y_np = y.detach().cpu().numpy()
+
+    # Uniform weights (distribuciones empíricas)
+    w = ot.unif(len(x_np))
+    v = ot.unif(len(y_np))
+
+    # Cost matrix: distancia L2 euclidiana entre puntos (índices)
+    M = ot.dist(x_np.reshape((-1, 1)), y_np.reshape((-1, 1)), metric='euclidean')
+
+    emd = ot.emd2(w, v, M)  # Valor escalar de EMD^2
+    return torch.tensor(emd, device=x.device, dtype=x.dtype).sqrt()  # raíz cuadrada para EMD
+
 def get_loss_fn(loss_type, kwargs):
 
     if loss_type is None:
@@ -106,6 +125,13 @@ def get_loss_fn(loss_type, kwargs):
             reshape_to_spec(est), reshape_to_spec(tgt), layers, phi
         )
 
+    elif loss_type == 'deep_feature_emd':
+
+        phi = FeatureExtractor()
+        layers = ['conv1', 'conv2']
+        return lambda est, tgt: deep_feature_loss_emd(
+            reshape_to_spec(est), reshape_to_spec(tgt), layers, phi
+        )
     else:
         raise ValueError(f"Función de pérdida '{loss_type}' no está implementada.")
 
@@ -217,6 +243,30 @@ def deep_feature_loss(Y_hat, Y, layers_to_use,phi = FeatureExtractor):
         loss += loss_j
     return loss / len(layers_to_use)
 
+def deep_feature_loss_emd(Y_hat, Y, layers_to_use, phi):
+    """
+    phi: feature extractor que extrae activaciones de capas
+    Y_hat, Y: espectrogramas estimado y real (shape: [B, 1, F, T])
+    layers_to_use: lista de capas a usar
+    """
+    features_hat = phi.extract_features(Y_hat, layers_to_use)
+    features = phi.extract_features(Y, layers_to_use)
+
+    loss = 0.0
+    for layer in layers_to_use:
+        F_hat = features_hat[layer]
+        F_true = features[layer]
+
+        # Aplanar para comparar distribuciones
+        F_hat_flat = F_hat.view(F_hat.size(0), -1)
+        F_true_flat = F_true.view(F_true.size(0), -1)
+
+        batch_loss = 0.0
+        for b in range(F_hat_flat.size(0)):
+            batch_loss += emd_loss(F_hat_flat[b], F_true_flat[b])
+        loss += batch_loss / F_hat_flat.size(0)
+
+    return loss / len(layers_to_use)
 
 def run_training_and_capture_logs():
     from pipeline.train import training

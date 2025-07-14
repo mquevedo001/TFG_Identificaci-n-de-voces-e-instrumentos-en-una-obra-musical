@@ -75,7 +75,6 @@ def val_step(engine, batch):
 def training():
 
 
-
     train_data, val_data = get_data(stft_params, config.config['MAX_MIXTURES'], config.config['COHERENT_PROB'])
 
     trainer, validator = nussl.ml.train.create_train_and_validation_engines(

@@ -68,3 +68,11 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+
+#TODO
+#-Dataset metrics
+#-Model metrics
+#-Train each model
+#-

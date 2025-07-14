@@ -96,6 +96,13 @@ def show_funcion_deep_feature():
     """)
     st.markdown("Compara activaciones de capas convolucionales intermedias para capturar estructura perceptual.")
 
+def show_funcion_deep_feature_emd():
+    st.markdown("**Deep Feature Loss EMD**")
+    st.latex(r"""Deep Feature Loss con Earth Mover Distance (EMD):
+    \[
+    \mathcal{L} = \frac{1}{L} \sum_{l} \text{EMD}\big( \phi_l(\hat{Y}), \phi_l(Y) \big)
+    \])""")
+    st.markdown("Compara características intermedias de capas convolucionales usando la distancia de transporte óptimo (EMD).")
 # Mapeo para usar fácilmente desde keys
 loss_key_map = {
     'L1': show_funcion_l1,
@@ -113,5 +120,6 @@ loss_key_map = {
     'L_MRS': show_funcion_l_mrs,
     'Deep-feature': show_funcion_deep_feature,
     'MSE': show_funcion_l2,  # alias
-    'SDR': show_funcion_l2   # alias
+    'SDR': show_funcion_l2,  # alias
+    'Deep-feature-EMD': show_funcion_deep_feature_emd
 }
