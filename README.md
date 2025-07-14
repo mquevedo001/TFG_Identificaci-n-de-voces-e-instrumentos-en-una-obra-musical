@@ -1,0 +1,1 @@
+Ejecución : PYTHONPATH=. streamlit run GUI/gui.py
