@@ -1,4 +1,5 @@
 from nussl.datasets import transforms as nussl_tfm
+from pathlib import Path
 from config import config
 from common import data,utils
 
@@ -7,10 +8,12 @@ def get_data(stft_params, max_mixtures = config.config['MAX_MIXTURES'], coherent
 
     utils.logger()
 
-    train_folder = "mix_generation/foreground"
+    train_folder = Path('.') / 'datasets' / 'mix_generation' / 'foreground'
     val_folder = "~/.nussl/tutorial/valid"
-    print("Training model with training mixes in in:",train_folder + "\n")
-    print("Validating data with validation mixes in:",val_folder + "\n")
+
+    print(f"Path:{Path('.')}")
+    print(f"Training model with training mixes in in: {train_folder} ")
+    print(f"Validating data with validation mixes in: {val_folder} ")
 
     if config.config['MODEL_NUM_SOURCES'] == 2:
         tfm = nussl_tfm.Compose([

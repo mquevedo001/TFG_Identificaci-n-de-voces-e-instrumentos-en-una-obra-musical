@@ -3,6 +3,7 @@ from pathlib import Path
 from config import config
 from commons.audio_utils import align_estimates,load_model,conseguirAudioDatabase
 from commons.folder_utils import generateSourcesGraph,save_sources
+from models.Mi_modelo.mask_inference import MaskInference
 
 
 stft_params = nussl.STFTParams(

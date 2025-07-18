@@ -98,11 +98,11 @@ def show_funcion_deep_feature():
 
 def show_funcion_deep_feature_emd():
     st.markdown("**Deep Feature Loss EMD**")
-    st.latex(r"""Deep Feature Loss con Earth Mover Distance (EMD):
-    \[
-    \mathcal{L} = \frac{1}{L} \sum_{l} \text{EMD}\big( \phi_l(\hat{Y}), \phi_l(Y) \big)
-    \])""")
-    st.markdown("Compara características intermedias de capas convolucionales usando la distancia de transporte óptimo (EMD).")
+    st.markdown("Deep Feature Loss con Earth Mover Distance (EMD):")
+    st.latex(r"""
+        \mathcal{L} = \frac{1}{L} \sum_{l} \text{EMD}\big( \phi_l(\hat{Y}), \phi_l(Y) \big)
+    """)
+
 # Mapeo para usar fácilmente desde keys
 loss_key_map = {
     'L1': show_funcion_l1,

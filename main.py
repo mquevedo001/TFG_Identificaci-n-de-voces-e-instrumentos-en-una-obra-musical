@@ -9,7 +9,6 @@ import nussl
 from pathlib import Path
 
 
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', choices=['train', 'eval', 'deploy','mix_generation'], required=True)
@@ -43,7 +42,7 @@ def main():
 
         separator = nussl.separation.deep.DeepMaskEstimation(
             nussl.AudioSignal(),
-            model_path=str(model_path.resolve()),  
+            model_path=str(model_path.resolve()),
             device=config.config['DEVICE'],
         )
 

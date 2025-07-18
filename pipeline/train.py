@@ -15,6 +15,7 @@ stft_params = nussl.STFTParams(
     window_type = config.config['STFT_WINDOW_TYPE'],
 )
 nf = stft_params.window_length // 2 + 1
+
 model = MaskInference.build(
     nf,
     num_audio_channels=config.config['MODEL_NUM_CHANNELS'],
@@ -29,8 +30,8 @@ model = MaskInference.build(
 optimizer = torch.optim.Adam(model.parameters(), lr=config.config['LEARNING_RATE'])
 DEVICE = config.config['DEVICE'] if torch.cuda.is_available() else 'cpu'
 
-loss_fn = get_loss_fn(config.config['MODEL_LOSS_FUNCTION'])  # solo cambias esta línea
 
+loss_fn = None
 
 def train_step(engine, batch):
     model.train()
@@ -40,22 +41,20 @@ def train_step(engine, batch):
     estimates = output['estimates']
     targets = batch['source_magnitudes']
 
-    # Extraer argumentos especiales si hacen falta
+    # Construir kwargs en función del tipo de pérdida
     loss_type = config.config['MODEL_LOSS_FUNCTION'].lower()
-
     kwargs = {}
+
     if loss_type == 'lpsa_phase':
         kwargs['mixture_phase'] = batch.get('mixture_phase')
 
     if loss_type == 'lmrs':
         kwargs['mix_mag'] = batch.get('mixture_magnitude')
 
-    # Obtener función de pérdida según tipo y argumentos especiales
-    loss_fn = get_loss_fn(loss_type, **kwargs)
+    # Llamada corregida
+    loss_fn = get_loss_fn(loss_type, kwargs)
 
-    # Calcular pérdida
     loss = loss_fn(estimates, targets)
-
     loss.backward()
     optimizer.step()
 
@@ -86,7 +85,9 @@ def training():
     val_dataloader = torch.utils.data.DataLoader(
         val_data, num_workers=1, batch_size=config.config['BATCH_SIZE'])
 
-    output_folder = Path(f'{loss_fn} checkpoints/{config.config["MODEL_NUM_SOURCES"]}stems').absolute()
+    numSources = config.config['NUM_SOURCES']
+
+    output_folder = Path('.') / 'checkpoints' / 'Mis_modelos' / f'{loss_fn} checkpoints' / f'{numSources}stems'
     output_folder.mkdir(parents=True, exist_ok=True)
 
     nussl.ml.train.add_stdout_handler(trainer, validator)

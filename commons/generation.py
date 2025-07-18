@@ -5,6 +5,8 @@ import warnings
 import numpy as np
 import os
 import glob
+from config import config
+
 
 template_event_parameters = {
     'label': ('const', 'vocals'),
@@ -59,9 +61,9 @@ def incoherent(fg_folder, bg_folder, event_template, seed):
     )
 
     # Set sample rate, reference dB, and channels (mono)
-    sc.sr = 44100
-    sc.ref_db = -20
-    sc.n_channels = 1
+    sc.sr = config.config['SAMPLE_RATE']
+    sc.ref_db = config.config['REF_DB']
+    sc.n_channels = config.config['MODEL_NUM_CHANNELS']
 
     # Copy the template so we can change it
     event_parameters = event_template.copy()
@@ -74,7 +76,7 @@ def incoherent(fg_folder, bg_folder, event_template, seed):
 
     # Return the generated mixture audio + annotations
     # while ensuring we prevent audio clipping
-    return sc.generate(fix_clipping=True)
+    return sc.generate(fix_clipping=True , disable_sox_effects =True)
 
 
 def coherent(fg_folder, bg_folder, event_template, seed):
@@ -117,9 +119,9 @@ def coherent(fg_folder, bg_folder, event_template, seed):
     )
 
     # Set sample rate, reference dB, and channels (mono)
-    sc.sr = 44100
-    sc.ref_db = -20
-    sc.n_channels = 1
+    sc.sr = config.config['SAMPLE_RATE']
+    sc.ref_db = config.config['REF_DB']
+    sc.n_channels = config.config['MODEL_NUM_CHANNELS']
 
     # Copy the template so we can change it
     event_parameters = event_template.copy()
@@ -159,7 +161,7 @@ def coherent(fg_folder, bg_folder, event_template, seed):
         sc.add_event(**event_parameters)
 
     # Generate and return the mixture audio, stem audio, and annotations
-    return sc.generate(fix_clipping=True)
+    return sc.generate(fix_clipping=True,disable_sox_effects=True)
 
 
 def generate_mixture(dataset, fg_folder, bg_folder, event_template, seed):

@@ -3,6 +3,7 @@ from pathlib import Path
 from common import data
 from config import config
 import torch
+from models.Mi_modelo.mask_inference import MaskInference
 
 
 
@@ -20,20 +21,27 @@ def align_estimates(estimates):
     return estimates
 
 
-def load_model(model_name='best.model.pth'):
-
+def load_model():
     loss_fn = config.config['MODEL_LOSS_FUNCTION']
     num_sources = config.config['MODEL_NUM_SOURCES']
+    model_path = Path('.') / 'checkpoints' / 'Mis_modelos' / f'{loss_fn} checkpoints' / f'{num_sources}stems' / 'best.model.pth'
 
-    model_path = Path('.') / 'checkpoints'/f'{loss_fn} checkpoints' / f'{num_sources}stems' /'best.model.pth'
+    nf = config.config['STFT_WINDOW_LENGTH'] // 2 + 1
 
-
-    separator = nussl.separation.deep.DeepMaskEstimation(
-        nussl.AudioSignal(),
-        model_path= model_path,
-        device=config.config['DEVICE']
+    model = MaskInference.build(
+        nf,
+        num_audio_channels=config.config['MODEL_NUM_CHANNELS'],
+        hidden_size=config.config['MODEL_HIDDEN_SIZE'],
+        num_layers=config.config['MODEL_NUM_LAYERS'],
+        bidirectional=config.config['MODEL_BIDIRECTIONAL'],
+        dropout=config.config['MODEL_DROPOUT'],
+        num_sources=num_sources,
+        activation=config.config['MODEL_ACTIVATION']
     )
-    return separator
+
+    model.load_state_dict(torch.load(model_path, map_location=config.config['DEVICE']))
+    model.eval()
+    return model
 
 def conseguirAudioDatabase(test_folder,stft_params):
 
