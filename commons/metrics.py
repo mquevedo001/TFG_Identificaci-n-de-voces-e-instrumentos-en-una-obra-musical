@@ -2,14 +2,14 @@ import json
 import nussl
 import io
 from contextlib import redirect_stdout
-import torch
 import torch.nn.functional as F
 import torchaudio
 from commons.audio_utils import spectral_convergence
 from commons.model_utils import FeatureExtractor
 from config import config
+from geomloss import SamplesLoss  # differentiable EMD
 
-
+emd_loss_fn = SamplesLoss("sinkhorn", p=1)
 
 def evaluarFrames(frames,test_dataset,output_folder,separator):
 
@@ -38,31 +38,29 @@ def evaluarFrames(frames,test_dataset,output_folder,separator):
             json.dump(scores, f, indent=4)
 
 def reshape_to_freq(x):  # [B, F, T, S] → [B*S, F, T]
+    x = x.squeeze(3)
     B, F, T, S = x.shape
     return x.permute(0, 3, 1, 2).reshape(B * S, F, T)
 
 def reshape_to_spec(x):  # [B, F, T, S] → [B*S, 1, F, T]
+    x = x.squeeze(3)
     B, F, T, S = x.shape
     return x.permute(0, 3, 1, 2).reshape(B * S, 1, F, T)
 
 
-def emd_loss(x, y):
-    """
-    Calcula la Earth Mover's Distance (Wasserstein-1) entre dos vectores x e y.
-    x, y: tensores 1D (shape: [D])
-    """
-    x_np = x.detach().cpu().numpy()
-    y_np = y.detach().cpu().numpy()
+import ot
+import torch
+import numpy as np
 
-    # Uniform weights (distribuciones empíricas)
-    w = ot.unif(len(x_np))
-    v = ot.unif(len(y_np))
 
-    # Cost matrix: distancia L2 euclidiana entre puntos (índices)
-    M = ot.dist(x_np.reshape((-1, 1)), y_np.reshape((-1, 1)), metric='euclidean')
 
-    emd = ot.emd2(w, v, M)  # Valor escalar de EMD^2
-    return torch.tensor(emd, device=x.device, dtype=x.dtype).sqrt()  # raíz cuadrada para EMD
+def emd_loss(x, y, max_points=512):
+    if x.size(0) > max_points:
+        idx = torch.randperm(x.size(0))[:max_points]
+        x = x[idx]
+        y = y[idx]
+    return emd_loss_fn(x.unsqueeze(1), y.unsqueeze(1))
+
 
 def get_loss_fn(loss_type, kwargs):
 
@@ -70,8 +68,7 @@ def get_loss_fn(loss_type, kwargs):
         loss_type = config.config['MODEL_LOSS_FUNCTION']
     loss_type = loss_type.lower()
 
-    mixture_phase = kwargs['mixture_phase']
-    mix_mag = kwargs['mix_mag']
+
     if loss_type == 'l1':
         return lambda est, tgt: torch.mean(torch.abs(est - tgt))
 
@@ -100,14 +97,22 @@ def get_loss_fn(loss_type, kwargs):
         return lambda est, tgt: lpsa_loss(reshape_to_freq(est), reshape_to_freq(tgt))
 
     elif loss_type == 'lpsa_phase':
+        mixture_phase = kwargs['mixture_phase']
+
         if mixture_phase is None:
             raise ValueError("Para 'lpsa_phase' necesitas pasar mixture_phase a get_loss_fn().")
-        return lambda est, tgt: LPSALoss(est, tgt, mixture_phase)
+        else:
+            return lambda est, tgt: LPSALoss(est, tgt, mixture_phase)
 
     elif loss_type == 'lmrs':
+        mix_mag = kwargs['mix_mag']
+
         if mix_mag is None:
             raise ValueError("Para 'lmrs' necesitas pasar mix_mag a get_loss_fn().")
-        return lambda est, tgt: lmrs_loss(mix_mag, tgt, est)
+        else:
+            mixture_phase = kwargs['mixture_phase']
+            mix_mag = kwargs['mix_mag']
+            return lambda est, tgt: lmrs_loss(mix_mag, tgt, est)
 
     elif loss_type == 'mask_l1':
         return lambda est, tgt: MaskL1Loss(est, tgt)
@@ -155,21 +160,35 @@ def l1_freq(mag_estimate,mag_target):
 def l2_freq(mag_estimate,mag_target):
     return torch.mean((mag_estimate-mag_target)**2)
 
-def LPSALoss(estimate,target,mixture_phase):
+def LPSALoss(estimate, target, mixture_phase):
+    print("estimate shape:", estimate.shape)
+    print("target shape:", target.shape)
+    print("mixture_phase shape:", mixture_phase.shape)
 
     target_mag = torch.abs(target)
-    target_phase = torch.abs(estimate)
+    target_phase = torch.angle(target)
     mix_phase = torch.angle(mixture_phase)
 
-    # Y^PSA = |Y| * cos(angle_X - angle_Y)
-    phase_diff = mixture_phase.unsqueeze(1) - target_phase
-    y_psa = target_mag * torch.cos(phase_diff)
+    # Si mixture_phase tiene 3 dims (B,F,T) → agregar dim para fuentes
+    if mix_phase.dim() == 3:
+        mix_phase = mix_phase.unsqueeze(1)  # [B,1,F,T]
+    elif mix_phase.dim() == 4 and mix_phase.shape[1] == 1:
+        # ya está correcto
+        pass
+    else:
+        # print info para debug
+        print("WARNING: mixture_phase unexpected shape", mix_phase.shape)
 
-    # Magnitud de la estimación
+    print("target_phase shape after angle:", target_phase.shape)
+    print("mix_phase shape after adjust:", mix_phase.shape)
+
+    phase_diff = mix_phase - target_phase
+    y_psa = target_mag * torch.cos(phase_diff)
     est_mag = torch.abs(estimate)
 
-    # L2 loss entre est_mag y y_psa
     return torch.mean((est_mag - y_psa) ** 2)
+
+
 
 
 def MaskL1Loss(estimated_mask,target_sources_mag):
@@ -243,30 +262,31 @@ def deep_feature_loss(Y_hat, Y, layers_to_use,phi = FeatureExtractor):
         loss += loss_j
     return loss / len(layers_to_use)
 
-def deep_feature_loss_emd(Y_hat, Y, layers_to_use, phi):
+def deep_feature_loss_emd(Y_hat, Y, layers_to_use, phi, max_points=512):
     """
-    phi: feature extractor que extrae activaciones de capas
-    Y_hat, Y: espectrogramas estimado y real (shape: [B, 1, F, T])
-    layers_to_use: lista de capas a usar
+    Calcula la pérdida EMD en espacio de características extraídas por phi.
     """
     features_hat = phi.extract_features(Y_hat, layers_to_use)
     features = phi.extract_features(Y, layers_to_use)
 
-    loss = 0.0
+    total_loss = 0.0
+
     for layer in layers_to_use:
         F_hat = features_hat[layer]
         F_true = features[layer]
 
-        # Aplanar para comparar distribuciones
+        # Flatten features por batch
         F_hat_flat = F_hat.view(F_hat.size(0), -1)
         F_true_flat = F_true.view(F_true.size(0), -1)
 
         batch_loss = 0.0
         for b in range(F_hat_flat.size(0)):
-            batch_loss += emd_loss(F_hat_flat[b], F_true_flat[b])
-        loss += batch_loss / F_hat_flat.size(0)
+            loss_b = emd_loss(F_hat_flat[b], F_true_flat[b], max_points=max_points)
+            batch_loss += loss_b
 
-    return loss / len(layers_to_use)
+        total_loss += batch_loss / F_hat_flat.size(0)
+
+    return total_loss / len(layers_to_use)
 
 def run_training_and_capture_logs():
     from pipeline.train import training

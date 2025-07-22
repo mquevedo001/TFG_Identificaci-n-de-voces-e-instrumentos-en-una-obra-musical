@@ -31,7 +31,6 @@ optimizer = torch.optim.Adam(model.parameters(), lr=config.config['LEARNING_RATE
 DEVICE = config.config['DEVICE'] if torch.cuda.is_available() else 'cpu'
 
 
-loss_fn = None
 
 def train_step(engine, batch):
     model.train()
@@ -46,10 +45,14 @@ def train_step(engine, batch):
     kwargs = {}
 
     if loss_type == 'lpsa_phase':
+        if 'mixture_phase' not in batch:
+            raise ValueError("El batch no contiene 'mixture_phase'.")
         kwargs['mixture_phase'] = batch.get('mixture_phase')
 
-    if loss_type == 'lmrs':
-        kwargs['mix_mag'] = batch.get('mixture_magnitude')
+    if loss_type in ['l_mrs', 'lmrs']:
+        if 'mixture_magnitude' not in batch:
+            raise ValueError("El batch no contiene 'mixture_magnitude'.")
+        kwargs['mix_mag'] = batch['mixture_magnitude']
 
     # Llamada corregida
     loss_fn = get_loss_fn(loss_type, kwargs)
@@ -73,7 +76,7 @@ def val_step(engine, batch):
 
 def training():
 
-
+    loss_fn = config.config['MODEL_LOSS_FUNCTION']
     train_data, val_data = get_data(stft_params, config.config['MAX_MIXTURES'], config.config['COHERENT_PROB'])
 
     trainer, validator = nussl.ml.train.create_train_and_validation_engines(
@@ -85,7 +88,7 @@ def training():
     val_dataloader = torch.utils.data.DataLoader(
         val_data, num_workers=1, batch_size=config.config['BATCH_SIZE'])
 
-    numSources = config.config['NUM_SOURCES']
+    numSources = config.config['MODEL_NUM_SOURCES']
 
     output_folder = Path('.') / 'checkpoints' / 'Mis_modelos' / f'{loss_fn} checkpoints' / f'{numSources}stems'
     output_folder.mkdir(parents=True, exist_ok=True)

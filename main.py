@@ -7,9 +7,12 @@ from pipeline.deployment import deploy
 import argparse
 import nussl
 from pathlib import Path
-
+import torch
 
 def main():
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Usando dispositivo: {device}")
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', choices=['train', 'eval', 'deploy','mix_generation'], required=True)
 
@@ -18,6 +21,7 @@ def main():
     parser.add_argument('--maxepochs', type=str, help='Numero de iteraciones de entrenamiento')
     parser.add_argument('--num_generations', type=str, help='Numero de mezclas coherentes/incoherentes a generar')
     parser.add_argument('--random_deploy',type=str, help='Argumento para separación de pista aleatoria de MUSDB')
+    parser.add_argument('--lossfn',type=str,help='Argumento para selección de la función de pérdida')
 
     loss_fn = config.config['MODEL_LOSS_FUNCTION']
 
@@ -26,8 +30,11 @@ def main():
     if args.mode == 'train':
         if not args.maxepochs:
             raise ValueError('Es necesario el argumento del valor del número de iteraciones para el entrenamiento  [ --maxepochs <value> ]')
+        if not args.lossfn:
+            raise ValueError('Es necesario indicar una función de pérdida')
         else:
             config.config['MAX_EPOCHS'] = int(args.maxepochs)
+            config.config['MODEL_LOSS_FUNCTION'] = str(args.lossfn)
             training()
 
     elif args.mode == 'eval':
