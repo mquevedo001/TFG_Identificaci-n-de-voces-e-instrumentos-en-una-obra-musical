@@ -57,7 +57,7 @@ def model_param_selection():
                  key='activation_func_input')
     st.selectbox("Numero de frames para la evaluación del modelo",
                  options=[0, 5, 50, 100, 500, 1000],
-                 index=[0, 5, 50, 100, 500, 1000].index(config.config.get('EVALUATOR_FRAMES', 100)),
+                 index=[0,10, 5, 50, 100, 500, 1000].index(config.config.get('EVALUATOR_FRAMES', 100)),
                  key='evaluator_frames_input')
 
 

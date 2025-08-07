@@ -48,11 +48,7 @@ def reshape_to_spec(x):  # [B, F, T, S] → [B*S, 1, F, T]
     return x.permute(0, 3, 1, 2).reshape(B * S, 1, F, T)
 
 
-import ot
 import torch
-import numpy as np
-
-
 
 def emd_loss(x, y, max_points=512):
     if x.size(0) > max_points:

@@ -3,13 +3,13 @@ config = {
     'DEVICE': 'cuda',                   # Dispositivo donde se ejecuta el modelo ('cuda' para GPU, 'cpu' para procesador)                                                   --No se incluye
     'MAX_MIXTURES': int(1e8),           # Máximo número de mezclas que se generarán o procesarán (en get_data, para entrenar con tantas muestras como sea posible)          --No se incluye
     'MAX_EPOCHS': 25,                   # Número máximo de épocas o iteraciones completas para entrenar el modelo
-    'EPOCH_LENGTH': 10,                # Número de muestras (mezclas) que se procesan por cada época de entrenamiento
+    'EPOCH_LENGTH': 10,                 # Número de muestras (mezclas) que se procesan por cada época de entrenamiento
     'LEARNING_RATE': 1e-3,              # Tasa de aprendizaje del optimizador (qué tan rápido se ajustan los pesos)
-    'BATCH_SIZE': 1,                   # Cantidad de mezclas procesadas antes de actualizar los pesos (una mini-batch)
+    'BATCH_SIZE': 1,                    # Cantidad de mezclas procesadas antes de actualizar los pesos (una mini-batch)
     'COHERENT_PROB': 0.5,               # Probabilidad de aplicar algún tipo de coherencia o regularización (depende de implementación concreta)
     'WEIGHT_DECAY' : int(1e-5),         # Regularización de L2 para evitar overfitting.
     'GRADIENT_CLIP' : 1.0,              # Limitar la magnitud de los gradientes y evitar explosiones en el entrenamiento
-    'LEARNING_RATE_SCHEDULE': 10,     # Marca si se debe utilizar learning rate decay o algún scheduler ( 'step' , 'cosine ' none' )
+    'LEARNING_RATE_SCHEDULE': 10,       # Marca si se debe utilizar learning rate decay o algún scheduler ( 'step' , 'cosine ' none' )
     'EARLY_STOPPING_PATIENCE': 20,      # Número de iteraciones sin mejora tras las cuales detener el entrenamiento
 
     'STFT_WINDOW_LENGTH': 512,          # Tamaño de la ventana para STFT (número de muestras)
