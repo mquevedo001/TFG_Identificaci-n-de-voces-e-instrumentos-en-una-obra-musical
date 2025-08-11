@@ -22,6 +22,7 @@ def main():
     parser.add_argument('--num_generations', type=str, help='Numero de mezclas coherentes/incoherentes a generar')
     parser.add_argument('--random_deploy',type=str, help='Argumento para separación de pista aleatoria de MUSDB')
     parser.add_argument('--lossfn',type=str,help='Argumento para selección de la función de pérdida')
+    parser.add_argument('--numsources',type=int,help='Número de fuentes a separar (2/4)')
 
     loss_fn = config.config['MODEL_LOSS_FUNCTION']
 
@@ -32,9 +33,12 @@ def main():
             raise ValueError('Es necesario el argumento del valor del número de iteraciones para el entrenamiento  [ --maxepochs <value> ]')
         if not args.lossfn:
             raise ValueError('Es necesario indicar una función de pérdida')
+        if not args.numsources:
+            raise ValueError('Es necesario indicar el número de fuentes a separar')
         else:
             config.config['MAX_EPOCHS'] = int(args.maxepochs)
             config.config['MODEL_LOSS_FUNCTION'] = str(args.lossfn)
+            config.config['MODEL_NUM_SOURCES'] = str(args.numsources)
             training()
 
     elif args.mode == 'eval':
@@ -77,8 +81,4 @@ if __name__ == '__main__':
 
 
 
-#TODO
-#-Dataset metrics
-#-Model metrics
-#-Train each model
-#-
+

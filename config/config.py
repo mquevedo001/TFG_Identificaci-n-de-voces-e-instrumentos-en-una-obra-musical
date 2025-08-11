@@ -2,10 +2,10 @@ config = {
 
     'DEVICE': 'cuda',                   # Dispositivo donde se ejecuta el modelo ('cuda' para GPU, 'cpu' para procesador)                                                   --No se incluye
     'MAX_MIXTURES': int(1e8),           # Máximo número de mezclas que se generarán o procesarán (en get_data, para entrenar con tantas muestras como sea posible)          --No se incluye
-    'MAX_EPOCHS': 25,                   # Número máximo de épocas o iteraciones completas para entrenar el modelo
+    'MAX_EPOCHS': 100,                   # Número máximo de épocas o iteraciones completas para entrenar el modelo
     'EPOCH_LENGTH': 10,                 # Número de muestras (mezclas) que se procesan por cada época de entrenamiento
     'LEARNING_RATE': 1e-3,              # Tasa de aprendizaje del optimizador (qué tan rápido se ajustan los pesos)
-    'BATCH_SIZE': 1,                    # Cantidad de mezclas procesadas antes de actualizar los pesos (una mini-batch)
+    'BATCH_SIZE': 100,                    # Cantidad de mezclas procesadas antes de actualizar los pesos (una mini-batch)
     'COHERENT_PROB': 0.5,               # Probabilidad de aplicar algún tipo de coherencia o regularización (depende de implementación concreta)
     'WEIGHT_DECAY' : int(1e-5),         # Regularización de L2 para evitar overfitting.
     'GRADIENT_CLIP' : 1.0,              # Limitar la magnitud de los gradientes y evitar explosiones en el entrenamiento
@@ -26,7 +26,7 @@ config = {
     'MODEL_NUM_SOURCES': 2,             # Número de fuentes o stems que se desean separar (por ejemplo, voz + acompañamiento)
     'MODEL_ACTIVATION': 'sigmoid',      # Función de activación usada en la capa de salida (softmax para probabilidades)
     'MODEL_RNN_TYPE': 'lstm',           # Tipo de RNN usada (LSTM, GRU, etc.)                                                                                               --No se incluye
-    'MODEL_LOSS_FUNCTION': 'deep_feature_emd',        # Función de pérdida usada para el entrenamiento ('L1' para error absoluto medio)
+    'MODEL_LOSS_FUNCTION': 'l1',        # Función de pérdida usada para el entrenamiento ('L1' para error absoluto medio)
 
     'EVALUATOR_FRAMES': 10,              # Número de frames o segmentos usados en la evaluación del modelo
 

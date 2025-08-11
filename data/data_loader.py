@@ -101,7 +101,6 @@ def get_data(stft_params, max_mixtures = config.config['MAX_MIXTURES'], coherent
             fg_path=train_folder,
             num_mixtures=max_mixtures,
             coherent_prob=coherent_prob,
-            sources=['bass', 'drums', 'vocals', 'other']
         )
 
         val_data = data.on_the_fly(
@@ -110,7 +109,6 @@ def get_data(stft_params, max_mixtures = config.config['MAX_MIXTURES'], coherent
             fg_path=val_folder,
             num_mixtures=10,
             coherent_prob=coherent_prob,
-            sources=['bass', 'drums', 'vocals', 'other']
         )
 
     return train_data, val_data

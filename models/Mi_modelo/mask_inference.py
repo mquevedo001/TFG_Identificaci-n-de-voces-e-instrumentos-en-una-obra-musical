@@ -37,6 +37,7 @@ class MaskInference(nn.Module):
 
     def forward(self, data):
         mix_magnitude = data  # save for masking
+        data = data.float()
 
         data = self.amplitude_to_db(mix_magnitude)
         data = self.input_normalization(data)
@@ -57,6 +58,7 @@ class MaskInference(nn.Module):
               activation='sigmoid'):
         # Step 1. Register our model with nussl
         nussl.ml.register_module(cls)
+        print(f"[DEBUG] MaskInference initialized with num_sources={num_sources}")
 
         # Step 2a: Define the building blocks.
         modules = {

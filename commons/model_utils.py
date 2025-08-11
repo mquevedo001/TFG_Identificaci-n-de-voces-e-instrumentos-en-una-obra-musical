@@ -41,3 +41,12 @@ def reshape_if_needed(estimates, targets, to='spectrogram'):
         )
     else:
         return estimates, targets
+
+def prepare_batch(batch, device, dtype=torch.float32):
+    new_batch = {}
+    for k, v in batch.items():
+        if torch.is_tensor(v):
+            new_batch[k] = v.to(device=device, dtype=dtype)
+        else:
+            new_batch[k] = v
+    return new_batch

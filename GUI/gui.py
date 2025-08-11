@@ -37,26 +37,64 @@ for key in ['train', 'advanced_config']:
 st.sidebar.title("Funcionalidades para tu propio modelo")
 
 num_sources_selection = st.sidebar.selectbox("Número de fuentes (stems)", options=[2, 4], index=0)
-loss_fn_selection = st.sidebar.selectbox("Función de pérdida", options=[
-    'L1', 'L2','L1_freq', 'L2_freq', 'LOGL1_freq', 'LOGL2_freq',
-    'LOG_mag', 'LOG_compressed_l2', 'MASK_L1', 'LPSA', 'LPSA_phase',
-    'LMRS', 'L_MRS', 'Deep-feature', 'MSE', 'SDR','Deep-feature-EMD'
-], index=0)
 
-loss_fn = config.config['MODEL_LOSS_FUNCTION']
-with st.sidebar.expander("Sobre la función de pérdida", expanded=True):
-    if loss_fn_selection in loss_functions_help.loss_key_map:
-        loss_functions_help.loss_key_map[loss_fn_selection]()
-    else:
-        st.markdown("Sin descripción disponible para esta función de pérdida.")
-
-model_selected = st.sidebar.selectbox("Modelos disponibles", options=['self', 'modelo_de_martin', 'modelo_de_usuario'], index=0)
+model_selected = st.sidebar.selectbox(
+    "Modelos disponibles",
+    options=['self', 'modelo_de_martin', 'modelo_de_usuario'],
+    index=0
+)
 
 with st.sidebar.expander("Sobre el modelo", expanded=True):
     desc = help_quotes.model_descriptions.get(model_selected, "Sin descripción disponible para este modelo.")
     st.markdown(desc)
 
-database_selection = st.sidebar.selectbox("Bases de datos disponibles", options=['MUSDB18', 'Rock DB', 'HipHop DB'])
+# Variables para base de datos y función de pérdida, con bloqueo condicional
+if model_selected == 'modelo_de_martin':
+    # Valores bloqueados
+    database_selection = 'MUSDB18'
+    loss_fn_selection = 'L2'
+
+    st.sidebar.selectbox(
+        "Bases de datos disponibles",
+        options=['MUSDB18', 'Rock DB', 'HipHop DB'],
+        index=0,
+        disabled=True,
+        key='db_locked'
+    )
+
+    st.sidebar.selectbox(
+        "Función de pérdida",
+        options=[
+            'L1', 'L2','L1_freq', 'L2_freq', 'LOGL1_freq', 'LOGL2_freq',
+            'LOG_mag', 'LOG_compressed_l2', 'MASK_L1', 'LPSA', 'LPSA_phase',
+            'LMRS', 'L_MRS', 'Deep-feature', 'MSE', 'SDR','Deep-feature-EMD'
+        ],
+        index=1,  # Índice de 'L2'
+        disabled=True,
+        key='loss_locked'
+    )
+
+else:
+    database_selection = st.sidebar.selectbox(
+        "Bases de datos disponibles",
+        options=['MUSDB18', 'Rock DB', 'HipHop DB']
+    )
+
+    loss_fn_selection = st.sidebar.selectbox(
+        "Función de pérdida",
+        options=[
+            'L1', 'L2','L1_freq', 'L2_freq', 'LOGL1_freq', 'LOGL2_freq',
+            'LOG_mag', 'LOG_compressed_l2', 'MASK_L1', 'LPSA', 'LPSA_phase',
+            'LMRS', 'L_MRS', 'Deep-feature', 'MSE', 'SDR','Deep-feature-EMD'
+        ],
+        index=0
+    )
+
+with st.sidebar.expander("Sobre la función de pérdida", expanded=True):
+    if loss_fn_selection in loss_functions_help.loss_key_map:
+        loss_functions_help.loss_key_map[loss_fn_selection]()
+    else:
+        st.markdown("Sin descripción disponible para esta función de pérdida.")
 
 with st.sidebar.expander("Sobre la base de datos", expanded=True):
     desc = help_quotes.database_descriptions.get(database_selection, "Sin descripción disponible para esta base de datos.")
@@ -64,8 +102,17 @@ with st.sidebar.expander("Sobre la base de datos", expanded=True):
 
 # --- Botones de acción ---
 if st.sidebar.button('Cargar configuración seleccionada', use_container_width=True):
-    config.config['MODEL_LOSS_FUNCTION'] = loss_fn_selection
-    config.config['MODEL_NUM_SOURCES'] = num_sources_selection
+    # Guardar los valores bloqueados si es el modelo de Martin
+    if model_selected == 'modelo_de_martin':
+        config.config['MODEL_LOSS_FUNCTION'] = 'deep_feature_emd'
+        config.config['MODEL_NUM_SOURCES'] = num_sources_selection
+        # Si quieres guardar base de datos también, añádelo aquí si config lo soporta
+        st.session_state.database_selection = 'MUSDB18'
+        st.session_state.loss_fn_selection = 'Deep-feature-EMD'
+    else:
+        config.config['MODEL_LOSS_FUNCTION'] = loss_fn_selection
+        config.config['MODEL_NUM_SOURCES'] = num_sources_selection
+        st.session_state.database_selection = database_selection
 
     output_folder = Path(__file__).resolve().parent / 'checkpoints'
     output_folder.mkdir(parents=True, exist_ok=True)
