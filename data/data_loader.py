@@ -41,12 +41,13 @@ def get_data(stft_params, max_mixtures = config.config['MAX_MIXTURES'], coherent
 
     train_folder = '/home/martin/PycharmProjects/TFG/datasets/mix_generation/foreground'
     val_folder = "~/.nussl/tutorial/valid"
-
-    print(f"Path:{Path('.')}")
+    num_sources = config.config['MODEL_NUM_SOURCES']
     print(f"Training model with training mixes in in: {train_folder} ")
     print(f"Validating data with validation mixes in: {val_folder} ")
+    print(f'[DEBUG] Num de sources: {num_sources}')
 
-    if config.config['MODEL_NUM_SOURCES'] == 2:
+    if int(config.config['MODEL_NUM_SOURCES']) == 2:
+        print("pipeline de 2 fuentes")
         tfm = nussl_tfm.Compose([
             AddMixtureMagnitude(
                 n_fft=stft_params.window_length,
@@ -79,7 +80,11 @@ def get_data(stft_params, max_mixtures = config.config['MAX_MIXTURES'], coherent
             coherent_prob=coherent_prob
         )
 
+        for i in range(3):
+            item = train_data[i]
+
     else:
+        print("pipeline de 4 fuentes")
         tfm = nussl_tfm.Compose([
             AddMixtureMagnitude(
                 n_fft=stft_params.window_length,

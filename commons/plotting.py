@@ -8,28 +8,37 @@ from pathlib import Path
 from commons.model_utils import prepare_batch
 
 def guardar_resultados(model_name, metrics, sisdr_list, loss_history, base_path='resultados_modelos'):
-    """
-    Guarda los resultados individuales de un modelo: métricas, curva de pérdida, boxplot de SI-SDR
-    """
     model_dir = Path(base_path) / 'individuales' / model_name
     model_dir.mkdir(parents=True, exist_ok=True)
 
-    # Guardar métricas
     with open(model_dir / 'metrics.json', 'w') as f:
         json.dump(metrics, f, indent=4)
 
-    # Guardar curva de pérdida
-    plt.figure()
-    plt.plot(loss_history)
-    plt.xlabel('Época')
-    plt.ylabel('Pérdida')
-    plt.title(f'Curva de pérdida - {model_name}')
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig(model_dir / 'curva_loss.png')
-    plt.close()
+    # Pérdidas por iteración
+    if isinstance(loss_history, dict) and 'iter' in loss_history:
+        plt.figure()
+        plt.plot(loss_history['iter'])
+        plt.xlabel('Iteración')
+        plt.ylabel('Pérdida')
+        plt.title(f'Curva de pérdida (iter) - {model_name}')
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig(model_dir / 'curva_loss_iter.png')
+        plt.close()
 
-    # Guardar boxplot de SI-SDR
+    # Pérdidas por época
+    if isinstance(loss_history, dict) and 'epoch' in loss_history:
+        plt.figure()
+        plt.plot(loss_history['epoch'])
+        plt.xlabel('Época')
+        plt.ylabel('Pérdida promedio')
+        plt.title(f'Curva de pérdida (epoch) - {model_name}')
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig(model_dir / 'curva_loss_epoch.png')
+        plt.close()
+
+    # Boxplot SI-SDR
     plt.figure()
     plt.boxplot(sisdr_list)
     plt.ylabel('SI-SDR (dB)')
@@ -39,7 +48,6 @@ def guardar_resultados(model_name, metrics, sisdr_list, loss_history, base_path=
     plt.savefig(model_dir / 'boxplot_sisdr.png')
     plt.close()
 
-    # Guardar los SI-SDR individuales (opcional)
     np.save(model_dir / 'sisdr_values.npy', np.array(sisdr_list))
 
 def generar_comparativas(base_path='resultados_modelos'):

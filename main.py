@@ -38,7 +38,7 @@ def main():
         else:
             config.config['MAX_EPOCHS'] = int(args.maxepochs)
             config.config['MODEL_LOSS_FUNCTION'] = str(args.lossfn)
-            config.config['MODEL_NUM_SOURCES'] = str(args.numsources)
+            config.config['MODEL_NUM_SOURCES'] = int(args.numsources)
             training()
 
     elif args.mode == 'eval':

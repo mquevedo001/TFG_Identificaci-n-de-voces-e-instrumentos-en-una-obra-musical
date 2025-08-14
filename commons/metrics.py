@@ -66,7 +66,7 @@ def get_loss_fn(loss_type, kwargs):
 
 
     if loss_type == 'l1':
-        return lambda est, tgt: torch.mean(torch.abs(est - tgt))
+        return lambda est, tgt: (torch.mean(torch.abs(est - tgt)))
 
     elif loss_type == 'l2':
         return lambda est, tgt: torch.mean((est - tgt) ** 2)
