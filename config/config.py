@@ -1,6 +1,6 @@
 config = {
 
-    'DEVICE': 'cuda',                   # Dispositivo donde se ejecuta el modelo ('cuda' para GPU, 'cpu' para procesador)                                                   --No se incluye
+    'DEVICE': 'cpu',                   # Dispositivo donde se ejecuta el modelo ('cuda' para GPU, 'cpu' para procesador)                                                   --No se incluye
     'MAX_MIXTURES': int(1e8),           # Máximo número de mezclas que se generarán o procesarán (en get_data, para entrenar con tantas muestras como sea posible)          --No se incluye
     'MAX_EPOCHS': 100,                   # Número máximo de épocas o iteraciones completas para entrenar el modelo
     'EPOCH_LENGTH': 10,                 # Número de muestras (mezclas) que se procesan por cada época de entrenamiento

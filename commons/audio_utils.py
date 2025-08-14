@@ -22,9 +22,10 @@ def align_estimates(estimates):
 
 
 def load_model():
-    loss_fn = config.config['MODEL_LOSS_FUNCTION']
+    loss_fn = config.config['MODEL_LOSS_FUNCTION'].lower()
     num_sources = config.config['MODEL_NUM_SOURCES']
-    model_path = Path('.') / 'checkpoints' / 'Mis_modelos' / f'{loss_fn} checkpoints' / f'{num_sources}stems' / 'best.model.pth'
+    model_path = Path('.') / 'checkpoints' / 'Mis_modelos' / f'{loss_fn} checkpoints' / f'{num_sources}stems' / 'checkpoints'/ 'best.model.pth'
+    print(f'[DEBUG] Utilizando modelo: {loss_fn} + {num_sources} stems')
 
     nf = config.config['STFT_WINDOW_LENGTH'] // 2 + 1
 
@@ -39,7 +40,7 @@ def load_model():
         activation=config.config['MODEL_ACTIVATION']
     )
 
-    model.load_state_dict(torch.load(model_path, map_location=config.config['DEVICE']))
+    model.load_state_dict(torch.load(model_path,weights_only=False, map_location=config.config['DEVICE']))
     model.eval()
     return model
 
