@@ -4,9 +4,12 @@ import tempfile
 import time
 import shutil
 from models.Mi_modelo.mask_inference import MaskInference
+from gui_aux_functions import live_console
+import torch
 import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
+
 
 from GUI.gui_aux_functions import (
     stft_param_selection,
@@ -101,34 +104,44 @@ with st.sidebar.expander("Sobre la base de datos", expanded=True):
     st.markdown(desc)
 
 # --- Botones de acción ---
+# Sidebar — después de “Cargar configuración seleccionada”
 if st.sidebar.button('Cargar configuración seleccionada', use_container_width=True):
-    # Guardar los valores bloqueados si es el modelo de Martin
-    if model_selected == 'modelo_de_martin':
-        config.config['MODEL_LOSS_FUNCTION'] = 'deep_feature_emd'
-        config.config['MODEL_NUM_SOURCES'] = num_sources_selection
-        # Si quieres guardar base de datos también, añádelo aquí si config lo soporta
-        st.session_state.database_selection = 'MUSDB18'
-        st.session_state.loss_fn_selection = 'Deep-feature-EMD'
-    else:
-        config.config['MODEL_LOSS_FUNCTION'] = loss_fn_selection
-        config.config['MODEL_NUM_SOURCES'] = num_sources_selection
-        st.session_state.database_selection = database_selection
+    # tipos y config
+    config.config['MODEL_NUM_SOURCES'] = int(num_sources_selection)
+    config.config['MODEL_LOSS_FUNCTION'] = 'deep_feature_emd' if model_selected == 'modelo_de_martin' else loss_fn_selection
 
     output_folder = Path(__file__).resolve().parent / 'checkpoints'
     output_folder.mkdir(parents=True, exist_ok=True)
 
-    num_sources = config.config['MODEL_NUM_SOURCES']
-    loss_fn = config.config['MODEL_LOSS_FUNCTION']
-
     if model_selected == 'self':
-        model_path = output_folder / 'Modelo_base' / f'{loss_fn} checkpoints' / f'{num_sources}stems' / 'best.model.pth'
+        base = output_folder / 'Modelo_base'
     elif model_selected == 'modelo_de_martin':
-        model_path = output_folder / 'Mis_modelos' / f'{loss_fn} checkpoints' / f'{num_sources}stems' / 'best.model.pth'
-    elif model_selected == 'modelo_de_usuario':
-        model_path = output_folder / 'Modelos_de_usuario' / f'{loss_fn} checkpoints' / f'{num_sources}stems' / 'best.model.pth'
+        base = output_folder / 'Mis_modelos'
+    else:
+        base = output_folder / 'Modelos_de_usuario'
+
+    model_path = base / f"{loss_fn_selection.lower()} checkpoints" / f"{num_sources_selection}stems" / 'checkpoints' / 'best.model.pth'
+
+    model_path = (
+            Path(
+                "/home/martin/PycharmProjects/TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical/checkpoints/Mis_modelos")
+            / f"{config.config['MODEL_LOSS_FUNCTION']} checkpoints"
+            / f"{config.config['MODEL_NUM_SOURCES']}stems"
+            / "checkpoints"
+            / "best.model.pth"
+    )
 
     st.session_state.loaded_model_name = model_selected
     st.session_state.loaded_model_path = str(model_path)
+
+    if not model_path.exists():
+        st.warning(
+            f"No se encontró el checkpoint en:\n`{model_path}`.\n"
+            "Puedes entrenar uno nuevo desde la pestaña *Entrenamiento*."
+        )
+    else:
+        st.success("Configuración cargada.")
+
 
 if st.sidebar.button("Entrenar modelo", use_container_width=True):
     st.session_state.page = 'train'
@@ -140,12 +153,35 @@ if st.sidebar.button("Configuración avanzada", use_container_width=True):
 
 @st.cache_resource(show_spinner="Cargando modelo...")
 def load_separator():
-    audio_signal = nussl.AudioSignal()
-    return nussl.separation.deep.DeepMaskEstimation(
-        audio_signal,
-        model_path=str(st.session_state.get('loaded_model_path', '')),
-        device=config.config['DEVICE']
+    nf = config.config['STFT_WINDOW_LENGTH'] // 2 + 1
+
+    model = MaskInference.build(
+        nf,
+        num_audio_channels=config.config['MODEL_NUM_CHANNELS'],
+        hidden_size=config.config['MODEL_HIDDEN_SIZE'],
+        num_layers=config.config['MODEL_NUM_LAYERS'],
+        bidirectional=config.config['MODEL_BIDIRECTIONAL'],
+        dropout=config.config['MODEL_DROPOUT'],
+        num_sources=num_sources_selection,
+        activation=config.config['MODEL_ACTIVATION']
     )
+
+    # Cargar checkpoint nussl (puede venir con 'state_dict', 'config', 'metadata')
+    checkpoint = torch.load(model_path, map_location=config.config['DEVICE'])
+
+    # Extraer el state_dict correcto
+    if isinstance(checkpoint, dict) and 'state_dict' in checkpoint:
+        state_dict = checkpoint['state_dict']
+    else:
+        state_dict = checkpoint  # por si fuese un state_dict plano
+
+    missing, unexpected = model.load_state_dict(state_dict, strict=False)
+    if missing:
+        print('[WARN] Claves faltantes al cargar:', missing)
+    if unexpected:
+        print('[WARN] Claves inesperadas al cargar:', unexpected)
+
+    return model
 
 # --- Página de entrenamiento ---
 if st.session_state.page == 'train':
@@ -159,6 +195,7 @@ if st.session_state.page == 'train':
         st.text_area("Logs", logs, height=400)
 
         if st.checkbox("¿Quieres descargar el modelo entrenado?"):
+
             model_path = Path(st.session_state.loaded_model_path)
             temp_path = Path(__file__).parent / 'GUI' / 'temp_model.pth'
             temp_path.parent.mkdir(parents=True, exist_ok=True)
@@ -204,7 +241,7 @@ st.title('Separación de música por stems')
 loaded_model = st.session_state.get('loaded_model_name', 'Ninguno')
 st.subheader(f"Modelo cargado actualmente: **{loaded_model}**")
 
-col1, col2 = st.columns([2, 2])
+col1, col2 ,col3= st.columns([2, 2,2])
 with col1:
     uploaded_file = st.file_uploader("Sube un archivo de audio", type=["wav", "mp3"], accept_multiple_files=False)
 
@@ -260,4 +297,10 @@ with col1:
         st.info("Sube un archivo para interactuar con el modelo")
 
 with col2:
+    st.subheader("Consola")
+    live_console()
+
+with col3:
+
     st.info("Comparativa del modelo (en desarrollo)")
+

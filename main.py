@@ -8,11 +8,12 @@ import argparse
 import nussl
 from pathlib import Path
 import torch
-
+import os
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+    torch.cuda.empty_cache()
     print(f"Usando dispositivo: {device}")
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', choices=['train', 'eval', 'deploy','mix_generation'], required=True)
 
@@ -64,12 +65,35 @@ def main():
 
             output_folder = Path('.') / 'Results'
             output_folder = Path.absolute(output_folder)
+            if not args.lossfn:
+                raise ValueError('Es necesario indicar una función de pérdida')
+
+            if not args.numsources:
+                raise ValueError('Es necesario indicar el numero de fuentes a separar')
+
+            config.config['MODEL_LOSS_FUNCTION'] = str(args.lossfn)
+            config.config['MODEL_NUM_SOURCES'] = str(args.numsources)
+
             deploy(output_folder,None)
+
+
+
         if args.input:
 
             output_folder = Path('.') / 'Results'
             output_folder = Path.absolute(output_folder)
+            if not args.lossfn:
+                raise ValueError('Es necesario indicar una función de pérdida')
+
+            if not args.numsources:
+                raise ValueError('Es necesario indicar el numero de fuentes a separar')
+
+            config.config['MODEL_LOSS_FUNCTION'] = str(args.lossfn)
+            config.config['MODEL_NUM_SOURCES'] = str(args.numsources)
+
             deploy(output_folder, args.input)
+
+
 
     elif args.mode == 'mix_generation':
         if not args.num_generations:

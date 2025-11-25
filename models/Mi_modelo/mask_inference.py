@@ -9,14 +9,14 @@ class MaskInference(nn.Module):
                  activation):
         super().__init__()
 
-        bidirectional = bool(bidirectional)  # asegurar tipo correcto
+        bidirectional = bool(bidirectional)
         embedding_hidden_size = hidden_size * (2 if bidirectional else 1)
 
         self.amplitude_to_db = AmplitudeToDB()
         self.input_normalization = BatchNorm(num_features)
         self.recurrent_stack = RecurrentStack(
             num_features=num_features * num_audio_channels,
-            hidden_size=hidden_size,  # tamaño de la RNN
+            hidden_size=hidden_size,
             num_layers=num_layers,
             bidirectional=bidirectional,
             dropout=dropout,
@@ -25,17 +25,18 @@ class MaskInference(nn.Module):
         self.embedding = Embedding(
             num_features=num_features,
             hidden_size=embedding_hidden_size,  # tamaño esperado por Embedding
-            embedding_size=num_sources,
+            embedding_size=int(num_sources),
             activation=activation,
             num_audio_channels=num_audio_channels
         )
 
     def forward(self, data):
         mix_magnitude = data  # conservar para aplicar máscara
-        data = data.float()
 
+        data = data.float()
         data = self.amplitude_to_db(mix_magnitude)
         data = self.input_normalization(data)
+        data = data.contiguous()
         data = self.recurrent_stack(data)
         mask = self.embedding(data)
         estimates = mix_magnitude.unsqueeze(-1) * mask

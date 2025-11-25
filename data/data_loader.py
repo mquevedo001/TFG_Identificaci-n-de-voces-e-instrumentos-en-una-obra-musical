@@ -4,6 +4,7 @@ from config import config
 from common import data,utils
 import torch
 import torchaudio
+import os
 
 
 class AddMixtureMagnitude:
@@ -35,18 +36,18 @@ class AddMixturePhase:
         return item
 
 
-def get_data(stft_params, max_mixtures = config.config['MAX_MIXTURES'], coherent_prob = config.config['COHERENT_PROB']):
-
+def get_data(stft_params, max_mixtures=config.config['MAX_MIXTURES'], coherent_prob=config.config['COHERENT_PROB']):
     utils.logger()
 
-    train_folder = '/home/martin/PycharmProjects/TFG/datasets/mix_generation/foreground'
-    val_folder = "~/.nussl/tutorial/valid"
+    train_folder = '/home/martin/PycharmProjects/TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical/datasets/mix_generation/foreground'
+    val_folder = os.path.expanduser("~/.nussl/tutorial/valid")
     num_sources = config.config['MODEL_NUM_SOURCES']
-    print(f"Training model with training mixes in in: {train_folder} ")
-    print(f"Validating data with validation mixes in: {val_folder} ")
-    print(f'[DEBUG] Num de sources: {num_sources}')
 
-    if int(config.config['MODEL_NUM_SOURCES']) == 2:
+    print(f"Training model with training mixes in: {train_folder}")
+    print(f"Validating data with validation mixes in: {val_folder}")
+    print(f"[DEBUG] Num de sources: {num_sources}")
+
+    if int(num_sources) == 2:
         print("pipeline de 2 fuentes")
         tfm = nussl_tfm.Compose([
             AddMixtureMagnitude(
@@ -63,25 +64,6 @@ def get_data(stft_params, max_mixtures = config.config['MAX_MIXTURES'], coherent
             nussl_tfm.MagnitudeSpectrumApproximation(),
             nussl_tfm.ToSeparationModel(),
         ])
-
-        train_data = data.on_the_fly(
-            stft_params,
-            transform=tfm,
-            fg_path=train_folder,
-            num_mixtures=max_mixtures,
-            coherent_prob=coherent_prob
-        )
-
-        val_data = data.on_the_fly(
-            stft_params,
-            transform=tfm,
-            fg_path=val_folder,
-            num_mixtures=10,
-            coherent_prob=coherent_prob
-        )
-
-        for i in range(3):
-            item = train_data[i]
 
     else:
         print("pipeline de 4 fuentes")
@@ -100,20 +82,21 @@ def get_data(stft_params, max_mixtures = config.config['MAX_MIXTURES'], coherent
             nussl_tfm.ToSeparationModel(),
         ])
 
-        train_data = data.on_the_fly(
-            stft_params,
-            transform=tfm,
-            fg_path=train_folder,
-            num_mixtures=max_mixtures,
-            coherent_prob=coherent_prob,
-        )
+    train_data = data.on_the_fly(
+        stft_params,
+        transform=tfm,
+        fg_path=train_folder,
+        num_mixtures=max_mixtures,
+        coherent_prob=coherent_prob,
+    )
 
-        val_data = data.on_the_fly(
-            stft_params,
-            transform=tfm,
-            fg_path=val_folder,
-            num_mixtures=10,
-            coherent_prob=coherent_prob,
-        )
+    val_data = data.on_the_fly(
+        stft_params,
+        transform=tfm,
+        fg_path=val_folder,
+        num_mixtures=10,
+        coherent_prob=coherent_prob,
+    )
 
     return train_data, val_data
+

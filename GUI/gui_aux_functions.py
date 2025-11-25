@@ -1,5 +1,45 @@
+import io
+import contextlib
+import logging
 import streamlit as st
 from config import config
+
+
+
+class _StreamToWidget(io.StringIO):
+    """Un stream que vuelca todo a un placeholder de Streamlit en vivo."""
+    def __init__(self, placeholder):
+        super().__init__()
+        self.placeholder = placeholder
+    def write(self, s):
+        super().write(s)
+        # Muestra todo el buffer acumulado (puedes cambiar a .code si prefieres monospace)
+        self.placeholder.text(self.getvalue())
+    def flush(self):
+        pass
+
+@contextlib.contextmanager
+def live_console():
+    """Contexto que captura stdout, stderr y logging hacia un panel de Streamlit."""
+    placeholder = st.empty()
+    stream = _StreamToWidget(placeholder)
+
+    # Redirige stdout/stderr
+    with contextlib.redirect_stdout(stream), contextlib.redirect_stderr(stream):
+        # Redirige logging
+        root_logger = logging.getLogger()
+        root_level = root_logger.level
+        handler = logging.StreamHandler(stream)
+        handler.setLevel(logging.INFO)
+        root_logger.addHandler(handler)
+        root_logger.setLevel(logging.INFO)
+        try:
+            yield stream  # por si quieres obtener el texto al final
+        finally:
+            # Limpieza
+            root_logger.removeHandler(handler)
+            root_logger.setLevel(root_level)
+
 
 def stft_param_selection():
     st.subheader('Parámetros de la formación de transformadas de Fourier')

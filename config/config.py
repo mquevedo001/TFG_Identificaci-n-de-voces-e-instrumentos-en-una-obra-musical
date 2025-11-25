@@ -1,6 +1,6 @@
 config = {
 
-    'DEVICE': 'cpu',                   # Dispositivo donde se ejecuta el modelo ('cuda' para GPU, 'cpu' para procesador)                                                   --No se incluye
+    'DEVICE': 'cuda',                   # Dispositivo donde se ejecuta el modelo ('cuda' para GPU, 'cpu' para procesador)                                                   --No se incluye
     'MAX_MIXTURES': int(1e8),           # Máximo número de mezclas que se generarán o procesarán (en get_data, para entrenar con tantas muestras como sea posible)          --No se incluye
     'MAX_EPOCHS': 100,                   # Número máximo de épocas o iteraciones completas para entrenar el modelo
     'EPOCH_LENGTH': 10,                 # Número de muestras (mezclas) que se procesan por cada época de entrenamiento
@@ -18,7 +18,7 @@ config = {
     'STFT_PAD_MODE': None,              # Como se hace el padding para la STFT ('reflect' , 'constant' ... )
 
 
-    'MODEL_NUM_CHANNELS': 1,            # Número de canales de entrada (1 para mono audio)
+    'MODEL_NUM_CHANNELS': 1,            # Número de canales de entrada (mono / stereo)
     'MODEL_HIDDEN_SIZE': 50,            # Tamaño del estado oculto en las capas RNN                                                                                         --No se incluye
     'MODEL_NUM_LAYERS': 1,              # Número de capas en la RNN                                                                                                         --No se incluye
     'MODEL_BIDIRECTIONAL': True,        # Indica si la RNN es bidireccional (procesa secuencias en ambas direcciones)                                                       --No se incluye
@@ -41,9 +41,7 @@ config = {
         ('pitch', '300'),  # 300 centésimas de semitono (3 semitonos)
         ('equalizer', '1000', '1.0q', '5')
     ],
-    'USE_SOX_EFFECTS': True
+    'USE_SOX_EFFECTS': False
 
 }
-
-
 

@@ -1,51 +1,44 @@
+# ==============================================================
+# Script para lanzar múltiples entrenamientos de forma segura
+# ==============================================================
 import subprocess
 import os
-from config import config
 
 def main():
-    # Lista de las funciones de pérdida que soporta get_loss_fn, en minúsculas
     loss_functions = [
-        "l1", "l2", "l1_freq", "l2_freq", "logl1", "logl2", "log_mag",
-        "log_compressed_l2", "lpsa", "mask_l1","deep_feature", "deep_feature_emd"
+        "logl1", "logl2", "log_mag",
+        "log_compressed_l2", "lpsa", "mask_l1", "deep_feature", "deep_feature_emd"
     ]
-
-    # lpsa_phase , lmrs , l_mrs
+    sources = ['2', '4']
 
     logs_folder = "logs_train_runs"
     os.makedirs(logs_folder, exist_ok=True)
 
     for lossfn in loss_functions:
-        print(f"Ejecutando entrenamiento con lossfn = {lossfn} ...")
+        for num_sources in sources:
+            print(f"\n=== Entrenando con lossfn={lossfn}, sources={num_sources} ===\n")
 
-        config.config['BATCH_SIZE'] = 1
-        # Construir comando
-        cmd = \
-            [
-            "python", "/home/martin/PycharmProjects/TFG/main.py",
-            "--mode", "train",
-            "--maxepochs", "100",
-            "--lossfn", lossfn,
-            "--numsources","2"
-        ]
+            log_prefix = f"train_{lossfn}_{num_sources}src"
+            out_file = os.path.join(logs_folder, f"{log_prefix}.out")
+            err_file = os.path.join(logs_folder, f"{log_prefix}.err")
 
-        try:
-            # Ejecutar comando y capturar salida y error
-            result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            cmd = [
+                "python", "main.py",
+                "--mode", "train",
+                "--maxepochs", "100",
+                "--lossfn", lossfn,
+                "--numsources", num_sources
+            ]
 
-            # Guardar stdout y stderr en archivos
-            with open(os.path.join(logs_folder, f"train_{lossfn}.out"), "w") as f_out:
-                f_out.write(result.stdout)
-            with open(os.path.join(logs_folder, f"train_{lossfn}.err"), "w") as f_err:
-                f_err.write(result.stderr)
+            # 🔹 Simplificado para evitar deadlocks
+            with open(out_file, "w") as f_out, open(err_file, "w") as f_err:
+                result = subprocess.run(cmd, stdout=f_out, stderr=f_err)
 
-            print(f"Terminó correctamente con lossfn={lossfn}")
+            if result.returncode == 0:
+                print(f"[OK] {lossfn} ({num_sources} fuentes) completado.\n")
+            else:
+                print(f"[ERROR] {lossfn} ({num_sources} fuentes) falló. Ver {err_file}\n")
 
-        except subprocess.CalledProcessError as e:
-            print(f"Error ejecutando lossfn={lossfn}. Ver logs para detalles.")
-            with open(os.path.join(logs_folder, f"train_{lossfn}.out"), "w") as f_out:
-                f_out.write(e.stdout or "")
-            with open(os.path.join(logs_folder, f"train_{lossfn}.err"), "w") as f_err:
-                f_err.write(e.stderr or "")
 
 if __name__ == "__main__":
     main()

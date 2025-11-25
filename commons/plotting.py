@@ -124,73 +124,76 @@ def calcular_sisdr_por_muestra(model, dataloader):
     device = next(model.parameters()).device
     with torch.no_grad():
         for batch in dataloader:
-            # Mover todo el batch a device y tipo float32
-            batch = {k: v.to(device=device, dtype=torch.float32) if torch.is_tensor(v) else v for k, v in batch.items()}
+            batch = {k: (v.to(device=device, dtype=torch.float32) if torch.is_tensor(v) else v)
+                     for k, v in batch.items()}
 
             output = model(batch)
+            # shapes esperadas: (B, T, F, C, S)
             estimates = output['estimates']
             references = batch['source_magnitudes']
-            for est, ref in zip(estimates, references):
-                est = est.squeeze()
-                ref = ref.squeeze()
-                sisdr = si_sdr(est, ref)  # tu función de si_sdr
-                sisdrs.append(sisdr)
+
+            # Validación de forma
+            if estimates.shape[:-1] != references.shape[:-1]:
+                raise RuntimeError(f"Shapes incompatibles (sin eje S): "
+                                   f"{estimates.shape[:-1]} vs {references.shape[:-1]}")
+            if estimates.shape[-1] != references.shape[-1]:
+                raise RuntimeError(f"Número de fuentes distinto entre pred y ref: "
+                                   f"{estimates.shape[-1]} vs {references.shape[-1]}")
+
+            B, T, F, C, S = estimates.shape
+
+            # Reordena a (B, S, -1) y calcula SI-SDR por (batch, fuente)
+            est_flat = estimates.permute(0, 4, 1, 2, 3).reshape(B, S, -1)  # (B,S,N)
+            ref_flat = references.permute(0, 4, 1, 2, 3).reshape(B, S, -1)  # (B,S,N)
+
+            for b in range(B):
+                for s in range(S):
+                    sisdr = si_sdr(est_flat[b, s], ref_flat[b, s])  # usa tu si_sdr con tensores 1D
+                    sisdrs.append(sisdr)
     return sisdrs
+
 
 
 import torch
 
 
 def si_sdr(estimation, reference, eps=1e-8):
-    """
-    Calcula Scale-Invariant SDR entre estimation y reference.
-    Ambos deben ser tensores 1D de PyTorch.
-    """
-    # Normalizar señales para evitar divisiones por 0
+    estimation = estimation.float()
+    reference = reference.float()
+
     reference_energy = torch.sum(reference ** 2) + eps
-
-    # Escalar referencia para mejor ajuste con estimación
     scale = torch.sum(reference * estimation) / reference_energy
-
-    # Componente proyectada
     projection = scale * reference
-
-    # Ruido (error)
     noise = estimation - projection
-
-    # Calcular SI-SDR
     ratio = torch.sum(projection ** 2) / (torch.sum(noise ** 2) + eps)
-    si_sdr_value = 10 * torch.log10(ratio + eps)
+    return (10 * torch.log10(ratio + eps)).item()
 
-    return si_sdr_value.item()
 
 
 def calcular_metricas_globales(model, dataloader):
-    all_preds = []
-    all_refs = []
     model.eval()
     device = next(model.parameters()).device
+    sisdr_values = []
+
     with torch.no_grad():
         for batch in dataloader:
             batch = prepare_batch(batch, device=device)
             output = model(batch)
-            estimates = output['estimates']
-            references = batch['source_magnitudes']
+            estimates = output['estimates']          # (B,T,F,C,S)
+            references = batch['source_magnitudes']  # (B,T,F,C,S)
 
-            all_preds.extend(estimates)
-            all_refs.extend(references)
+            if estimates.shape != references.shape:
+                raise RuntimeError(f"pred y ref deben tener misma shape; got {estimates.shape} vs {references.shape}")
 
-    # Calcular SI-SDR promedio usando la función si_sdr definida antes
-    sisdr_values = []
-    for est, ref in zip(all_preds, all_refs):
-        est = est.squeeze().to(device=device, dtype=torch.float32)
-        ref = ref.squeeze().to(device=device, dtype=torch.float32)
-        sisdr = si_sdr(est, ref)
-        sisdr_values.append(sisdr)
+            B, T, F, C, S = estimates.shape
+            est_flat = estimates.permute(0, 4, 1, 2, 3).reshape(B, S, -1)
+            ref_flat = references.permute(0, 4, 1, 2, 3).reshape(B, S, -1)
 
-    si_sdr_promedio = sum(sisdr_values) / len(sisdr_values) if sisdr_values else float('nan')
+            for b in range(B):
+                for s in range(S):
+                    sisdr_values.append(si_sdr(est_flat[b, s], ref_flat[b, s]))
 
-    return {
-        'si_sdr': si_sdr_promedio
-    }
+    si_sdr_promedio = float(np.mean(sisdr_values)) if sisdr_values else float('nan')
+    return {'si_sdr': si_sdr_promedio}
+
 
