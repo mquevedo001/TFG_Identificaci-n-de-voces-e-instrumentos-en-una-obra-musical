@@ -20,8 +20,83 @@ def align_estimates(estimates):
     return estimates
 
 
+def build_complex_from_mag_and_phase(magnitude, mixture_phase):
+    """
+    magnitude:     [B, T, F, C, S]
+    mixture_phase: [B, F, T]
 
+    devuelve:      [B, S, C, F, T] complejo
+    """
+    if magnitude.dim() != 5:
+        raise ValueError(f"magnitude shape inesperada: {magnitude.shape}")
+    if mixture_phase.dim() != 3:
+        raise ValueError(f"mixture_phase shape inesperada: {mixture_phase.shape}")
 
+    # [B, F, T] -> [B, T, F]
+    phase = mixture_phase.permute(0, 2, 1)
+
+    # Alinear T y F por seguridad
+    T = min(magnitude.shape[1], phase.shape[1])
+    F = min(magnitude.shape[2], phase.shape[2])
+
+    magnitude = magnitude[:, :T, :F, :, :]      # [B, T, F, C, S]
+    phase = phase[:, :T, :F]                    # [B, T, F]
+
+    # Expandir fase a [B, T, F, 1, 1]
+    phase = phase.unsqueeze(-1).unsqueeze(-1)
+
+    # Construir espectro complejo
+    complex_spec = torch.polar(magnitude, phase)   # [B, T, F, C, S]
+
+    # Reordenar a [B, S, C, F, T] para facilitar ISTFT
+    complex_spec = complex_spec.permute(0, 4, 3, 2, 1).contiguous()
+
+    return complex_spec
+
+def reconstruct_waveforms_from_mag_phase(magnitude, mixture_phase):
+    """
+    magnitude:     [B, T, F, C, S]
+    mixture_phase: [B, F, T]
+
+    devuelve:      [B, S, C, N]
+    """
+    complex_spec = build_complex_from_mag_and_phase(magnitude, mixture_phase)
+
+    B, S, C, F, T = complex_spec.shape
+
+    n_fft = config.config['STFT_WINDOW_LENGTH']
+    hop_length = config.config['STFT_HOP_LENGTH']
+    win_length = config.config['STFT_WINDOW_LENGTH']
+
+    window = torch.hann_window(win_length, device=complex_spec.device)
+
+    waveforms = []
+
+    for b in range(B):
+        batch_sources = []
+        for s in range(S):
+            source_channels = []
+            for c in range(C):
+                spec = complex_spec[b, s, c]  # [F, T]
+                wav = torch.istft(
+                    spec,
+                    n_fft=n_fft,
+                    hop_length=hop_length,
+                    win_length=win_length,
+                    window=window,
+                    center=True,
+                    normalized=False,
+                    onesided=True,
+                    return_complex=False
+                )
+                source_channels.append(wav)
+            source_channels = torch.stack(source_channels, dim=0)  # [C, N]
+            batch_sources.append(source_channels)
+        batch_sources = torch.stack(batch_sources, dim=0)  # [S, C, N]
+        waveforms.append(batch_sources)
+
+    waveforms = torch.stack(waveforms, dim=0)  # [B, S, C, N]
+    return waveforms
 
 def load_model():
     # --- shim para checkpoints antiguos que referencian numpy._core ---

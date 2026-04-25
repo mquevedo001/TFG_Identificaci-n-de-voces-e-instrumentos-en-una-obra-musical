@@ -1,0 +1,55 @@
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+Usando dispositivo: cuda
+Using device: cuda | nf=257 | channels=1 | hidden=50 | stems=4 | loss=deep_feature
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py:1326: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+GA: actual_batch=24 | accum_steps=5 | effective_batch_real=120
+04/04/2026 02:57:35 PM | engine.py:906 Engine run starting with max_epochs=100.
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\multiprocessing\spawn.py", line 116, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\multiprocessing\spawn.py", line 125, in _main
+    prepare(preparation_data)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\multiprocessing\spawn.py", line 236, in prepare
+    _fixup_main_from_path(data['init_main_from_path'])
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\multiprocessing\spawn.py", line 287, in _fixup_main_from_path
+    main_content = runpy.run_path(main_path,
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\runpy.py", line 289, in run_path
+    return _run_module_code(code, init_globals, run_name,
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\runpy.py", line 96, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\main.py", line 1, in <module>
+    from pipeline.evaluation import evaluation
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\evaluation.py", line 1, in <module>
+    import nussl
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\nussl\__init__.py", line 31, in <module>
+    from . import ml
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\nussl\ml\__init__.py", line 48, in <module>
+    from . import train
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\nussl\ml\train\__init__.py", line 43, in <module>
+    from .trainer import (
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\nussl\ml\train\trainer.py", line 7, in <module>
+    from ignite.engine import Events, Engine, EventEnum
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\__init__.py", line 3, in <module>
+    import ignite.engine
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\__init__.py", line 10, in <module>
+    from ignite.metrics import Metric
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\metrics\__init__.py", line 14, in <module>
+    from ignite.metrics.frequency import Frequency
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\metrics\frequency.py", line 7, in <module>
+    from ignite.handlers.timing import Timer
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\__init__.py", line 5, in <module>
+    from ignite.handlers.checkpoint import Checkpoint, DiskSaver, ModelCheckpoint
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py", line 16, in <module>
+    from torch.distributed.optim import ZeroRedundancyOptimizer
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\distributed\optim\__init__.py", line 25, in <module>
+    from .named_optimizer import _NamedOptimizer
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\distributed\optim\named_optimizer.py", line 21, in <module>
+    from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\distributed\fsdp\__init__.py", line 1, in <module>
+    from ._flat_param import FlatParameter as FlatParameter
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\distributed\fsdp\_flat_param.py", line 47, in <module>

@@ -1,0 +1,64 @@
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+Usando dispositivo: cuda
+Using device: cuda | nf=257 | channels=1 | hidden=50 | stems=4 | loss=l_mrs
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py:1326: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+GA: actual_batch=24 | accum_steps=5 | effective_batch_real=120
+03/31/2026 06:42:55 PM | engine.py:906 Engine run starting with max_epochs=100.
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+03/31/2026 06:43:45 PM | engine.py:1149 Current run is terminating due to exception: Argument #4: Padding size should be less than the corresponding input dimension, but got: padding (256, 256) at dimension 2 of input [1, 10633632, 1]
+03/31/2026 06:43:45 PM | engine.py:1041 Engine run is terminating due to exception: Argument #4: Padding size should be less than the corresponding input dimension, but got: padding (256, 256) at dimension 2 of input [1, 10633632, 1]
+Training model with training mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_train
+Validating data with validation mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_valid
+[DEBUG] Num de sources: 4
+pipeline de 4 fuentes
+Traceback (most recent call last):
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\main.py", line 103, in <module>
+    main()
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\main.py", line 42, in main
+    training()
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\train.py", line 308, in training
+    trainer.run(
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 924, in run
+    return self._internal_run()
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 967, in _internal_run
+    return next(self._internal_run_generator)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 1042, in _internal_run_as_gen
+    self._handle_exception(e)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 679, in _handle_exception
+    raise e
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 991, in _internal_run_as_gen
+    epoch_time_taken += yield from self._run_once_on_dataset_as_gen()
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 1150, in _run_once_on_dataset_as_gen
+    self._handle_exception(e)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 679, in _handle_exception
+    raise e
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 1132, in _run_once_on_dataset_as_gen
+    self.state.output = self._process_function(self, self.state.batch)
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\train.py", line 166, in train_step
+    loss = loss_fn(estimates, targets) / accumulation_steps
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\commons\metrics.py", line 133, in <lambda>
+    return lambda est, tgt: L_MRS(
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\commons\metrics.py", line 262, in L_MRS
+    Y_hat = stft(y_hat)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torchaudio\transforms\_transforms.py", line 110, in forward
+    return F.spectrogram(
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torchaudio\functional\functional.py", line 126, in spectrogram
+    spec_f = torch.stft(
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\functional.py", line 702, in stft
+    input = F.pad(input.view(extended_shape), [pad, pad], pad_mode)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\functional.py", line 5096, in pad
+    return torch._C._nn.pad(input, pad, mode, value)
+RuntimeError: Argument #4: Padding size should be less than the corresponding input dimension, but got: padding (256, 256) at dimension 2 of input [1, 10633632, 1]

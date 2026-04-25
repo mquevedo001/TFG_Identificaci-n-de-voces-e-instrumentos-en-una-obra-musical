@@ -1,0 +1,614 @@
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+Usando dispositivo: cuda
+Using device: cuda | nf=257 | channels=1 | hidden=50 | stems=4 | loss=deep_feature_emd
+GA: actual_batch=24 | accum_steps=5 | effective_batch_real=120
+04/06/2026 01:34:06 PM | engine.py:906 Engine run starting with max_epochs=100.
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py:1326: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py:1326: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py:1326: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py:1326: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+04/06/2026 01:34:56 PM | engine.py:906 Engine run starting with max_epochs=1.
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py:1326: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py:1326: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py:1326: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py:1326: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+04/06/2026 01:35:46 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:49.997
+Training model with training mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_train
+Validating data with validation mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_valid
+[DEBUG] Num de sources: 4
+pipeline de 4 fuentes
+0.07535171508789062 GB allocated
+0.095703125 GB reserved
+0.09254980087280273 GB allocated
+5.525390625 GB reserved
+0.09254980087280273 GB allocated
+5.52734375 GB reserved
+0.09254980087280273 GB allocated
+5.52734375 GB reserved
+0.09254980087280273 GB allocated
+5.52734375 GB reserved
+0.09254980087280273 GB allocated
+5.52734375 GB reserved
+0.09254980087280273 GB allocated
+5.52734375 GB reserved
+0.09254980087280273 GB allocated
+5.52734375 GB reserved
+0.09254980087280273 GB allocated
+5.52734375 GB reserved
+0.09254980087280273 GB allocated
+5.52734375 GB reserved
+[Validator] Epoch 1 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_1_val_loss=-0.0000.pt
+04/06/2026 01:35:46 PM | engine.py:1037 Engine run finished. Time taken: 00:00:50.258
+[Epoch 1] train_loss=0.000016 | val_loss=0.000017
+04/06/2026 01:35:46 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:01:03.429
+04/06/2026 01:35:58 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:36:42 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.913
+0.1661839485168457 GB allocated
+5.52734375 GB reserved
+0.1670370101928711 GB allocated
+5.52734375 GB reserved
+0.1670370101928711 GB allocated
+5.52734375 GB reserved
+0.1670370101928711 GB allocated
+5.52734375 GB reserved
+0.1670370101928711 GB allocated
+5.52734375 GB reserved
+0.1670370101928711 GB allocated
+5.52734375 GB reserved
+0.1670370101928711 GB allocated
+5.52734375 GB reserved
+0.1670370101928711 GB allocated
+5.52734375 GB reserved
+0.1670370101928711 GB allocated
+5.52734375 GB reserved
+0.1670370101928711 GB allocated
+5.52734375 GB reserved
+[Validator] Epoch 2 - val_loss: 0.000018
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_1_val_loss=-0.0000.pt
+04/06/2026 01:36:42 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.914
+[Epoch 2] train_loss=0.000014 | val_loss=0.000018
+04/06/2026 01:36:42 PM | engine.py:1010 Epoch[2] Complete. Time taken: 00:00:55.266
+04/06/2026 01:36:52 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:37:36 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.442
+0.16789007186889648 GB allocated
+5.52734375 GB reserved
+0.16874313354492188 GB allocated
+5.52734375 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 3 - val_loss: 0.000018
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_1_val_loss=-0.0000.pt
+04/06/2026 01:37:36 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.444
+[Epoch 3] train_loss=0.000015 | val_loss=0.000018
+04/06/2026 01:37:36 PM | engine.py:1010 Epoch[3] Complete. Time taken: 00:00:54.015
+04/06/2026 01:37:46 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:38:30 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.471
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 4 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_1_val_loss=-0.0000.pt
+04/06/2026 01:38:30 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.472
+[Epoch 4] train_loss=0.000015 | val_loss=0.000017
+04/06/2026 01:38:30 PM | engine.py:1010 Epoch[4] Complete. Time taken: 00:00:53.990
+04/06/2026 01:38:40 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:39:24 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.947
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 5 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_1_val_loss=-0.0000.pt
+04/06/2026 01:39:24 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.947
+[Epoch 5] train_loss=0.000016 | val_loss=0.000017
+04/06/2026 01:39:24 PM | engine.py:1010 Epoch[5] Complete. Time taken: 00:00:54.646
+04/06/2026 01:39:35 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:40:19 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.742
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 6 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_1_val_loss=-0.0000.pt
+04/06/2026 01:40:19 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.743
+[Epoch 6] train_loss=0.000014 | val_loss=0.000017
+04/06/2026 01:40:19 PM | engine.py:1010 Epoch[6] Complete. Time taken: 00:00:54.266
+04/06/2026 01:40:29 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:41:12 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.358
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 7 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_7_val_loss=-0.0000.pt
+04/06/2026 01:41:12 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.375
+[Epoch 7] train_loss=0.000013 | val_loss=0.000017
+04/06/2026 01:41:12 PM | engine.py:1010 Epoch[7] Complete. Time taken: 00:00:53.799
+04/06/2026 01:41:23 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:42:07 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:44.011
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 8 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_7_val_loss=-0.0000.pt
+04/06/2026 01:42:07 PM | engine.py:1037 Engine run finished. Time taken: 00:00:44.013
+[Epoch 8] train_loss=0.000015 | val_loss=0.000017
+04/06/2026 01:42:07 PM | engine.py:1010 Epoch[8] Complete. Time taken: 00:00:54.579
+04/06/2026 01:42:18 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:43:01 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.524
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 9 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_7_val_loss=-0.0000.pt
+04/06/2026 01:43:01 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.524
+[Epoch 9] train_loss=0.000015 | val_loss=0.000017
+04/06/2026 01:43:01 PM | engine.py:1010 Epoch[9] Complete. Time taken: 00:00:54.094
+04/06/2026 01:43:12 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:43:55 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.731
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 10 - val_loss: 0.000018
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_7_val_loss=-0.0000.pt
+04/06/2026 01:43:55 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.732
+[Epoch 10] train_loss=0.000014 | val_loss=0.000018
+04/06/2026 01:43:55 PM | engine.py:1010 Epoch[10] Complete. Time taken: 00:00:54.415
+04/06/2026 01:44:06 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:44:50 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.877
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 11 - val_loss: 0.000016
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_11_val_loss=-0.0000.pt
+04/06/2026 01:44:50 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.887
+[Epoch 11] train_loss=0.000015 | val_loss=0.000016
+04/06/2026 01:44:50 PM | engine.py:1010 Epoch[11] Complete. Time taken: 00:00:54.469
+04/06/2026 01:45:00 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:45:44 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.928
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 12 - val_loss: 0.000018
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_11_val_loss=-0.0000.pt
+04/06/2026 01:45:44 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.930
+[Epoch 12] train_loss=0.000018 | val_loss=0.000018
+04/06/2026 01:45:44 PM | engine.py:1010 Epoch[12] Complete. Time taken: 00:00:54.452
+04/06/2026 01:45:55 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:46:39 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.864
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 13 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_11_val_loss=-0.0000.pt
+04/06/2026 01:46:39 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.864
+[Epoch 13] train_loss=0.000015 | val_loss=0.000017
+04/06/2026 01:46:39 PM | engine.py:1010 Epoch[13] Complete. Time taken: 00:00:54.345
+04/06/2026 01:46:49 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:47:33 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.744
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 14 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_11_val_loss=-0.0000.pt
+04/06/2026 01:47:33 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.745
+[Epoch 14] train_loss=0.000014 | val_loss=0.000017
+04/06/2026 01:47:33 PM | engine.py:1010 Epoch[14] Complete. Time taken: 00:00:54.279
+04/06/2026 01:47:44 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:48:27 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.588
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 15 - val_loss: 0.000018
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_11_val_loss=-0.0000.pt
+04/06/2026 01:48:27 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.590
+[Epoch 15] train_loss=0.000013 | val_loss=0.000018
+04/06/2026 01:48:27 PM | engine.py:1010 Epoch[15] Complete. Time taken: 00:00:54.115
+04/06/2026 01:48:38 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:49:22 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.888
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 16 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_11_val_loss=-0.0000.pt
+04/06/2026 01:49:22 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.889
+[Epoch 16] train_loss=0.000014 | val_loss=0.000017
+04/06/2026 01:49:22 PM | engine.py:1010 Epoch[16] Complete. Time taken: 00:00:54.452
+04/06/2026 01:49:32 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:50:15 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.471
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 17 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_11_val_loss=-0.0000.pt
+04/06/2026 01:50:15 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.471
+[Epoch 17] train_loss=0.000016 | val_loss=0.000017
+04/06/2026 01:50:15 PM | engine.py:1010 Epoch[17] Complete. Time taken: 00:00:53.836
+04/06/2026 01:50:26 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:51:09 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.478
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 18 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_11_val_loss=-0.0000.pt
+04/06/2026 01:51:09 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.479
+[Epoch 18] train_loss=0.000014 | val_loss=0.000017
+04/06/2026 01:51:09 PM | engine.py:1010 Epoch[18] Complete. Time taken: 00:00:54.015
+04/06/2026 01:51:20 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:52:04 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.544
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 19 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_11_val_loss=-0.0000.pt
+04/06/2026 01:52:04 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.544
+[Epoch 19] train_loss=0.000013 | val_loss=0.000017
+04/06/2026 01:52:04 PM | engine.py:1010 Epoch[19] Complete. Time taken: 00:00:54.092
+04/06/2026 01:52:14 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:52:57 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:43.600
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 20 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_11_val_loss=-0.0000.pt
+04/06/2026 01:52:57 PM | engine.py:1037 Engine run finished. Time taken: 00:00:43.601
+[Epoch 20] train_loss=0.000015 | val_loss=0.000017
+04/06/2026 01:52:57 PM | engine.py:1010 Epoch[20] Complete. Time taken: 00:00:53.937
+04/06/2026 01:53:08 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/06/2026 01:53:51 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:42.861
+2026-04-06 13:53:51,305 ignite.handlers.early_stopping.EarlyStopping INFO: EarlyStopping: Stop training
+04/06/2026 01:53:51 PM | engine.py:648 Terminate signaled. Engine will stop after current iteration is finished.
+0.16789007186889648 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+0.16874313354492188 GB allocated
+5.529296875 GB reserved
+[Validator] Epoch 21 - val_loss: 0.000017
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_11_val_loss=-0.0000.pt
+04/06/2026 01:53:51 PM | engine.py:1037 Engine run finished. Time taken: 00:00:42.863
+[Epoch 21] train_loss=0.000013 | val_loss=0.000017
+04/06/2026 01:53:51 PM | engine.py:1037 Engine run finished. Time taken: 00:19:44.489
+[LOADING BEST MODEL] Cargando mejor checkpoint desde: checkpoints\Mis_modelos\deep_feature_emd checkpoints\4stems\best_checkpoint_11_val_loss=-0.0000.pt
+C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\train.py:340: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(best_checkpoint_path, map_location=device)

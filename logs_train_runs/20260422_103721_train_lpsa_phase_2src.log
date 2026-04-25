@@ -1,0 +1,19 @@
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+Usando dispositivo: cuda
+Using device: cuda | nf=257 | channels=1 | hidden=50 | stems=2 | loss=lpsa_phase
+GA: actual_batch=100 | accum_steps=1 | effective_batch_real=100
+Training model with training mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_train
+Validating data with validation mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_valid
+[DEBUG] Num de sources: 2
+[DEBUG]Pipeline de 2 fuentes
+Traceback (most recent call last):
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\main.py", line 103, in <module>
+    main()
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\main.py", line 42, in main
+    training()
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\train.py", line 107, in training
+    train_data, val_data = get_data(
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\data\data_loader.py", line 126, in get_data
+    nussl_tfm.SumSources(source_key=source_groups),
+TypeError: SumSources.__init__() missing 1 required positional argument: 'groupings'

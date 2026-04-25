@@ -1,0 +1,13 @@
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+Usando dispositivo: cuda
+Using device: cuda | nf=257 | channels=1 | hidden=50 | stems=2 | loss=deep_feature_emd
+GA: actual_batch=100 | accum_steps=1 | effective_batch_real=100
+Traceback (most recent call last):
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\main.py", line 103, in <module>
+    main()
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\main.py", line 42, in main
+    training()
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\train.py", line 97, in training
+    accumulation_steps = torch.ceil(100 / 4)
+TypeError: ceil(): argument 'input' (position 1) must be Tensor, not float

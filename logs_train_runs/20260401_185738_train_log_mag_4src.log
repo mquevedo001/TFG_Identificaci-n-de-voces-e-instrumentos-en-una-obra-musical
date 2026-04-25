@@ -1,0 +1,586 @@
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+Usando dispositivo: cuda
+Using device: cuda | nf=257 | channels=1 | hidden=50 | stems=4 | loss=log_mag
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py:1326: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+GA: actual_batch=24 | accum_steps=5 | effective_batch_real=120
+04/01/2026 06:57:48 PM | engine.py:906 Engine run starting with max_epochs=100.
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+04/01/2026 06:59:01 PM | engine.py:906 Engine run starting with max_epochs=1.
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+04/01/2026 06:59:40 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:38.395
+Training model with training mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_train
+Validating data with validation mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_valid
+[DEBUG] Num de sources: 4
+pipeline de 4 fuentes
+[Validator] Epoch 1 - val_loss: 0.794414
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_1_val_loss=-0.7944.pt
+04/01/2026 06:59:40 PM | engine.py:1037 Engine run finished. Time taken: 00:00:38.854
+[Epoch 1] train_loss=0.776016 | val_loss=0.794414
+04/01/2026 06:59:40 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:01:14.004
+04/01/2026 07:00:02 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:00:27 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.817
+[Validator] Epoch 2 - val_loss: 0.792694
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_2_val_loss=-0.7927.pt
+04/01/2026 07:00:27 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.828
+[Epoch 2] train_loss=0.767312 | val_loss=0.792694
+04/01/2026 07:00:27 PM | engine.py:1010 Epoch[2] Complete. Time taken: 00:00:47.910
+04/01/2026 07:00:49 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:01:15 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.627
+[Validator] Epoch 3 - val_loss: 0.789529
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_3_val_loss=-0.7895.pt
+04/01/2026 07:01:15 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.639
+[Epoch 3] train_loss=0.761775 | val_loss=0.789529
+04/01/2026 07:01:15 PM | engine.py:1010 Epoch[3] Complete. Time taken: 00:00:47.342
+04/01/2026 07:01:36 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:02:01 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:24.883
+[Validator] Epoch 4 - val_loss: 0.783866
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_4_val_loss=-0.7839.pt
+04/01/2026 07:02:01 PM | engine.py:1037 Engine run finished. Time taken: 00:00:24.895
+[Epoch 4] train_loss=0.769691 | val_loss=0.783866
+04/01/2026 07:02:01 PM | engine.py:1010 Epoch[4] Complete. Time taken: 00:00:46.061
+04/01/2026 07:02:22 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:02:48 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.522
+[Validator] Epoch 5 - val_loss: 0.774626
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_5_val_loss=-0.7746.pt
+04/01/2026 07:02:48 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.534
+[Epoch 5] train_loss=0.761152 | val_loss=0.774626
+04/01/2026 07:02:48 PM | engine.py:1010 Epoch[5] Complete. Time taken: 00:00:47.028
+04/01/2026 07:03:10 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:03:35 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.545
+[Validator] Epoch 6 - val_loss: 0.761276
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_6_val_loss=-0.7613.pt
+04/01/2026 07:03:35 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.555
+[Epoch 6] train_loss=0.748403 | val_loss=0.761276
+04/01/2026 07:03:35 PM | engine.py:1010 Epoch[6] Complete. Time taken: 00:00:47.363
+04/01/2026 07:03:57 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:04:22 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.538
+[Validator] Epoch 7 - val_loss: 0.747814
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_7_val_loss=-0.7478.pt
+04/01/2026 07:04:22 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.547
+[Epoch 7] train_loss=0.732808 | val_loss=0.747814
+04/01/2026 07:04:22 PM | engine.py:1010 Epoch[7] Complete. Time taken: 00:00:46.854
+04/01/2026 07:04:43 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:05:08 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.029
+[Validator] Epoch 8 - val_loss: 0.734545
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_8_val_loss=-0.7345.pt
+04/01/2026 07:05:08 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.041
+[Epoch 8] train_loss=0.730277 | val_loss=0.734545
+04/01/2026 07:05:08 PM | engine.py:1010 Epoch[8] Complete. Time taken: 00:00:46.129
+04/01/2026 07:05:29 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:05:55 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.471
+[Validator] Epoch 9 - val_loss: 0.722371
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_9_val_loss=-0.7224.pt
+04/01/2026 07:05:55 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.481
+[Epoch 9] train_loss=0.710503 | val_loss=0.722371
+04/01/2026 07:05:55 PM | engine.py:1010 Epoch[9] Complete. Time taken: 00:00:46.291
+04/01/2026 07:06:16 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:06:41 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.450
+[Validator] Epoch 10 - val_loss: 0.708149
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_10_val_loss=-0.7081.pt
+04/01/2026 07:06:41 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.459
+[Epoch 10] train_loss=0.711454 | val_loss=0.708149
+04/01/2026 07:06:41 PM | engine.py:1010 Epoch[10] Complete. Time taken: 00:00:46.849
+04/01/2026 07:07:03 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:07:28 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.433
+[Validator] Epoch 11 - val_loss: 0.694158
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_11_val_loss=-0.6942.pt
+04/01/2026 07:07:28 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.442
+[Epoch 11] train_loss=0.703919 | val_loss=0.694158
+04/01/2026 07:07:28 PM | engine.py:1010 Epoch[11] Complete. Time taken: 00:00:46.864
+04/01/2026 07:07:50 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:08:15 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.692
+[Validator] Epoch 12 - val_loss: 0.681919
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_12_val_loss=-0.6819.pt
+04/01/2026 07:08:15 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.702
+[Epoch 12] train_loss=0.688411 | val_loss=0.681919
+04/01/2026 07:08:15 PM | engine.py:1010 Epoch[12] Complete. Time taken: 00:00:47.123
+04/01/2026 07:08:36 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:09:02 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.236
+[Validator] Epoch 13 - val_loss: 0.666708
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_13_val_loss=-0.6667.pt
+04/01/2026 07:09:02 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.245
+[Epoch 13] train_loss=0.664635 | val_loss=0.666708
+04/01/2026 07:09:02 PM | engine.py:1010 Epoch[13] Complete. Time taken: 00:00:46.269
+04/01/2026 07:09:23 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:09:48 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.102
+[Validator] Epoch 14 - val_loss: 0.652001
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_14_val_loss=-0.6520.pt
+04/01/2026 07:09:48 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.111
+[Epoch 14] train_loss=0.654249 | val_loss=0.652001
+04/01/2026 07:09:48 PM | engine.py:1010 Epoch[14] Complete. Time taken: 00:00:46.638
+04/01/2026 07:10:10 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:10:35 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.350
+[Validator] Epoch 15 - val_loss: 0.637280
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_15_val_loss=-0.6373.pt
+04/01/2026 07:10:35 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.359
+[Epoch 15] train_loss=0.640534 | val_loss=0.637280
+04/01/2026 07:10:35 PM | engine.py:1010 Epoch[15] Complete. Time taken: 00:00:47.044
+04/01/2026 07:10:57 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:11:22 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.070
+[Validator] Epoch 16 - val_loss: 0.620637
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_16_val_loss=-0.6206.pt
+04/01/2026 07:11:22 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.081
+[Epoch 16] train_loss=0.638277 | val_loss=0.620637
+04/01/2026 07:11:22 PM | engine.py:1010 Epoch[16] Complete. Time taken: 00:00:46.610
+04/01/2026 07:11:43 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:12:09 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.586
+[Validator] Epoch 17 - val_loss: 0.605189
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_17_val_loss=-0.6052.pt
+04/01/2026 07:12:09 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.596
+[Epoch 17] train_loss=0.619008 | val_loss=0.605189
+04/01/2026 07:12:09 PM | engine.py:1010 Epoch[17] Complete. Time taken: 00:00:46.975
+04/01/2026 07:12:31 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:12:56 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.307
+[Validator] Epoch 18 - val_loss: 0.591975
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_18_val_loss=-0.5920.pt
+04/01/2026 07:12:56 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.317
+[Epoch 18] train_loss=0.604136 | val_loss=0.591975
+04/01/2026 07:12:56 PM | engine.py:1010 Epoch[18] Complete. Time taken: 00:00:47.189
+04/01/2026 07:13:18 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:13:43 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:24.864
+[Validator] Epoch 19 - val_loss: 0.577315
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_19_val_loss=-0.5773.pt
+04/01/2026 07:13:43 PM | engine.py:1037 Engine run finished. Time taken: 00:00:24.875
+[Epoch 19] train_loss=0.587889 | val_loss=0.577315
+04/01/2026 07:13:43 PM | engine.py:1010 Epoch[19] Complete. Time taken: 00:00:47.075
+04/01/2026 07:14:04 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:14:30 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.315
+[Validator] Epoch 20 - val_loss: 0.561931
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_20_val_loss=-0.5619.pt
+04/01/2026 07:14:30 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.324
+[Epoch 20] train_loss=0.582709 | val_loss=0.561931
+04/01/2026 07:14:30 PM | engine.py:1010 Epoch[20] Complete. Time taken: 00:00:46.604
+04/01/2026 07:14:52 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:15:17 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.219
+[Validator] Epoch 21 - val_loss: 0.549491
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_21_val_loss=-0.5495.pt
+04/01/2026 07:15:17 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.227
+[Epoch 21] train_loss=0.578165 | val_loss=0.549491
+04/01/2026 07:15:17 PM | engine.py:1010 Epoch[21] Complete. Time taken: 00:00:47.139
+04/01/2026 07:15:39 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:16:04 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.365
+[Validator] Epoch 22 - val_loss: 0.537675
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_22_val_loss=-0.5377.pt
+04/01/2026 07:16:04 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.377
+[Epoch 22] train_loss=0.570392 | val_loss=0.537675
+04/01/2026 07:16:04 PM | engine.py:1010 Epoch[22] Complete. Time taken: 00:00:47.129
+04/01/2026 07:16:26 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:16:52 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.803
+[Validator] Epoch 23 - val_loss: 0.525462
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_23_val_loss=-0.5255.pt
+04/01/2026 07:16:52 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.814
+[Epoch 23] train_loss=0.546568 | val_loss=0.525462
+04/01/2026 07:16:52 PM | engine.py:1010 Epoch[23] Complete. Time taken: 00:00:47.793
+04/01/2026 07:17:14 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:17:39 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.286
+[Validator] Epoch 24 - val_loss: 0.514614
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_24_val_loss=-0.5146.pt
+04/01/2026 07:17:39 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.297
+[Epoch 24] train_loss=0.541735 | val_loss=0.514614
+04/01/2026 07:17:39 PM | engine.py:1010 Epoch[24] Complete. Time taken: 00:00:47.300
+04/01/2026 07:18:00 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:18:26 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.734
+[Validator] Epoch 25 - val_loss: 0.504837
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_25_val_loss=-0.5048.pt
+04/01/2026 07:18:26 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.743
+[Epoch 25] train_loss=0.528950 | val_loss=0.504837
+04/01/2026 07:18:26 PM | engine.py:1010 Epoch[25] Complete. Time taken: 00:00:46.573
+04/01/2026 07:18:47 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:19:13 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.348
+[Validator] Epoch 26 - val_loss: 0.497873
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_26_val_loss=-0.4979.pt
+04/01/2026 07:19:13 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.356
+[Epoch 26] train_loss=0.529396 | val_loss=0.497873
+04/01/2026 07:19:13 PM | engine.py:1010 Epoch[26] Complete. Time taken: 00:00:46.823
+04/01/2026 07:19:34 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:19:59 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.272
+[Validator] Epoch 27 - val_loss: 0.491166
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_27_val_loss=-0.4912.pt
+04/01/2026 07:19:59 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.281
+[Epoch 27] train_loss=0.527574 | val_loss=0.491166
+04/01/2026 07:19:59 PM | engine.py:1010 Epoch[27] Complete. Time taken: 00:00:46.853
+04/01/2026 07:20:21 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:20:46 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.573
+[Validator] Epoch 28 - val_loss: 0.486194
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_28_val_loss=-0.4862.pt
+04/01/2026 07:20:46 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.582
+[Epoch 28] train_loss=0.525059 | val_loss=0.486194
+04/01/2026 07:20:46 PM | engine.py:1010 Epoch[28] Complete. Time taken: 00:00:47.062
+04/01/2026 07:21:08 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:21:34 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.255
+[Validator] Epoch 29 - val_loss: 0.483057
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_29_val_loss=-0.4831.pt
+04/01/2026 07:21:34 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.263
+[Epoch 29] train_loss=0.518447 | val_loss=0.483057
+04/01/2026 07:21:34 PM | engine.py:1010 Epoch[29] Complete. Time taken: 00:00:47.272
+04/01/2026 07:21:55 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:22:21 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.465
+[Validator] Epoch 30 - val_loss: 0.480331
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_30_val_loss=-0.4803.pt
+04/01/2026 07:22:21 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.475
+[Epoch 30] train_loss=0.507480 | val_loss=0.480331
+04/01/2026 07:22:21 PM | engine.py:1010 Epoch[30] Complete. Time taken: 00:00:46.889
+04/01/2026 07:22:42 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:23:07 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.213
+[Validator] Epoch 31 - val_loss: 0.478658
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_31_val_loss=-0.4787.pt
+04/01/2026 07:23:07 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.223
+[Epoch 31] train_loss=0.507698 | val_loss=0.478658
+04/01/2026 07:23:07 PM | engine.py:1010 Epoch[31] Complete. Time taken: 00:00:46.828
+04/01/2026 07:23:29 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:23:54 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.466
+[Validator] Epoch 32 - val_loss: 0.477232
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_32_val_loss=-0.4772.pt
+04/01/2026 07:23:54 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.474
+[Epoch 32] train_loss=0.500496 | val_loss=0.477232
+04/01/2026 07:23:54 PM | engine.py:1010 Epoch[32] Complete. Time taken: 00:00:46.916
+04/01/2026 07:24:16 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:24:41 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.454
+[Validator] Epoch 33 - val_loss: 0.476304
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_33_val_loss=-0.4763.pt
+04/01/2026 07:24:41 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.464
+[Epoch 33] train_loss=0.511268 | val_loss=0.476304
+04/01/2026 07:24:41 PM | engine.py:1010 Epoch[33] Complete. Time taken: 00:00:47.088
+04/01/2026 07:25:02 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:25:28 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.040
+[Validator] Epoch 34 - val_loss: 0.475927
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_34_val_loss=-0.4759.pt
+04/01/2026 07:25:28 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.049
+[Epoch 34] train_loss=0.500287 | val_loss=0.475927
+04/01/2026 07:25:28 PM | engine.py:1010 Epoch[34] Complete. Time taken: 00:00:46.096
+04/01/2026 07:25:49 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:26:14 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.062
+[Validator] Epoch 35 - val_loss: 0.475836
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_35_val_loss=-0.4758.pt
+04/01/2026 07:26:14 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.070
+[Epoch 35] train_loss=0.502823 | val_loss=0.475836
+04/01/2026 07:26:14 PM | engine.py:1010 Epoch[35] Complete. Time taken: 00:00:46.745
+04/01/2026 07:26:36 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:27:01 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.281
+[Validator] Epoch 36 - val_loss: 0.475369
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_36_val_loss=-0.4754.pt
+04/01/2026 07:27:01 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.291
+[Epoch 36] train_loss=0.494829 | val_loss=0.475369
+04/01/2026 07:27:01 PM | engine.py:1010 Epoch[36] Complete. Time taken: 00:00:46.919
+04/01/2026 07:27:23 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:27:48 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.544
+[Validator] Epoch 37 - val_loss: 0.474446
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_37_val_loss=-0.4744.pt
+04/01/2026 07:27:48 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.556
+[Epoch 37] train_loss=0.506120 | val_loss=0.474446
+04/01/2026 07:27:48 PM | engine.py:1010 Epoch[37] Complete. Time taken: 00:00:47.076
+04/01/2026 07:28:10 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:28:36 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.220
+[Validator] Epoch 38 - val_loss: 0.473115
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_38_val_loss=-0.4731.pt
+04/01/2026 07:28:36 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.228
+[Epoch 38] train_loss=0.508019 | val_loss=0.473115
+04/01/2026 07:28:36 PM | engine.py:1010 Epoch[38] Complete. Time taken: 00:00:47.273
+04/01/2026 07:28:57 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:29:22 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.412
+[Validator] Epoch 39 - val_loss: 0.472124
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_39_val_loss=-0.4721.pt
+04/01/2026 07:29:22 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.421
+[Epoch 39] train_loss=0.491974 | val_loss=0.472124
+04/01/2026 07:29:22 PM | engine.py:1010 Epoch[39] Complete. Time taken: 00:00:46.882
+04/01/2026 07:29:44 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:30:10 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.489
+[Validator] Epoch 40 - val_loss: 0.470760
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_40_val_loss=-0.4708.pt
+04/01/2026 07:30:10 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.500
+[Epoch 40] train_loss=0.494766 | val_loss=0.470760
+04/01/2026 07:30:10 PM | engine.py:1010 Epoch[40] Complete. Time taken: 00:00:47.340
+04/01/2026 07:30:32 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:30:57 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.334
+[Validator] Epoch 41 - val_loss: 0.469431
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_41_val_loss=-0.4694.pt
+04/01/2026 07:30:57 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.345
+[Epoch 41] train_loss=0.495579 | val_loss=0.469431
+04/01/2026 07:30:57 PM | engine.py:1010 Epoch[41] Complete. Time taken: 00:00:47.239
+04/01/2026 07:31:19 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:31:44 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.272
+[Validator] Epoch 42 - val_loss: 0.468264
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_42_val_loss=-0.4683.pt
+04/01/2026 07:31:44 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.282
+[Epoch 42] train_loss=0.485442 | val_loss=0.468264
+04/01/2026 07:31:44 PM | engine.py:1010 Epoch[42] Complete. Time taken: 00:00:47.004
+04/01/2026 07:32:06 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:32:31 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.195
+[Validator] Epoch 43 - val_loss: 0.467074
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_43_val_loss=-0.4671.pt
+04/01/2026 07:32:31 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.203
+[Epoch 43] train_loss=0.490061 | val_loss=0.467074
+04/01/2026 07:32:31 PM | engine.py:1010 Epoch[43] Complete. Time taken: 00:00:46.859
+04/01/2026 07:32:53 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:33:18 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.620
+[Validator] Epoch 44 - val_loss: 0.466389
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_44_val_loss=-0.4664.pt
+04/01/2026 07:33:18 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.632
+[Epoch 44] train_loss=0.495641 | val_loss=0.466389
+04/01/2026 07:33:18 PM | engine.py:1010 Epoch[44] Complete. Time taken: 00:00:47.342
+04/01/2026 07:33:40 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:34:05 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:24.966
+[Validator] Epoch 45 - val_loss: 0.466481
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_44_val_loss=-0.4664.pt
+04/01/2026 07:34:05 PM | engine.py:1037 Engine run finished. Time taken: 00:00:24.967
+[Epoch 45] train_loss=0.494628 | val_loss=0.466481
+04/01/2026 07:34:05 PM | engine.py:1010 Epoch[45] Complete. Time taken: 00:00:47.037
+04/01/2026 07:34:27 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:34:52 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.203
+[Validator] Epoch 46 - val_loss: 0.466382
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_46_val_loss=-0.4664.pt
+04/01/2026 07:34:52 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.213
+[Epoch 46] train_loss=0.499444 | val_loss=0.466382
+04/01/2026 07:34:52 PM | engine.py:1010 Epoch[46] Complete. Time taken: 00:00:46.810
+04/01/2026 07:35:13 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:35:38 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:24.904
+[Validator] Epoch 47 - val_loss: 0.467182
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_46_val_loss=-0.4664.pt
+04/01/2026 07:35:38 PM | engine.py:1037 Engine run finished. Time taken: 00:00:24.906
+[Epoch 47] train_loss=0.488691 | val_loss=0.467182
+04/01/2026 07:35:38 PM | engine.py:1010 Epoch[47] Complete. Time taken: 00:00:46.219
+04/01/2026 07:36:00 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:36:25 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:24.959
+[Validator] Epoch 48 - val_loss: 0.467030
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_46_val_loss=-0.4664.pt
+04/01/2026 07:36:25 PM | engine.py:1037 Engine run finished. Time taken: 00:00:24.960
+[Epoch 48] train_loss=0.487494 | val_loss=0.467030
+04/01/2026 07:36:25 PM | engine.py:1010 Epoch[48] Complete. Time taken: 00:00:46.968
+04/01/2026 07:36:47 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:37:12 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.177
+[Validator] Epoch 49 - val_loss: 0.466533
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_46_val_loss=-0.4664.pt
+04/01/2026 07:37:12 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.179
+[Epoch 49] train_loss=0.491039 | val_loss=0.466533
+04/01/2026 07:37:12 PM | engine.py:1010 Epoch[49] Complete. Time taken: 00:00:46.520
+04/01/2026 07:37:34 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:37:59 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:24.852
+[Validator] Epoch 50 - val_loss: 0.466082
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_50_val_loss=-0.4661.pt
+04/01/2026 07:37:59 PM | engine.py:1037 Engine run finished. Time taken: 00:00:24.861
+[Epoch 50] train_loss=0.481011 | val_loss=0.466082
+04/01/2026 07:37:59 PM | engine.py:1010 Epoch[50] Complete. Time taken: 00:00:47.017
+04/01/2026 07:38:21 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:38:46 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.143
+[Validator] Epoch 51 - val_loss: 0.465669
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_51_val_loss=-0.4657.pt
+04/01/2026 07:38:46 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.153
+[Epoch 51] train_loss=0.485006 | val_loss=0.465669
+04/01/2026 07:38:46 PM | engine.py:1010 Epoch[51] Complete. Time taken: 00:00:47.055
+04/01/2026 07:39:08 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:39:33 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.372
+[Validator] Epoch 52 - val_loss: 0.465639
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_52_val_loss=-0.4656.pt
+04/01/2026 07:39:33 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.383
+[Epoch 52] train_loss=0.493945 | val_loss=0.465639
+04/01/2026 07:39:33 PM | engine.py:1010 Epoch[52] Complete. Time taken: 00:00:47.320
+04/01/2026 07:39:54 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:40:20 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.342
+[Validator] Epoch 53 - val_loss: 0.465038
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_53_val_loss=-0.4650.pt
+04/01/2026 07:40:20 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.352
+[Epoch 53] train_loss=0.502987 | val_loss=0.465038
+04/01/2026 07:40:20 PM | engine.py:1010 Epoch[53] Complete. Time taken: 00:00:46.553
+04/01/2026 07:40:42 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:41:07 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.743
+[Validator] Epoch 54 - val_loss: 0.466207
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_53_val_loss=-0.4650.pt
+04/01/2026 07:41:07 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.744
+[Epoch 54] train_loss=0.498512 | val_loss=0.466207
+04/01/2026 07:41:07 PM | engine.py:1010 Epoch[54] Complete. Time taken: 00:00:47.761
+04/01/2026 07:41:29 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:41:54 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:24.856
+[Validator] Epoch 55 - val_loss: 0.466630
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_53_val_loss=-0.4650.pt
+04/01/2026 07:41:54 PM | engine.py:1037 Engine run finished. Time taken: 00:00:24.857
+[Epoch 55] train_loss=0.488708 | val_loss=0.466630
+04/01/2026 07:41:54 PM | engine.py:1010 Epoch[55] Complete. Time taken: 00:00:46.503
+04/01/2026 07:42:15 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:42:40 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.081
+[Validator] Epoch 56 - val_loss: 0.465341
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_53_val_loss=-0.4650.pt
+04/01/2026 07:42:40 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.081
+[Epoch 56] train_loss=0.494475 | val_loss=0.465341
+04/01/2026 07:42:40 PM | engine.py:1010 Epoch[56] Complete. Time taken: 00:00:46.289
+04/01/2026 07:43:02 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:43:27 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.294
+[Validator] Epoch 57 - val_loss: 0.464790
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_57_val_loss=-0.4648.pt
+04/01/2026 07:43:27 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.305
+[Epoch 57] train_loss=0.481382 | val_loss=0.464790
+04/01/2026 07:43:27 PM | engine.py:1010 Epoch[57] Complete. Time taken: 00:00:47.117
+04/01/2026 07:43:49 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:44:15 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.591
+[Validator] Epoch 58 - val_loss: 0.464963
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_57_val_loss=-0.4648.pt
+04/01/2026 07:44:15 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.593
+[Epoch 58] train_loss=0.484658 | val_loss=0.464963
+04/01/2026 07:44:15 PM | engine.py:1010 Epoch[58] Complete. Time taken: 00:00:47.513
+04/01/2026 07:44:37 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:45:02 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.404
+[Validator] Epoch 59 - val_loss: 0.464323
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_59_val_loss=-0.4643.pt
+04/01/2026 07:45:02 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.413
+[Epoch 59] train_loss=0.492721 | val_loss=0.464323
+04/01/2026 07:45:02 PM | engine.py:1010 Epoch[59] Complete. Time taken: 00:00:47.236
+04/01/2026 07:45:24 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:45:49 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.194
+[Validator] Epoch 60 - val_loss: 0.464211
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_60_val_loss=-0.4642.pt
+04/01/2026 07:45:49 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.205
+[Epoch 60] train_loss=0.490135 | val_loss=0.464211
+04/01/2026 07:45:49 PM | engine.py:1010 Epoch[60] Complete. Time taken: 00:00:47.143
+04/01/2026 07:46:11 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:46:36 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.638
+[Validator] Epoch 61 - val_loss: 0.463849
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_61_val_loss=-0.4638.pt
+04/01/2026 07:46:36 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.650
+[Epoch 61] train_loss=0.492524 | val_loss=0.463849
+04/01/2026 07:46:36 PM | engine.py:1010 Epoch[61] Complete. Time taken: 00:00:46.901
+04/01/2026 07:46:58 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:47:23 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.358
+[Validator] Epoch 62 - val_loss: 0.464002
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_61_val_loss=-0.4638.pt
+04/01/2026 07:47:23 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.359
+[Epoch 62] train_loss=0.498573 | val_loss=0.464002
+04/01/2026 07:47:23 PM | engine.py:1010 Epoch[62] Complete. Time taken: 00:00:46.818
+04/01/2026 07:47:45 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:48:10 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.388
+[Validator] Epoch 63 - val_loss: 0.464295
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_61_val_loss=-0.4638.pt
+04/01/2026 07:48:10 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.389
+[Epoch 63] train_loss=0.495925 | val_loss=0.464295
+04/01/2026 07:48:10 PM | engine.py:1010 Epoch[63] Complete. Time taken: 00:00:47.181
+04/01/2026 07:48:32 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:48:57 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.041
+[Validator] Epoch 64 - val_loss: 0.464211
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_61_val_loss=-0.4638.pt
+04/01/2026 07:48:57 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.042
+[Epoch 64] train_loss=0.496658 | val_loss=0.464211
+04/01/2026 07:48:57 PM | engine.py:1010 Epoch[64] Complete. Time taken: 00:00:47.121
+04/01/2026 07:49:19 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:49:45 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.109
+[Validator] Epoch 65 - val_loss: 0.464374
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_61_val_loss=-0.4638.pt
+04/01/2026 07:49:45 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.110
+[Epoch 65] train_loss=0.487099 | val_loss=0.464374
+04/01/2026 07:49:45 PM | engine.py:1010 Epoch[65] Complete. Time taken: 00:00:47.222
+04/01/2026 07:50:06 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:50:32 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.298
+[Validator] Epoch 66 - val_loss: 0.463503
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_66_val_loss=-0.4635.pt
+04/01/2026 07:50:32 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.306
+[Epoch 66] train_loss=0.489177 | val_loss=0.463503
+04/01/2026 07:50:32 PM | engine.py:1010 Epoch[66] Complete. Time taken: 00:00:47.004
+04/01/2026 07:50:54 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:51:19 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:24.989
+[Validator] Epoch 67 - val_loss: 0.462658
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_67_val_loss=-0.4627.pt
+04/01/2026 07:51:19 PM | engine.py:1037 Engine run finished. Time taken: 00:00:24.997
+[Epoch 67] train_loss=0.484875 | val_loss=0.462658
+04/01/2026 07:51:19 PM | engine.py:1010 Epoch[67] Complete. Time taken: 00:00:47.376
+04/01/2026 07:51:40 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:52:05 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:24.945
+[Validator] Epoch 68 - val_loss: 0.461943
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_68_val_loss=-0.4619.pt
+04/01/2026 07:52:05 PM | engine.py:1037 Engine run finished. Time taken: 00:00:24.954
+[Epoch 68] train_loss=0.490290 | val_loss=0.461943
+04/01/2026 07:52:05 PM | engine.py:1010 Epoch[68] Complete. Time taken: 00:00:46.337
+04/01/2026 07:52:27 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:52:52 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.350
+[Validator] Epoch 69 - val_loss: 0.461826
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_69_val_loss=-0.4618.pt
+04/01/2026 07:52:52 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.361
+[Epoch 69] train_loss=0.490137 | val_loss=0.461826
+04/01/2026 07:52:52 PM | engine.py:1010 Epoch[69] Complete. Time taken: 00:00:47.264
+04/01/2026 07:53:14 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:53:39 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:24.968
+[Validator] Epoch 70 - val_loss: 0.462134
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_69_val_loss=-0.4618.pt
+04/01/2026 07:53:39 PM | engine.py:1037 Engine run finished. Time taken: 00:00:24.968
+[Epoch 70] train_loss=0.495555 | val_loss=0.462134
+04/01/2026 07:53:39 PM | engine.py:1010 Epoch[70] Complete. Time taken: 00:00:46.622
+04/01/2026 07:54:00 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:54:26 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.139
+[Validator] Epoch 71 - val_loss: 0.461921
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_69_val_loss=-0.4618.pt
+04/01/2026 07:54:26 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.140
+[Epoch 71] train_loss=0.491279 | val_loss=0.461921
+04/01/2026 07:54:26 PM | engine.py:1010 Epoch[71] Complete. Time taken: 00:00:46.514
+04/01/2026 07:54:47 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:55:12 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.116
+[Validator] Epoch 72 - val_loss: 0.462295
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_69_val_loss=-0.4618.pt
+04/01/2026 07:55:12 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.117
+[Epoch 72] train_loss=0.481347 | val_loss=0.462295
+04/01/2026 07:55:12 PM | engine.py:1010 Epoch[72] Complete. Time taken: 00:00:46.801
+04/01/2026 07:55:34 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:55:59 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:24.801
+[Validator] Epoch 73 - val_loss: 0.463461
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_69_val_loss=-0.4618.pt
+04/01/2026 07:55:59 PM | engine.py:1037 Engine run finished. Time taken: 00:00:24.803
+[Epoch 73] train_loss=0.485951 | val_loss=0.463461
+04/01/2026 07:55:59 PM | engine.py:1010 Epoch[73] Complete. Time taken: 00:00:46.657
+04/01/2026 07:56:21 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:56:46 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.599
+[Validator] Epoch 74 - val_loss: 0.463039
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_69_val_loss=-0.4618.pt
+04/01/2026 07:56:46 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.600
+[Epoch 74] train_loss=0.487362 | val_loss=0.463039
+04/01/2026 07:56:46 PM | engine.py:1010 Epoch[74] Complete. Time taken: 00:00:47.155
+04/01/2026 07:57:08 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:57:33 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:24.991
+[Validator] Epoch 75 - val_loss: 0.462651
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_69_val_loss=-0.4618.pt
+04/01/2026 07:57:33 PM | engine.py:1037 Engine run finished. Time taken: 00:00:24.993
+[Epoch 75] train_loss=0.484836 | val_loss=0.462651
+04/01/2026 07:57:33 PM | engine.py:1010 Epoch[75] Complete. Time taken: 00:00:47.020
+04/01/2026 07:57:55 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:58:20 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:24.566
+[Validator] Epoch 76 - val_loss: 0.463003
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_69_val_loss=-0.4618.pt
+04/01/2026 07:58:20 PM | engine.py:1037 Engine run finished. Time taken: 00:00:24.567
+[Epoch 76] train_loss=0.486361 | val_loss=0.463003
+04/01/2026 07:58:20 PM | engine.py:1010 Epoch[76] Complete. Time taken: 00:00:46.503
+04/01/2026 07:58:42 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:59:07 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.541
+[Validator] Epoch 77 - val_loss: 0.463904
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_69_val_loss=-0.4618.pt
+04/01/2026 07:59:07 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.542
+[Epoch 77] train_loss=0.481177 | val_loss=0.463904
+04/01/2026 07:59:07 PM | engine.py:1010 Epoch[77] Complete. Time taken: 00:00:47.710
+04/01/2026 07:59:29 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 07:59:55 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.427
+[Validator] Epoch 78 - val_loss: 0.463044
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_69_val_loss=-0.4618.pt
+04/01/2026 07:59:55 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.427
+[Epoch 78] train_loss=0.486921 | val_loss=0.463044
+04/01/2026 07:59:55 PM | engine.py:1010 Epoch[78] Complete. Time taken: 00:00:47.045
+04/01/2026 08:00:16 PM | engine.py:906 Engine run starting with max_epochs=1.
+04/01/2026 08:00:42 PM | engine.py:1010 Epoch[1] Complete. Time taken: 00:00:25.631
+2026-04-01 20:00:42,557 ignite.handlers.early_stopping.EarlyStopping INFO: EarlyStopping: Stop training
+04/01/2026 08:00:42 PM | engine.py:648 Terminate signaled. Engine will stop after current iteration is finished.
+[Validator] Epoch 79 - val_loss: 0.462023
+[BEST CHECKPOINT] Guardado/actualizado en: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_69_val_loss=-0.4618.pt
+04/01/2026 08:00:42 PM | engine.py:1037 Engine run finished. Time taken: 00:00:25.634
+[Epoch 79] train_loss=0.480439 | val_loss=0.462023
+04/01/2026 08:00:42 PM | engine.py:1037 Engine run finished. Time taken: 01:02:54.105
+[LOADING BEST MODEL] Cargando mejor checkpoint desde: checkpoints\Mis_modelos\log_mag checkpoints\4stems\best_checkpoint_69_val_loss=-0.4618.pt
+C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\train.py:326: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(best_checkpoint_path, map_location=device)

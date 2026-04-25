@@ -14,6 +14,7 @@ class FeatureExtractor(torch.nn.Module):
 
     def extract_features(self, x, layers):
         features = {}
+        x = x.float()  # Cast a float32 para evitar Input type (struct c10::Half) and bias type (float) should be the same
         x = self.relu(self.conv1(x))
         if "conv1" in layers:
             features["conv1"] = x.clone()
