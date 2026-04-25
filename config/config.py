@@ -1,3 +1,8 @@
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+
 config = {
 
     'DEVICE': 'cuda',                   # Dispositivo donde se ejecuta el modelo ('cuda' para GPU, 'cpu' para procesador)                                                   --No se incluye
@@ -42,6 +47,11 @@ config = {
         ('equalizer', '1000', '1.0q', '5')
     ],
     'USE_SOX_EFFECTS': False
+
+    # Relative routing for data and model checkpoints, etc. (not absolute paths)
+
+
+
 
 }
 
