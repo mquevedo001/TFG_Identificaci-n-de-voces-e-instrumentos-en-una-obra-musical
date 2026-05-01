@@ -5,7 +5,7 @@ import nussl
 import os
 import re
 
-from commons.utils import load_model  
+from commons.utils import load_model,load_best_model  
 from evaluation.metrics import compute_sisdr  
 from data.load_test_dataset import load_test_dataset
 
@@ -40,25 +40,7 @@ MODELS = [
 
 
 def load_audio(path):
-    return nussl.AudioSignal(str(path))
-
-def extract_val_loss(file):
-    match = re.search(r'val_loss=([-+]?\d*\.\d+|\d+)', file)
-    if match:
-        return float(match.group(1))
-    else:
-        return float('inf')
-    
-
-def load_best_model(stems_folder_model_path):
-
-    checkpoint_names = []
-    for f in os.listdir(stems_folder_model_path):
-        checkpoint_names.append(f)
-
-    return min(checkpoint_names,key=extract_val_loss)
-
-    
+    return nussl.AudioSignal(str(path))   
 
 def evaluate_model(model_name,dataset):
 

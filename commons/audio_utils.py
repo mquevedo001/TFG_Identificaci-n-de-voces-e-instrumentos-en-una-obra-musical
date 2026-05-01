@@ -98,18 +98,32 @@ def reconstruct_waveforms_from_mag_phase(magnitude, mixture_phase):
     waveforms = torch.stack(waveforms, dim=0)  # [B, S, C, N]
     return waveforms
 
-def load_model():
+def extract_val_loss(file):
+    match = re.search(r'val_loss=([-+]?\d*\.\d+|\d+)', file)
+    if match:
+        return float(match.group(1))
+    else:
+        return float('inf')
+def load_best_model(stems_folder_model_path):
+
+    checkpoint_names = []
+    for f in os.listdir(stems_folder_model_path):
+        checkpoint_names.append(f)
+
+    return min(checkpoint_names,key=extract_val_loss)
+
+def load_model(loss_fn,num_sources):
     # --- shim para checkpoints antiguos que referencian numpy._core ---
     sys.modules.setdefault("numpy._core", np)
 
-    loss_fn = config.config['MODEL_LOSS_FUNCTION'].lower()
-    num_sources = config.config['MODEL_NUM_SOURCES']
-
     # OJO con la carpeta con espacio: Path lo maneja bien.
+    
     model_path = (
         Path('.') / 'checkpoints' / 'Mis_modelos' /
         f'{loss_fn} checkpoints' / f'{num_sources}stems' / 'checkpoints' / 'best.model.pth'
     )
+
+    model_path = load_best_model(model_path)
 
     if not model_path.exists():
         raise FileNotFoundError(f'No encuentro el checkpoint en: {model_path}')
