@@ -7,14 +7,14 @@ import re
 
 from commons.utils import load_model  
 from evaluation.metrics import compute_sisdr  
-
+from data.load_test_dataset import load_test_dataset
 
 # ========================
 # CONFIG
 # ========================
 TEST_DATA_PATH = Path("datasets/test_real")
 CHECKPOINTS_ROOT = Path("checkpoints")
-RESULTS_ROOT = Path("results")
+RESULTS_ROOT = Path("resultados_modelos")
 
 MODELS = [
     "lpsa_phase",
@@ -65,7 +65,7 @@ def evaluate_model(model_name,dataset):
     print(f"\nEvaluating: {model_name}")
 
     checkpoint_path = CHECKPOINTS_ROOT / "Mis_modelos" / model_name
-    model_results_dir = RESULTS_ROOT / model_name 
+    model_results_dir = RESULTS_ROOT / "representativo"
     sources = [2,4]
     sisdr_scores = []
 
@@ -110,7 +110,7 @@ def evaluate_model(model_name,dataset):
 
             scores = evaluator.evaluate()
 
-            out_file = model_results_dir / f"track_{i}.json"
+            out_file = model_results_dir /f"{model_name}_{source}stems" /f"track_{i}.json"
             with open(out_file, "w") as f:
                 json.dump(scores,f,indent=4)
             
