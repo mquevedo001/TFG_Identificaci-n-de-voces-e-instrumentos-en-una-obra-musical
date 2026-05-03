@@ -4,6 +4,8 @@ from pathlib import Path
 import sys
 import numpy as np
 import torch
+import os
+import re
 from models.Mi_modelo.mask_inference import MaskInference
 
 
@@ -113,21 +115,20 @@ def load_best_model(stems_folder_model_path):
     return min(checkpoint_names,key=extract_val_loss)
 
 def load_model(loss_fn,num_sources):
-    # --- shim para checkpoints antiguos que referencian numpy._core ---
+    
     sys.modules.setdefault("numpy._core", np)
 
-    # OJO con la carpeta con espacio: Path lo maneja bien.
-    
     model_path = (
         Path('.') / 'checkpoints' / 'Mis_modelos' /
-        f'{loss_fn} checkpoints' / f'{num_sources}stems' / 'checkpoints' / 'best.model.pth'
+        f'{loss_fn} checkpoints' / f'{num_sources}stems' 
     )
 
-    model_path = load_best_model(model_path)
+    best_model_tag = load_best_model(model_path)
+    model_path = f"{model_path}\{best_model_tag}"
 
-    if not model_path.exists():
-        raise FileNotFoundError(f'No encuentro el checkpoint en: {model_path}')
-
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f'No existe la ruta: {model_path}')
+    print(repr(model_path))
     nf = config.config['STFT_WINDOW_LENGTH'] // 2 + 1
 
     model = MaskInference.build(
@@ -140,8 +141,7 @@ def load_model(loss_fn,num_sources):
         num_sources=num_sources,
         activation=config.config['MODEL_ACTIVATION']
     )
-
-    # Cargar checkpoint nussl (puede venir con 'state_dict', 'config', 'metadata')
+    print(repr(model_path))
     checkpoint = torch.load(model_path, map_location=config.config['DEVICE'])
 
     # Extraer el state_dict correcto
@@ -153,7 +153,6 @@ def load_model(loss_fn,num_sources):
     # A veces los checkpoints tienen prefijos raros; si hiciera falta, aquí se podrían limpiar:
     # state_dict = {k.replace('module.', ''): v for k, v in state_dict.items()}
 
-    # Cargar pesos (usa strict=True primero; si falla por alguna clave cosmética, prueba strict=False)
     missing, unexpected = model.load_state_dict(state_dict, strict=False)
     if missing:
         print('[WARN] Claves faltantes al cargar:', missing)
