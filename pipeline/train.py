@@ -183,9 +183,7 @@ def training():
             if engine.state.iteration == 1:
                 em, es = estimates.mean().item(), estimates.std().item()
                 tm, ts = targets.mean().item(), targets.std().item()
-                #print(f"[DEBUG] estimates mean/std: {em:.6g} {es:.6g}", flush=True)
-                #print(f"[DEBUG] targets   mean/std: {tm:.6g} {ts:.6g}", flush=True)
-                #print(f"[DEBUG] estimates shape: {tuple(estimates.shape)} | targets shape: {tuple(targets.shape)}", flush=True)
+                print(f"Estimates stats - mean: {em:.4f}, std: {es:.4f}", flush=True)
                 print("est shape:", estimates.shape, flush=True)
                 print("tgt shape:", targets.shape, flush=True)
             loss_fn = get_loss_fn(loss_type, kwargs)

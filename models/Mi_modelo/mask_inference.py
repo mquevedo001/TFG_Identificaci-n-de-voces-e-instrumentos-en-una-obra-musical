@@ -1,6 +1,9 @@
+from pyexpat import model
+
 from nussl.ml.networks.modules import AmplitudeToDB, BatchNorm, RecurrentStack, Embedding
+from sklearn import dummy
 from torch import nn
-import torch
+from config import config
 import nussl
 
 class MaskInference(nn.Module):
@@ -31,19 +34,43 @@ class MaskInference(nn.Module):
         )
 
     def forward(self, data):
-        mix_magnitude = data  # conservar para aplicar máscara
 
-        data = data.float()
-        data = self.amplitude_to_db(mix_magnitude)
-        data = self.input_normalization(data)
-        data = data.contiguous()
+        if data.dim() == 2:
+            data = data.unsqueeze(0)
+
+        # ORIGINAL espectrograma (GUARDARLO)
+        mix_mag = data.clone()
+
+        # (B, F, T) -> (B, T, F)
+        data = data.permute(0, 2, 1).contiguous()
+
+        print("INPUT RNN:", data.shape)
+
         data = self.recurrent_stack(data)
-        mask = self.embedding(data)
-        estimates = mix_magnitude.unsqueeze(-1) * mask
 
+        print("AFTER RNN:", data.shape)
+
+        mask = self.embedding(data)
+
+        F = int(config.config['MODEL_INPUT_SIZE'])
+        S = int(config.config['MODEL_NUM_SOURCES'])
+
+        mask = mask.view(mask.size(0), mask.size(1), F, S)
+
+        # ⚠️ usar mix_mag original (NO data)
+        mix_mag = mix_mag.permute(0, 2, 1)  # (B, T, F)
+        mix = mix_mag.unsqueeze(-1)
+
+        estimates = mix * mask
+
+        print("\n[MASK STATS]")
+        print("min:", mask.min().item())
+        print("max:", mask.max().item())
+        print("mean:", mask.mean().item())
+        print("std:", mask.std().item())
         return {
-            'mask': mask,
-            'estimates': estimates
+            "mask": mask,
+            "estimates": estimates
         }
 
     @classmethod

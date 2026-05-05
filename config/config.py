@@ -24,14 +24,15 @@ config = {
 
 
     'MODEL_NUM_CHANNELS': 1,            # Número de canales de entrada (mono / stereo)
-    'MODEL_HIDDEN_SIZE': 50,            # Tamaño del estado oculto en las capas RNN                                                                                         --No se incluye
+    'MODEL_HIDDEN_SIZE': 100,            # Tamaño del estado oculto en las capas RNN                                                                                         --No se incluye
     'MODEL_NUM_LAYERS': 1,              # Número de capas en la RNN                                                                                                         --No se incluye
-    'MODEL_BIDIRECTIONAL': True,        # Indica si la RNN es bidireccional (procesa secuencias en ambas direcciones)                                                       --No se incluye
+    'MODEL_BIDIRECTIONAL': False,        # Indica si la RNN es bidireccional (procesa secuencias en ambas direcciones)                                                       --No se incluye
     'MODEL_DROPOUT': 0.0,               # Porcentaje de dropout (regularización para evitar overfitting)
     'MODEL_NUM_SOURCES': 2,             # Número de fuentes o stems que se desean separar (por ejemplo, voz + acompañamiento)
     'MODEL_ACTIVATION': 'sigmoid',      # Función de activación usada en la capa de salida (softmax para probabilidades)
     'MODEL_RNN_TYPE': 'lstm',           # Tipo de RNN usada (LSTM, GRU, etc.)                                                                                               --No se incluye
     'MODEL_LOSS_FUNCTION': 'l1',        # Función de pérdida usada para el entrenamiento ('L1' para error absoluto medio)
+    'MODEL_INPUT_SIZE': 257,             # Número de características o bins de frecuencia que se alimentan al modelo (debe coincidir con F de la STFT)
 
     'EVALUATOR_FRAMES': 10,              # Número de frames o segmentos usados en la evaluación del modelo
 

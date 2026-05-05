@@ -14,6 +14,11 @@ stft_params = nussl.STFTParams(
     window_type=config.config['STFT_WINDOW_TYPE'],
 )
 
+device = torch.device(config.config.get(
+    "DEVICE", "cuda" if torch.cuda.is_available() else "cpu"
+))
+
+
 def deploy(output_dir=None, audio_path=None):
     num_sources = config.config['MODEL_NUM_SOURCES']
     loss_fn = config.config['MODEL_LOSS_FUNCTION'].lower()
@@ -27,25 +32,29 @@ def deploy(output_dir=None, audio_path=None):
         audio_signal = conseguirAudioDatabase(test_folder, stft_params)
 
     # 2) Cargar tu modelo (MaskInference.SeparationModel)
-    separator = load_model()
+    print("\n[DEPLOY MODEL CONFIG]")
+    print("hidden_size:", config.config['MODEL_HIDDEN_SIZE'])
+    print("bidirectional:", config.config['MODEL_BIDIRECTIONAL'])
+    print("num_layers:", config.config['MODEL_NUM_LAYERS'])
+    separator = load_model(loss_fn=loss_fn, num_sources=num_sources)
     separator.to(config.config['DEVICE']).eval()
 
     print(f"[DEBUG] - Modelo : {loss_fn}+{num_sources} cargado correctamente")
     print(f"[DEBUG] - Realizando la separación con la función de pérdida: {loss_fn}")
     print(f"[DEBUG] - Separando el archivo: {audio_path}")
-
     # 3) Preparar input (mix_magnitude) -> OJO: stft_data es (F, T, C)
     audio_signal.stft(window_length=stft_params.window_length,
                       hop_length=stft_params.hop_length,
                       window_type=stft_params.window_type)
 
     mixture_stft = audio_signal.stft_data          # (F, T, C), complejo
-    mixture_mag  = np.abs(mixture_stft)            # (F, T, C), real
+    mixture_mag = np.abs(mixture_stft).mean(axis=2)  # (F, T)            
 
     print("[DEBUG] mixture_stft shape (F,T,C):", mixture_stft.shape)
-    print("[DEBUG] mixture_mag  shape (F,T,C):", mixture_mag.shape)
+    print("[DEBUG] mixture_mag  shape (F,T):", mixture_mag.shape)
 
     # Ajustar canales a lo que espera el modelo
+    """
     expected_C = config.config['MODEL_NUM_CHANNELS']  # p.ej. 1
     if mixture_mag.shape[2] != expected_C:
         print(f"[WARN] canales de audio={mixture_mag.shape[2]} y el modelo espera {expected_C}. "
@@ -59,14 +68,22 @@ def deploy(output_dir=None, audio_path=None):
     mix_mag_t = torch.from_numpy(mixture_mag).float()   # (F, T, C)
     mix_mag_t = mix_mag_t.permute(1, 0, 2).contiguous() # (T, F, C)
     mix_mag_t = mix_mag_t.unsqueeze(0).to(config.config['DEVICE'])  # (1, T, F, C)
-
+    
     # Comprobaciones
     B, T, F, C = mix_mag_t.shape
+    """
+    mix_mag_t = torch.from_numpy(mixture_mag).float()  # (F, T)
+    mix_mag_t = mix_mag_t.unsqueeze(0)
+    mix_mag_t = mix_mag_t.permute(0,1,2)                # (T, F)
+                     # (B, T, F)
+    mix_mag_t = mix_mag_t.to(device)
+
     nf = config.config['STFT_WINDOW_LENGTH'] // 2 + 1
+    """"
     print(f"[DEBUG] mix_mag_t shape (B,T,F,C): {(B,T,F,C)} ; nf esperado={nf} ; C esperado={expected_C}")
     assert F == nf, f"Los bins de frecuencia F={F} no coinciden con nf={nf}"
     assert C == expected_C, f"Los canales C={C} no coinciden con el modelo C={expected_C}"
-
+    """
     batch = {'mix_magnitude': mix_mag_t.contiguous().clone()}
 
     # 4) Ejecuta inferencia

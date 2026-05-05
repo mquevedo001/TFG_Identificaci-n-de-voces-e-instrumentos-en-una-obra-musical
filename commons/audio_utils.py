@@ -100,64 +100,197 @@ def reconstruct_waveforms_from_mag_phase(magnitude, mixture_phase):
     waveforms = torch.stack(waveforms, dim=0)  # [B, S, C, N]
     return waveforms
 
+# -----------------------------
+# CHECKPOINT SELECTION
+# -----------------------------
+
 def extract_val_loss(file):
     match = re.search(r'val_loss=([-+]?\d*\.\d+|\d+)', file)
     if match:
         return float(match.group(1))
-    else:
-        return float('inf')
+    return float('inf')
+
+
 def load_best_model(stems_folder_model_path):
+    checkpoint_names = [f for f in os.listdir(stems_folder_model_path)]
+    return min(checkpoint_names, key=extract_val_loss)
 
-    checkpoint_names = []
-    for f in os.listdir(stems_folder_model_path):
-        checkpoint_names.append(f)
 
-    return min(checkpoint_names,key=extract_val_loss)
+# -----------------------------
+# DEBUG HELPERS
+# -----------------------------
 
-def load_model(loss_fn,num_sources):
-    
+def print_checkpoint_keys(checkpoint):
+    print("\n[CHECKPOINT KEYS]")
+    if isinstance(checkpoint, dict):
+        for k in checkpoint.keys():
+            print(k)
+    else:
+        print("Checkpoint no es dict:", type(checkpoint))
+
+
+def get_state_dict_from_checkpoint(checkpoint):
+    """
+    Soporta:
+    - {"model": state_dict}
+    - {"state_dict": state_dict}
+    - state_dict plano
+    """
+    if isinstance(checkpoint, dict):
+
+        if "model" in checkpoint and isinstance(checkpoint["model"], dict):
+            return checkpoint["model"]
+
+        if "state_dict" in checkpoint:
+            return checkpoint["state_dict"]
+
+        return checkpoint
+
+    raise ValueError("Checkpoint no válido")
+
+
+def infer_arch_from_state_dict(state_dict):
+    """
+    Intenta inferir el hidden_size real del checkpoint inspeccionando las formas de los pesos de la RNN.
+    intenta inferir hidden_size real del checkpoint
+    """
+    for k, v in state_dict.items():
+        if "rnn.weight_ih_l0" in k:
+            hidden = v.shape[0]
+            bidir_factor = 2 if "reverse" in str(state_dict.keys()) else 1
+            print("\n[CHECKPOINT ARCH INFERENCE]")
+            print("RNN hidden_size approx:", hidden // bidir_factor)
+            return hidden // bidir_factor
+    return None
+
+
+def print_model_parameter_norms(model, max_print=5):
+    print("\n[MODEL INIT DEBUG]")
+
+    total_norm = 0
+    count = 0
+
+    for name, param in model.named_parameters():
+        if param.requires_grad:
+            norm = param.data.norm().item()
+            total_norm += norm
+            count += 1
+
+            if count <= max_print:
+                print(f"{name}: norm={norm:.6f}")
+
+    print("AVG PARAM NORM:", total_norm / max(count, 1))
+
+
+def print_load_report(missing, unexpected):
+    print("\n[LOAD REPORT]")
+
+    if missing:
+        print(f"[WARN] Missing keys: {len(missing)}")
+        for k in missing[:10]:
+            print("  -", k)
+
+    if unexpected:
+        print(f"[WARN] Unexpected keys: {len(unexpected)}")
+        for k in unexpected[:10]:
+            print("  -", k)
+
+
+def compare_shapes(model, state_dict):
+    print("\n[SHAPE CHECK]")
+
+    mismatches = 0
+
+    for name, param in model.named_parameters():
+        if name in state_dict:
+            if param.shape != state_dict[name].shape:
+                print(f"[MISMATCH] {name}")
+                print(f"   model:     {param.shape}")
+                print(f"   checkpoint:{state_dict[name].shape}")
+                mismatches += 1
+
+    if mismatches == 0:
+        print("No shape mismatches detected before loading")
+
+
+# -----------------------------
+# MAIN LOAD FUNCTION
+# -----------------------------
+
+def load_model(loss_fn, num_sources):
+
     sys.modules.setdefault("numpy._core", np)
 
     model_path = (
         Path('.') / 'checkpoints' / 'Mis_modelos' /
-        f'{loss_fn} checkpoints' / f'{num_sources}stems' 
+        f'{loss_fn} checkpoints' / f'{num_sources}stems'
     )
 
     best_model_tag = load_best_model(model_path)
-    model_path = f"{model_path}\{best_model_tag}"
+    model_path = model_path / best_model_tag
 
     if not os.path.exists(model_path):
         raise FileNotFoundError(f'No existe la ruta: {model_path}')
-    print(repr(model_path))
+
+    print("\n[MODEL PATH]")
+    print(repr(str(model_path)))
+
+    # -----------------------------
+    # LOAD CHECKPOINT FIRST 
+    # -----------------------------
+    checkpoint = torch.load(
+        model_path,
+        map_location=config.config['DEVICE'],
+        weights_only=False
+    )
+
+    print_checkpoint_keys(checkpoint)
+
+    state_dict = get_state_dict_from_checkpoint(checkpoint)
+
+    # -----------------------------
+    # ARCH INFERENCE
+    # -----------------------------
+    inferred_hidden = infer_arch_from_state_dict(state_dict)
+
+    if inferred_hidden is not None:
+        hidden_size = inferred_hidden
+    else:
+        hidden_size = config.config['MODEL_HIDDEN_SIZE']
+
     nf = config.config['STFT_WINDOW_LENGTH'] // 2 + 1
 
+    # -----------------------------
+    # MODEL BUILD
+    # -----------------------------
     model = MaskInference.build(
         nf,
         num_audio_channels=config.config['MODEL_NUM_CHANNELS'],
-        hidden_size=config.config['MODEL_HIDDEN_SIZE'],
+        hidden_size=hidden_size,
         num_layers=config.config['MODEL_NUM_LAYERS'],
         bidirectional=config.config['MODEL_BIDIRECTIONAL'],
         dropout=config.config['MODEL_DROPOUT'],
         num_sources=num_sources,
-        activation=config.config['MODEL_ACTIVATION']
+        activation=config.config['MODEL_ACTIVATION'],
     )
-    print(repr(model_path))
-    checkpoint = torch.load(model_path, map_location=config.config['DEVICE'])
 
-    # Extraer el state_dict correcto
-    if isinstance(checkpoint, dict) and 'state_dict' in checkpoint:
-        state_dict = checkpoint['state_dict']
-    else:
-        state_dict = checkpoint  # por si fuese un state_dict plano
+    print("\n[MODEL CONFIG USED]")
+    print("hidden_size:", hidden_size)
+    print("bidirectional:", config.config['MODEL_BIDIRECTIONAL'])
+    print("num_layers:", config.config['MODEL_NUM_LAYERS'])
 
-    # A veces los checkpoints tienen prefijos raros; si hiciera falta, aquí se podrían limpiar:
-    # state_dict = {k.replace('module.', ''): v for k, v in state_dict.items()}
+    # -----------------------------
+    # DEBUG BEFORE LOAD
+    # -----------------------------
+    compare_shapes(model, state_dict)
+    print_model_parameter_norms(model)
 
+    # -----------------------------
+    # LOAD WEIGHTS
+    # -----------------------------
     missing, unexpected = model.load_state_dict(state_dict, strict=False)
-    if missing:
-        print('[WARN] Claves faltantes al cargar:', missing)
-    if unexpected:
-        print('[WARN] Claves inesperadas al cargar:', unexpected)
+
+    print_load_report(missing, unexpected)
 
     model.eval()
     return model
