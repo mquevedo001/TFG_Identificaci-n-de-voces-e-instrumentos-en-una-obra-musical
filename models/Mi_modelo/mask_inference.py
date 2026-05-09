@@ -54,11 +54,6 @@ class MaskInference(nn.Module):
         if data.dim() == 2:
             data = data.unsqueeze(0)
 
-        # Permitimos:
-        #   [B, F, T]
-        #   [B, T, F]
-        #   [B, T, F, 1]
-        #   [B, F, T, 1]
         if data.dim() == 4:
             if data.shape[-1] != 1:
                 raise ValueError(
@@ -69,7 +64,7 @@ class MaskInference(nn.Module):
         if data.dim() != 3:
             raise ValueError(f"MaskInference esperaba tensor 3D o 4D, recibió {data.shape}")
 
-        # Queremos rnn_input en formato [B, T, F]
+        # Queremos formato [B, T, F], como espera RecurrentStack.
         if data.shape[1] == self.num_features:
             # [B, F, T] -> [B, T, F]
             mix_mag_btf = data.permute(0, 2, 1).contiguous()
@@ -82,19 +77,19 @@ class MaskInference(nn.Module):
                 f"num_features esperado={self.num_features}"
             )
 
-        # CLAVE: primero pasa por la RNN.
-        # Para checkpoint bidireccional hidden=50, esto produce [B, T, 100].
-        rnn_output = self.recurrent_stack(mix_mag_btf)
+        # Ruta original de entrenamiento:
+        # magnitud lineal para aplicar la máscara,
+        # representación dB + BatchNorm para alimentar la RNN.
+        x = self.amplitude_to_db(mix_mag_btf)
+        x = self.input_normalization(x)
+        x = x.contiguous()
 
-        # Ahora sí: Embedding espera última dimensión 100.
-        print("mix_mag_btf:", mix_mag_btf.shape)
-        print("rnn_output:", rnn_output.shape)
+        rnn_output = self.recurrent_stack(x)
         mask = self.embedding(rnn_output)
 
         B, T, F = mix_mag_btf.shape
 
         if mask.dim() == 3:
-            # Normalmente: [B, T, F * C * S]
             mask = mask.view(
                 B,
                 T,
@@ -103,7 +98,6 @@ class MaskInference(nn.Module):
                 self.num_sources,
             )
         elif mask.dim() == 4:
-            # Si nussl devuelve [B, T, F, S], añadimos eje C.
             if mask.shape[-1] == self.num_sources:
                 mask = mask.unsqueeze(3)
             else:
@@ -111,18 +105,9 @@ class MaskInference(nn.Module):
         elif mask.dim() != 5:
             raise ValueError(f"Shape inesperada de mask: {mask.shape}")
 
-        # mix_mag_btf: [B, T, F]
-        # mask:        [B, T, F, C, S]
-        mask = mask.view(
-            B,
-            T,
-            self.num_features,
-            self.num_audio_channels,
-            self.num_sources,
-        )
-
-        mask = mask / (mask.sum(dim=-1, keepdim=True) + 1e-8)
-
+        # IMPORTANTE:
+        # No normalizar aquí si estás evaluando checkpoints antiguos.
+        # Esa normalización no estaba durante su entrenamiento.
         mix = mix_mag_btf.unsqueeze(3).unsqueeze(-1)
         estimates = mix * mask
 
@@ -131,18 +116,9 @@ class MaskInference(nn.Module):
         print("max:", mask.max().item())
         print("mean:", mask.mean().item())
         print("std:", mask.std().item())
+
         with torch.no_grad():
-            m = mask.detach()
-
-            if m.dim() == 5:
-                # [B, T, F, C, S] -> [B, T, F, S]
-                m4 = m[:, :, :, 0, :]
-            elif m.dim() == 4:
-                # [B, T, F, S]
-                m4 = m
-            else:
-                raise ValueError(f"mask shape inesperada: {m.shape}")
-
+            m4 = mask[:, :, :, 0, :]
             print("\n[MASK PER SOURCE]")
             for s in range(m4.shape[-1]):
                 ms = m4[..., s]
@@ -163,10 +139,6 @@ class MaskInference(nn.Module):
                 f"max={mask_sum.max().item():.4f}"
             )
 
-            flat = m4.reshape(-1, m4.shape[-1]).float().cpu().numpy()
-            corr = np.corrcoef(flat.T)
-            print("[MASK SOURCE CORR]")
-            print(corr)
         return {
             "mask": mask,
             "estimates": estimates,
