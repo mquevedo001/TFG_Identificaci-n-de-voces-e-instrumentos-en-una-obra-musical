@@ -7,6 +7,7 @@ import os
 from commons.audio_utils import load_model, load_best_model
 from data.test_loader import load_test_dataset
 from commons.inference import run_inference
+from config import config
 
 # ========================
 # CONFIG
@@ -49,7 +50,7 @@ def evaluate_model(model_name, dataset):
     for num_sources in [2, 4]:
 
         print(f"\n--- Sources: {num_sources} ---")
-
+        config.config["MODEL_NUM_SOURCES"] = int(num_sources)
         ckpt_dir = CHECKPOINTS_ROOT / "Mis_modelos" / f"{model_name} checkpoints" / f"{num_sources}stems"
         best_ckpt = load_best_model(ckpt_dir)
         ckpt_path = ckpt_dir / best_ckpt

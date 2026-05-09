@@ -112,8 +112,19 @@ def extract_val_loss(file):
 
 
 def load_best_model(stems_folder_model_path):
-    checkpoint_names = [f for f in os.listdir(stems_folder_model_path)]
-    return min(checkpoint_names, key=extract_val_loss)
+    checkpoint_names = [
+        f for f in os.listdir(stems_folder_model_path)
+        if f.endswith(".pt")
+    ]
+
+    if not checkpoint_names:
+        raise FileNotFoundError(
+            f"No hay checkpoints .pt en {stems_folder_model_path}"
+        )
+
+    # En train.py se guarda score_function = -val_loss.
+    # Por tanto, el mejor checkpoint es el de mayor score,
+    return max(checkpoint_names, key=extract_val_loss)
 
 
 # -----------------------------
@@ -151,17 +162,70 @@ def get_state_dict_from_checkpoint(checkpoint):
 
 def infer_arch_from_state_dict(state_dict):
     """
-    Intenta inferir el hidden_size real del checkpoint inspeccionando las formas de los pesos de la RNN.
-    intenta inferir hidden_size real del checkpoint
+    Infiere arquitectura real desde los pesos guardados.
+
+    Para LSTM:
+      weight_ih_l0: [4 * hidden_size, input_size]
+      weight_hh_l0: [4 * hidden_size, hidden_size]
+
+    La forma más fiable de sacar hidden_size es weight_hh_l0.shape[1].
     """
-    for k, v in state_dict.items():
-        if "rnn.weight_ih_l0" in k:
-            hidden = v.shape[0]
-            bidir_factor = 2 if "reverse" in str(state_dict.keys()) else 1
-            print("\n[CHECKPOINT ARCH INFERENCE]")
-            print("RNN hidden_size approx:", hidden // bidir_factor)
-            return hidden // bidir_factor
-    return None
+
+    weight_ih_key = None
+    weight_hh_key = None
+
+    for k in state_dict.keys():
+        if "recurrent_stack.rnn.weight_ih_l0" in k and "reverse" not in k:
+            weight_ih_key = k
+        if "recurrent_stack.rnn.weight_hh_l0" in k and "reverse" not in k:
+            weight_hh_key = k
+
+    if weight_ih_key is None or weight_hh_key is None:
+        raise ValueError(
+            "No se han encontrado pesos RNN l0 en el checkpoint. "
+            "No puedo inferir la arquitectura."
+        )
+
+    input_size = int(state_dict[weight_ih_key].shape[1])
+    hidden_size = int(state_dict[weight_hh_key].shape[1])
+    gate_rows = int(state_dict[weight_ih_key].shape[0])
+    gate_multiplier = gate_rows // hidden_size
+
+    bidirectional = any(
+        "recurrent_stack.rnn.weight_ih_l0_reverse" in k
+        for k in state_dict.keys()
+    )
+
+    layer_ids = []
+    for k in state_dict.keys():
+        match = re.search(r"recurrent_stack\.rnn\.weight_ih_l(\d+)", k)
+        if match:
+            layer_ids.append(int(match.group(1)))
+
+    num_layers = max(layer_ids) + 1 if layer_ids else 1
+
+    num_channels = int(config.config["MODEL_NUM_CHANNELS"])
+    if input_size % num_channels != 0:
+        raise ValueError(
+            f"input_size={input_size} no divisible por num_channels={num_channels}"
+        )
+
+    num_features = input_size // num_channels
+
+    print("\n[CHECKPOINT ARCH INFERENCE]")
+    print("input_size:", input_size)
+    print("num_features:", num_features)
+    print("hidden_size:", hidden_size)
+    print("gate_multiplier:", gate_multiplier)
+    print("bidirectional:", bidirectional)
+    print("num_layers:", num_layers)
+
+    return {
+        "num_features": num_features,
+        "hidden_size": hidden_size,
+        "bidirectional": bidirectional,
+        "num_layers": num_layers,
+    }
 
 
 def print_model_parameter_norms(model, max_print=5):
@@ -254,13 +318,9 @@ def load_model(loss_fn, num_sources):
     # -----------------------------
     inferred_hidden = infer_arch_from_state_dict(state_dict)
 
-    if inferred_hidden is not None:
-        hidden_size = inferred_hidden
-    else:
-        hidden_size = config.config['MODEL_HIDDEN_SIZE']
-
-    nf = config.config['STFT_WINDOW_LENGTH'] // 2 + 1
-
+    hidden_size = inferred_hidden['hidden_size']
+    nf = inferred_hidden['num_features']
+    bidirectional = inferred_hidden['bidirectional']
     # -----------------------------
     # MODEL BUILD
     # -----------------------------
@@ -269,7 +329,7 @@ def load_model(loss_fn, num_sources):
         num_audio_channels=config.config['MODEL_NUM_CHANNELS'],
         hidden_size=hidden_size,
         num_layers=config.config['MODEL_NUM_LAYERS'],
-        bidirectional=config.config['MODEL_BIDIRECTIONAL'],
+        bidirectional=bidirectional,
         dropout=config.config['MODEL_DROPOUT'],
         num_sources=num_sources,
         activation=config.config['MODEL_ACTIVATION'],
@@ -277,7 +337,7 @@ def load_model(loss_fn, num_sources):
 
     print("\n[MODEL CONFIG USED]")
     print("hidden_size:", hidden_size)
-    print("bidirectional:", config.config['MODEL_BIDIRECTIONAL'])
+    print("bidirectional:", bidirectional)
     print("num_layers:", config.config['MODEL_NUM_LAYERS'])
 
     # -----------------------------

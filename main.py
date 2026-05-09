@@ -71,7 +71,7 @@ def main():
                 raise ValueError('Es necesario indicar el numero de fuentes a separar')
 
             config.config['MODEL_LOSS_FUNCTION'] = str(args.lossfn)
-            config.config['MODEL_NUM_SOURCES'] = str(args.numsources)
+            config.config['MODEL_NUM_SOURCES'] = int(args.numsources)
 
             deploy(output_folder,None)
 
@@ -88,7 +88,7 @@ def main():
                 raise ValueError('Es necesario indicar el numero de fuentes a separar')
 
             config.config['MODEL_LOSS_FUNCTION'] = str(args.lossfn)
-            config.config['MODEL_NUM_SOURCES'] = str(args.numsources)
+            config.config['MODEL_NUM_SOURCES'] = int(args.numsources)
 
             deploy(output_folder, args.input)
 
