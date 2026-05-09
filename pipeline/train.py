@@ -60,7 +60,11 @@ def training():
         activation=config.config['MODEL_ACTIVATION'],
     ).to(device)
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=float(config.config['LEARNING_RATE']))
+    optimizer = torch.optim.Adam(
+        model.parameters(),
+        lr=float(config.config["LEARNING_RATE"]),
+        weight_decay=float(config.config.get("WEIGHT_DECAY", 0.0)),
+    )
 
     # AMP
     use_cuda_amp = (device.type == 'cuda')

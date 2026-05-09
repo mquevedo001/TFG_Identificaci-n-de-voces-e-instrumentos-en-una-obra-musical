@@ -1,8 +1,9 @@
 {
     "model": "l1_freq",
     "sources": 4,
-    "si_sdr_mean": -12.797983841970563,
-    "si_sdr_median": -12.691076770424843,
-    "si_sdr_std": 2.809019302331341,
+    "checkpoint": "checkpoints\\Mis_modelos\\l1_freq checkpoints\\4stems\\best_checkpoint_100_val_loss=-0.0005.pt",
+    "si_sdr_mean": -12.327449534088373,
+    "si_sdr_median": -12.28346012532711,
+    "si_sdr_std": 2.323059157012886,
     "num_tracks": 20
 }

@@ -1,8 +1,9 @@
 {
     "model": "lpsa",
     "sources": 4,
-    "si_sdr_mean": -10.909426738508046,
-    "si_sdr_median": -10.821305140852928,
-    "si_sdr_std": 1.9559962650371503,
+    "checkpoint": "checkpoints\\Mis_modelos\\lpsa checkpoints\\4stems\\best_checkpoint_96_val_loss=-1.4411.pt",
+    "si_sdr_mean": -11.029977068305016,
+    "si_sdr_median": -11.002551391720772,
+    "si_sdr_std": 1.7782441455520221,
     "num_tracks": 20
 }

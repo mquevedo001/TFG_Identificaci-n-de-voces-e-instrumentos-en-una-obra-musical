@@ -33,6 +33,12 @@ MODELS = [
   #  "l_mrs",
     "lpsa_phase",
 ]
+MODELS_PROVISIONAL = [
+    "logl1",
+    "l1_freq",
+    "lpsa",
+    "l2_freq",
+]
 
 # ========================
 # HELPERS
@@ -220,5 +226,5 @@ def evaluate_model(model_name, dataset):
 if __name__ == "__main__":
     dataset = load_test_dataset(TEST_DATA_PATH)
 
-    for model_name in MODELS:
+    for model_name in MODELS_PROVISIONAL:
         evaluate_model(model_name, dataset)

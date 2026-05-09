@@ -1,8 +1,9 @@
 {
     "model": "logl1",
     "sources": 2,
-    "si_sdr_mean": -4.385288348188624,
-    "si_sdr_median": -4.196830037981272,
-    "si_sdr_std": 1.4177084001321836,
+    "checkpoint": "checkpoints\\Mis_modelos\\logl1 checkpoints\\2stems\\best_checkpoint_96_val_loss=-22.7278.pt",
+    "si_sdr_mean": -10.593462772667408,
+    "si_sdr_median": -10.421139895915985,
+    "si_sdr_std": 2.3042138715885634,
     "num_tracks": 20
 }
