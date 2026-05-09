@@ -3,8 +3,10 @@ from pyexpat import model
 from nussl.ml.networks.modules import AmplitudeToDB, BatchNorm, RecurrentStack, Embedding
 from sklearn import dummy
 from torch import nn
+import torch
 from config import config
 import nussl
+import numpy as np
 
 class MaskInference(nn.Module):
     def __init__(
@@ -81,7 +83,7 @@ class MaskInference(nn.Module):
             )
 
         # CLAVE: primero pasa por la RNN.
-        # Para tu checkpoint bidireccional hidden=50, esto produce [B, T, 100].
+        # Para checkpoint bidireccional hidden=50, esto produce [B, T, 100].
         rnn_output = self.recurrent_stack(mix_mag_btf)
 
         # Ahora sí: Embedding espera última dimensión 100.
@@ -111,15 +113,60 @@ class MaskInference(nn.Module):
 
         # mix_mag_btf: [B, T, F]
         # mask:        [B, T, F, C, S]
-        mix = mix_mag_btf.unsqueeze(3).unsqueeze(-1)  # [B, T, F, 1, 1]
-        estimates = mix * mask                       # [B, T, F, C, S]
+        mask = mask.view(
+            B,
+            T,
+            self.num_features,
+            self.num_audio_channels,
+            self.num_sources,
+        )
+
+        mask = mask / (mask.sum(dim=-1, keepdim=True) + 1e-8)
+
+        mix = mix_mag_btf.unsqueeze(3).unsqueeze(-1)
+        estimates = mix * mask
 
         print("\n[MASK STATS]")
         print("min:", mask.min().item())
         print("max:", mask.max().item())
         print("mean:", mask.mean().item())
         print("std:", mask.std().item())
+        with torch.no_grad():
+            m = mask.detach()
 
+            if m.dim() == 5:
+                # [B, T, F, C, S] -> [B, T, F, S]
+                m4 = m[:, :, :, 0, :]
+            elif m.dim() == 4:
+                # [B, T, F, S]
+                m4 = m
+            else:
+                raise ValueError(f"mask shape inesperada: {m.shape}")
+
+            print("\n[MASK PER SOURCE]")
+            for s in range(m4.shape[-1]):
+                ms = m4[..., s]
+                print(
+                    f"source {s}: "
+                    f"mean={ms.mean().item():.4f}, "
+                    f"std={ms.std().item():.4f}, "
+                    f"min={ms.min().item():.4f}, "
+                    f"max={ms.max().item():.4f}"
+                )
+
+            mask_sum = m4.sum(dim=-1)
+            print(
+                "[MASK SUM] "
+                f"mean={mask_sum.mean().item():.4f}, "
+                f"std={mask_sum.std().item():.4f}, "
+                f"min={mask_sum.min().item():.4f}, "
+                f"max={mask_sum.max().item():.4f}"
+            )
+
+            flat = m4.reshape(-1, m4.shape[-1]).float().cpu().numpy()
+            corr = np.corrcoef(flat.T)
+            print("[MASK SOURCE CORR]")
+            print(corr)
         return {
             "mask": mask,
             "estimates": estimates,

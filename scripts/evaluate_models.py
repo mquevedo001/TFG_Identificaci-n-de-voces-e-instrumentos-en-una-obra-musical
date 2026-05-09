@@ -30,7 +30,7 @@ MODELS = [
     "log_mag",
     "deep_feature",
     "deep_feature_emd",
-    "l_mrs",
+  #  "l_mrs",
     "lpsa_phase",
 ]
 
@@ -201,6 +201,7 @@ def evaluate_model(model_name, dataset):
         summary = {
             "model": model_name,
             "sources": num_sources,
+            "checkpoint": str(ckpt_path),
             "si_sdr_mean": float(np.mean(sisdr_scores)),
             "si_sdr_median": float(np.median(sisdr_scores)),
             "si_sdr_std": float(np.std(sisdr_scores)),

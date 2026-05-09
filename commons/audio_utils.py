@@ -21,7 +21,28 @@ def align_estimates(estimates):
         est.truncate_samples(min_length)
     return estimates
 
+def print_stem_diagnostics(audio_signal, sources_dict):
+    import numpy as np
 
+    mix = audio_signal.audio_data.squeeze()
+    if mix.ndim == 2:
+        mix = mix.mean(axis=0) if mix.shape[0] < mix.shape[1] else mix.mean(axis=1)
+
+    print("\n[STEM DIAGNOSTICS]")
+    for name, sig in sources_dict.items():
+        y = sig.audio_data.squeeze()
+        if y.ndim == 2:
+            y = y.mean(axis=0) if y.shape[0] < y.shape[1] else y.mean(axis=1)
+
+        n = min(len(mix), len(y))
+        mix_n = mix[:n]
+        y_n = y[:n]
+
+        rms = float(np.sqrt(np.mean(y_n ** 2) + 1e-12))
+        corr = float(np.corrcoef(mix_n, y_n)[0, 1])
+
+        print(f"{name}: rms={rms:.6f}, corr_con_mix={corr:.4f}")
+        
 def build_complex_from_mag_and_phase(magnitude, mixture_phase):
     """
     magnitude:     [B, T, F, C, S]
@@ -349,7 +370,7 @@ def load_model(loss_fn, num_sources):
     # -----------------------------
     # LOAD WEIGHTS
     # -----------------------------
-    missing, unexpected = model.load_state_dict(state_dict, strict=False)
+    missing, unexpected = model.load_state_dict(state_dict, strict=True)
 
     print_load_report(missing, unexpected)
 
