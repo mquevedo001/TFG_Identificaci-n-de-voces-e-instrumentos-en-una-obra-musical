@@ -1,0 +1,8 @@
+{
+    "model": "l1",
+    "sources": 2,
+    "si_sdr_mean": -5.720103910192847,
+    "si_sdr_median": -5.608687102794647,
+    "si_sdr_std": 1.65227358142443,
+    "num_tracks": 20
+}

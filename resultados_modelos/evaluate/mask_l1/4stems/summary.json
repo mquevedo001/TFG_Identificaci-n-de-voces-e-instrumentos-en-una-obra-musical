@@ -1,0 +1,8 @@
+{
+    "model": "mask_l1",
+    "sources": 4,
+    "si_sdr_mean": -10.947831577504985,
+    "si_sdr_median": -11.137294061481953,
+    "si_sdr_std": 0.9072651023391288,
+    "num_tracks": 20
+}

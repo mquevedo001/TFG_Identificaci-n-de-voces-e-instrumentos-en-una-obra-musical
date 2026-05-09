@@ -52,7 +52,7 @@ class MaskInference(nn.Module):
         if data.dim() == 2:
             data = data.unsqueeze(0)
 
-        # Admitimos:
+        # Permitimos:
         #   [B, F, T]
         #   [B, T, F]
         #   [B, T, F, 1]
@@ -60,30 +60,39 @@ class MaskInference(nn.Module):
         if data.dim() == 4:
             if data.shape[-1] != 1:
                 raise ValueError(
-                    f"Solo está soportado C=1 en inferencia actual. Recibido: {data.shape}"
+                    f"Solo está soportado C=1 en esta inferencia. Recibido: {data.shape}"
                 )
             data = data.squeeze(-1)
 
         if data.dim() != 3:
             raise ValueError(f"MaskInference esperaba tensor 3D o 4D, recibió {data.shape}")
 
+        # Queremos rnn_input en formato [B, T, F]
         if data.shape[1] == self.num_features:
             # [B, F, T] -> [B, T, F]
-            rnn_input = data.permute(0, 2, 1).contiguous()
+            mix_mag_btf = data.permute(0, 2, 1).contiguous()
         elif data.shape[2] == self.num_features:
             # [B, T, F]
-            rnn_input = data.contiguous()
+            mix_mag_btf = data.contiguous()
         else:
             raise ValueError(
                 f"No puedo inferir eje de frecuencia en input {data.shape}. "
                 f"num_features esperado={self.num_features}"
             )
 
-        mask = self.embedding(rnn_input)
+        # CLAVE: primero pasa por la RNN.
+        # Para tu checkpoint bidireccional hidden=50, esto produce [B, T, 100].
+        rnn_output = self.recurrent_stack(mix_mag_btf)
 
-        B, T, F = rnn_input.shape
+        # Ahora sí: Embedding espera última dimensión 100.
+        print("mix_mag_btf:", mix_mag_btf.shape)
+        print("rnn_output:", rnn_output.shape)
+        mask = self.embedding(rnn_output)
+
+        B, T, F = mix_mag_btf.shape
 
         if mask.dim() == 3:
+            # Normalmente: [B, T, F * C * S]
             mask = mask.view(
                 B,
                 T,
@@ -92,13 +101,24 @@ class MaskInference(nn.Module):
                 self.num_sources,
             )
         elif mask.dim() == 4:
-            # [B, T, F, S] -> [B, T, F, 1, S]
-            mask = mask.unsqueeze(3)
+            # Si nussl devuelve [B, T, F, S], añadimos eje C.
+            if mask.shape[-1] == self.num_sources:
+                mask = mask.unsqueeze(3)
+            else:
+                raise ValueError(f"Shape inesperada de mask 4D: {mask.shape}")
         elif mask.dim() != 5:
             raise ValueError(f"Shape inesperada de mask: {mask.shape}")
 
-        mix = rnn_input.unsqueeze(3).unsqueeze(-1)  # [B, T, F, 1, 1]
-        estimates = mix * mask                     # [B, T, F, C, S]
+        # mix_mag_btf: [B, T, F]
+        # mask:        [B, T, F, C, S]
+        mix = mix_mag_btf.unsqueeze(3).unsqueeze(-1)  # [B, T, F, 1, 1]
+        estimates = mix * mask                       # [B, T, F, C, S]
+
+        print("\n[MASK STATS]")
+        print("min:", mask.min().item())
+        print("max:", mask.max().item())
+        print("mean:", mask.mean().item())
+        print("std:", mask.std().item())
 
         return {
             "mask": mask,

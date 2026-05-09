@@ -1,0 +1,8 @@
+{
+    "model": "log_mag",
+    "sources": 4,
+    "si_sdr_mean": -11.413020064122975,
+    "si_sdr_median": -11.304122284054756,
+    "si_sdr_std": 2.1164240267586294,
+    "num_tracks": 20
+}

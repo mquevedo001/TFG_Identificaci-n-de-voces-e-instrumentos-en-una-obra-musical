@@ -37,8 +37,50 @@ MODELS = [
 # ========================
 # HELPERS
 # ========================
+def ensure_mono_2d(signal):
+    """
+    Fuerza AudioSignal a mono con shape (1, n_samples).
+    Esto evita errores de BSSEvalScale por mismatch mono/stereo.
+    """
+    if signal.audio_data is None:
+        return signal
+
+    if signal.audio_data.ndim == 1:
+        signal.audio_data = signal.audio_data[np.newaxis, :]
+
+    if signal.audio_data.shape[0] != 1:
+        signal.to_mono(overwrite=True, keep_dims=True)
+
+    if signal.audio_data.ndim == 1:
+        signal.audio_data = signal.audio_data[np.newaxis, :]
+
+    # Evita que queden STFTs antiguas incoherentes con audio_data.
+    signal.stft_data = None
+    signal.istft_data = None
+
+    return signal
+
+
 def load_audio(path):
-    return nussl.AudioSignal(str(path))
+    signal = nussl.AudioSignal(str(path))
+    return ensure_mono_2d(signal)
+
+
+def crop_all_to_same_length(signals):
+    """
+    BSSEval necesita referencias y estimaciones alineadas en longitud.
+    Recortamos todas al mínimo común.
+    """
+    min_len = min(sig.audio_data.shape[-1] for sig in signals)
+
+    for sig in signals:
+        if sig.audio_data.ndim == 1:
+            sig.audio_data = sig.audio_data[np.newaxis, :]
+        sig.audio_data = sig.audio_data[:, :min_len]
+        sig.stft_data = None
+        sig.istft_data = None
+
+    return min_len
 
 # ========================
 # MAIN EVAL
@@ -98,8 +140,26 @@ def evaluate_model(model_name, dataset):
                 sources_dict = sources
 
             # ========================
-            # EVALUACIÓN
+            # EVALUACIÓN, NORMALIZAR CANALES Y LONGITUD
             # ========================
+
+            for key in sources_dict:
+                sources_dict[key] = ensure_mono_2d(sources_dict[key])
+
+            for key in estimates_dict:
+                estimates_dict[key] = ensure_mono_2d(estimates_dict[key])
+
+            common_len = crop_all_to_same_length(
+            list(sources_dict.values()) + list(estimates_dict.values())
+            )
+
+            print("[EVAL SHAPES]")
+            for k, v in sources_dict.items():
+                print("REF", k, v.audio_data.shape)
+            for k, v in estimates_dict.items():
+                print("EST", k, v.audio_data.shape)
+            print("common_len:", common_len)
+            
             evaluator = nussl.evaluation.BSSEvalScale(
                 list(sources_dict.values()),
                 list(estimates_dict.values()),
@@ -118,9 +178,21 @@ def evaluate_model(model_name, dataset):
             # ========================
             # MÉTRICAS
             # ========================
-            track_sisdr = np.mean([
-                v["SI-SDR"] for v in scores.values()
-            ])
+            sisdr_values = []
+
+            for source_name, source_scores in scores.items():
+                if source_name in ["combination", "permutation"]:
+                    continue
+
+                if isinstance(source_scores, dict) and "SI-SDR" in source_scores:
+                    sisdr = source_scores["SI-SDR"]
+
+                    if isinstance(sisdr, list):
+                        sisdr_values.extend([float(x) for x in sisdr])
+                    else:
+                        sisdr_values.append(float(sisdr))
+
+            track_sisdr = np.mean(sisdr_values)
             sisdr_scores.append(track_sisdr)
 
         # ========================

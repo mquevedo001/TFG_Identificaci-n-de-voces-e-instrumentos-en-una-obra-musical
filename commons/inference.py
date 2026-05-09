@@ -49,15 +49,29 @@ def run_inference(model, mixture_signal, num_sources):
     est = est.permute(1, 0, 2).contiguous().cpu().numpy()  # [F, T, S]
 
     estimates = []
+
     for s in range(int(num_sources)):
-        mag = est[:, :, s]
-        complex_stft = mag * np.exp(1j * mix_phase)
+        mag = est[:, :, s]  # [F, T]
+
+        complex_stft = mag * np.exp(1j * mix_phase)  # [F, T]
+
+        complex_stft = complex_stft[:, :, np.newaxis]  # [F, T, 1]
 
         audio = nussl.AudioSignal(
-            stft_data=complex_stft,
+            stft=complex_stft,
             sample_rate=mixture_signal.sample_rate,
         )
+
+        audio.stft_params = stft_params
+
         audio.istft()
+
+        if mixture_signal.audio_data is not None and audio.audio_data is not None:
+            target_len = mixture_signal.audio_data.shape[-1]
+            audio.audio_data = audio.audio_data[..., :target_len]
+
         estimates.append(audio)
+
+
 
     return estimates

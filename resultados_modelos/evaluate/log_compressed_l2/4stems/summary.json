@@ -1,0 +1,8 @@
+{
+    "model": "log_compressed_l2",
+    "sources": 4,
+    "si_sdr_mean": -10.588835507631302,
+    "si_sdr_median": -10.584718585014343,
+    "si_sdr_std": 1.8553446817954937,
+    "num_tracks": 20
+}

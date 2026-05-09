@@ -1,0 +1,8 @@
+{
+    "model": "deep_feature_emd",
+    "sources": 4,
+    "si_sdr_mean": -5.4376432489953,
+    "si_sdr_median": -5.410343264229596,
+    "si_sdr_std": 0.43556685218619406,
+    "num_tracks": 20
+}

@@ -1,0 +1,8 @@
+{
+    "model": "lpsa",
+    "sources": 2,
+    "si_sdr_mean": -4.685763711575419,
+    "si_sdr_median": -4.586332477629185,
+    "si_sdr_std": 1.0624073631356434,
+    "num_tracks": 20
+}
