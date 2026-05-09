@@ -162,7 +162,7 @@ def save_sources(estimates, audio_signal, output_dir,audio_name=None):
 
     elif num_sources == 4:
         # Orden por convención MUSDB: vocals, drums, bass, other
-        stem_names = ['vocals', 'drums', 'bass', 'other']
+        stem_names = ['vocals', 'bass', 'drums', 'other']
         stems_dir = output_dir / 'stems'
         stems_dir.mkdir(parents=True, exist_ok=True)
 
