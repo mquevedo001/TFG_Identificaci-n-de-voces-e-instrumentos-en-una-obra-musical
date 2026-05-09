@@ -241,8 +241,9 @@ def load_model(loss_fn, num_sources):
     checkpoint = torch.load(
         model_path,
         map_location=config.config['DEVICE'],
-        weights_only=False
+        weights_only=True
     )
+    
 
     print_checkpoint_keys(checkpoint)
 
