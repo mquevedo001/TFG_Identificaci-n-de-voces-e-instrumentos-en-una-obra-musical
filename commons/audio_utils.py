@@ -7,7 +7,7 @@ import torch
 import os
 import re
 from models.Mi_modelo.mask_inference import MaskInference
-
+from commons.experiment_utils import resolve_checkpoint_dir
 
 def spectral_convergence(y_hat, y, eps=1e-8):
     num = torch.norm(torch.abs(y_hat) - torch.abs(y), p='fro')
@@ -42,7 +42,7 @@ def print_stem_diagnostics(audio_signal, sources_dict):
         corr = float(np.corrcoef(mix_n, y_n)[0, 1])
 
         print(f"{name}: rms={rms:.6f}, corr_con_mix={corr:.4f}")
-        
+
 def build_complex_from_mag_and_phase(magnitude, mixture_phase):
     """
     magnitude:     [B, T, F, C, S]
@@ -306,10 +306,7 @@ def load_model(loss_fn, num_sources):
 
     sys.modules.setdefault("numpy._core", np)
 
-    model_path = (
-        Path('.') / 'checkpoints' / 'Mis_modelos' /
-        f'{loss_fn} checkpoints' / f'{num_sources}stems'
-    )
+    model_path = resolve_checkpoint_dir(loss_fn, num_sources)
 
     best_model_tag = load_best_model(model_path)
     model_path = model_path / best_model_tag

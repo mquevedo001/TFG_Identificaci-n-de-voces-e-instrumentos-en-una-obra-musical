@@ -1,6 +1,7 @@
 # train.py
 import math
 from pathlib import Path
+from pyexpat import model
 
 import torch
 import nussl
@@ -16,6 +17,13 @@ from ignite.handlers import EarlyStopping
 from ignite.engine import Events
 from ignite.metrics import Average
 
+from commons.experiment_utils import (
+    checkpoint_dir,
+    get_loss_group,
+    training_config_snapshot,
+    save_json,
+)
+
 # ============================================================
 # =====================  NUEVO  ==============================
 # ============================================================
@@ -23,7 +31,90 @@ from ignite.metrics import Average
 from ignite.handlers import Checkpoint, DiskSaver, global_step_from_engine
 # ============================================================
 
+# ============================
+# HELPERS
+# ============================
+def choose_batch_settings(loss_type, num_stems):
+    loss_type = str(loss_type).lower()
+    group = get_loss_group(loss_type)
 
+    if group == "experimental":
+        actual_batch_size = int(config.config.get("BATCH_SIZE_EXPERIMENTAL", 4))
+        effective_batch_size = int(config.config.get("EFFECTIVE_BATCH_SIZE_EXPERIMENTAL", 32))
+    else:
+        if int(num_stems) == 4:
+            actual_batch_size = int(config.config.get("BATCH_SIZE_4STEMS_MAIN", 24))
+        else:
+            actual_batch_size = int(config.config.get("BATCH_SIZE_2STEMS_MAIN", 32))
+
+        effective_batch_size = int(config.config.get("EFFECTIVE_BATCH_SIZE_MAIN", 96))
+
+    accumulation_steps = math.ceil(effective_batch_size / actual_batch_size)
+
+    return actual_batch_size, accumulation_steps, effective_batch_size
+
+
+def get_mix_magnitude_btf(batch, targets):
+    """
+    Devuelve mix_magnitude en formato [B, T, F].
+    targets esperado: [B, T, F, C, S]
+    """
+    mix = batch.get("mix_magnitude", None)
+
+    if mix is None:
+        mix = batch.get("mixture_magnitude", None)
+
+    if mix is None:
+        raise ValueError("No encuentro 'mix_magnitude' ni 'mixture_magnitude' en el batch.")
+
+    if mix.dim() == 4 and mix.shape[-1] == 1:
+        mix = mix.squeeze(-1)
+
+    if mix.dim() != 3:
+        raise ValueError(f"mix_magnitude debería ser 3D, recibido {mix.shape}")
+
+    target_f = targets.shape[2]
+
+    if mix.shape[1] == target_f:
+        # [B, F, T] -> [B, T, F]
+        mix = mix.permute(0, 2, 1).contiguous()
+    elif mix.shape[2] == target_f:
+        # [B, T, F]
+        mix = mix.contiguous()
+    else:
+        raise ValueError(
+            f"No puedo alinear mix_magnitude={mix.shape} con targets={targets.shape}"
+        )
+
+    return mix
+
+
+def ideal_amplitude_mask_loss(pred_mask, batch, targets, eps=1e-8):
+    """
+    pred_mask: [B, T, F, C, S]
+    targets:   [B, T, F, C, S]
+    """
+    mix_btf = get_mix_magnitude_btf(batch, targets)
+    mix = mix_btf.unsqueeze(3).unsqueeze(-1)
+
+    ideal_mask = targets / (mix + eps)
+    ideal_mask = torch.clamp(ideal_mask, 0.0, 1.0)
+
+    return torch.mean(torch.abs(pred_mask - ideal_mask))
+
+
+def compute_training_loss(loss_type, output, batch, kwargs):
+    estimates = output["estimates"]
+    targets = batch["source_magnitudes"]
+
+    if str(loss_type).lower() == "mask_l1":
+        return ideal_amplitude_mask_loss(output["mask"], batch, targets)
+
+    loss_fn = get_loss_fn(loss_type, kwargs)
+    return loss_fn(estimates, targets)
+# ============================
+# TRAINING
+# ============================
 def training():
     # ----------------------------
     # Config / device
@@ -73,22 +164,15 @@ def training():
     # ----------------------------
     # Effective batch size via GA
     # ----------------------------
-    effective_batch_size = 100
-
-    # Para 3060Ti + STFT512:
-    # - 2 stems: suele aguantar 32
-    # - 4 stems: a veces 16-24 es más seguro
-    actual_batch_size = int(config.config.get('BATCH_SIZE', 32))
-    if num_stems == 4:
-        actual_batch_size = min(actual_batch_size, 24)
-
-    accumulation_steps = math.ceil(effective_batch_size / actual_batch_size)
-    effective_batch_real = accumulation_steps * actual_batch_size
+    actual_batch_size, accumulation_steps, effective_batch_size = choose_batch_settings(
+        loss_fn_name,
+        num_stems,
+    )
 
     print(
-        f"GA: actual_batch={actual_batch_size} | accum_steps={accumulation_steps} "
-        f"| effective_batch_real={effective_batch_real}",
-        flush=True
+        f"Batch settings: actual_batch={actual_batch_size} | "
+        f"accum_steps={accumulation_steps} | effective_batch={effective_batch_size}",
+        flush=True,
     )
 
     # ----------------------------
@@ -190,16 +274,20 @@ def training():
                 print(f"Estimates stats - mean: {em:.4f}, std: {es:.4f}", flush=True)
                 print("est shape:", estimates.shape, flush=True)
                 print("tgt shape:", targets.shape, flush=True)
-            loss_fn = get_loss_fn(loss_type, kwargs)
-
-            # ---- Correct GA scaling:
-            loss = loss_fn(estimates, targets) / accumulation_steps
+        loss = compute_training_loss(loss_type, output, batch, kwargs) / accumulation_steps
 
         # backward
         scaler.scale(loss).backward()
 
         micro_in_accum += 1
         if (micro_in_accum % accumulation_steps) == 0:
+            scaler.unscale_(optimizer)
+
+            torch.nn.utils.clip_grad_norm_(
+                model.parameters(),
+                float(config.config.get("GRADIENT_CLIP", 1.0)),
+            )
+
             scaler.step(optimizer)
             scaler.update()
             optimizer.zero_grad(set_to_none=True)
@@ -230,8 +318,7 @@ def training():
             output = model(batch)
             estimates = output['estimates']
             targets = batch['source_magnitudes']
-            loss_fn = get_loss_fn(loss_type, kwargs)
-            loss = loss_fn(estimates, targets)
+            loss = compute_training_loss(loss_type, output, batch, kwargs)
 
         return {'loss': loss.item()}
 
@@ -245,8 +332,11 @@ def training():
     # ----------------------------
     # Output / checkpoints folder
     # ----------------------------
-    output_folder = Path('.') / 'checkpoints' / 'Mis_modelos' / f'{loss_fn_name} checkpoints' / f'{num_stems}stems'
+    output_folder = checkpoint_dir(loss_fn_name, num_stems)
     output_folder.mkdir(parents=True, exist_ok=True)
+
+    snapshot = training_config_snapshot(loss_fn_name, num_stems)
+    save_json(output_folder / "training_config.json", snapshot)
 
     nussl.ml.train.add_stdout_handler(trainer, validator)
 
@@ -319,8 +409,17 @@ def training():
 
         # Flush pending grads if epoch ended mid-window
         if micro_in_accum != 0:
+            scaler.unscale_(optimizer)
+
+            torch.nn.utils.clip_grad_norm_(
+                model.parameters(),
+                float(config.config.get("GRADIENT_CLIP", 1.0)),
+            )
+
             scaler.step(optimizer)
             scaler.update()
+
+
             optimizer.zero_grad(set_to_none=True)
             micro_in_accum = 0
 

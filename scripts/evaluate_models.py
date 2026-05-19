@@ -9,6 +9,15 @@ from data.test_loader import load_test_dataset
 from commons.inference import run_inference
 from config import config
 
+from commons.experiment_utils import (
+    MAIN_LOSSES,
+    EXPERIMENTAL_LOSSES,
+    resolve_checkpoint_dir,
+    eval_results_dir,
+    training_config_snapshot,
+)
+
+
 # ========================
 # CONFIG
 # ========================
@@ -39,6 +48,8 @@ MODELS_PROVISIONAL = [
     "lpsa",
     "l2_freq",
 ]
+
+MODELS_V2 = MAIN_LOSSES + EXPERIMENTAL_LOSSES
 
 # ========================
 # HELPERS
@@ -99,7 +110,7 @@ def evaluate_model(model_name, dataset):
 
         print(f"\n--- Sources: {num_sources} ---")
         config.config["MODEL_NUM_SOURCES"] = int(num_sources)
-        ckpt_dir = CHECKPOINTS_ROOT / "Mis_modelos" / f"{model_name} checkpoints" / f"{num_sources}stems"
+        ckpt_dir = resolve_checkpoint_dir(model_name, num_sources)
         best_ckpt = load_best_model(ckpt_dir)
         ckpt_path = ckpt_dir / best_ckpt
 
@@ -107,7 +118,7 @@ def evaluate_model(model_name, dataset):
 
         model = load_model(model_name, num_sources)
 
-        model_results_dir = RESULTS_ROOT/'evaluate'/ model_name / f"{num_sources}stems"
+        model_results_dir = eval_results_dir(model_name, num_sources)
         model_results_dir.mkdir(parents=True, exist_ok=True)
 
         sisdr_scores = []
@@ -204,14 +215,22 @@ def evaluate_model(model_name, dataset):
         # ========================
         # SUMMARY POR MODELO
         # ========================
+        baseline_4 = -4.555995227769017
+        baseline_2 = -0.03977375663816929
+        baseline = baseline_2 if int(num_sources) == 2 else baseline_4
+
         summary = {
             "model": model_name,
-            "sources": num_sources,
+            "version": config.config.get("TRAIN_VERSION", "v2"),
+            "sources": int(num_sources),
             "checkpoint": str(ckpt_path),
             "si_sdr_mean": float(np.mean(sisdr_scores)),
             "si_sdr_median": float(np.median(sisdr_scores)),
             "si_sdr_std": float(np.std(sisdr_scores)),
             "num_tracks": len(sisdr_scores),
+            "baseline_mixture_si_sdr": float(baseline),
+            "beats_mixture_baseline": bool(float(np.mean(sisdr_scores)) > baseline),
+            "config": training_config_snapshot(model_name, num_sources),
         }
 
         with open(model_results_dir / "summary.json", "w") as f:
@@ -226,5 +245,5 @@ def evaluate_model(model_name, dataset):
 if __name__ == "__main__":
     dataset = load_test_dataset(TEST_DATA_PATH)
 
-    for model_name in MODELS_PROVISIONAL:
+    for model_name in MODELS_V2:
         evaluate_model(model_name, dataset)

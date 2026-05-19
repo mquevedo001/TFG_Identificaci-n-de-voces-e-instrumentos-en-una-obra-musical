@@ -90,3 +90,36 @@ for est_name in names:
         row.append(corr)
 
     print(f"{est_name:>12} " + " ".join(f"{v:10.4f}" for v in row))
+
+from itertools import permutations
+
+corr_matrix = np.zeros((len(names), len(names)))
+
+for i, est_name in enumerate(names):
+    for j, ref_name in enumerate(names):
+        n = min(len(ests[est_name]), len(refs[ref_name]))
+        a = ests[est_name][:n]
+        b = refs[ref_name][:n]
+
+        if np.std(a) < 1e-8 or np.std(b) < 1e-8:
+            corr = np.nan
+        else:
+            corr = np.corrcoef(a, b)[0, 1]
+
+        corr_matrix[i, j] = corr
+
+best_perm = None
+best_score = -np.inf
+
+for perm in permutations(range(len(names))):
+    score = sum(corr_matrix[i, perm[i]] for i in range(len(names)))
+    if score > best_score:
+        best_score = score
+        best_perm = perm
+
+print("\n[BEST ASSIGNMENT]")
+for i, j in enumerate(best_perm):
+    print(f"estimate {names[i]} -> reference {names[j]} corr={corr_matrix[i, j]:.4f}")
+
+print("best_total_corr:", best_score)
+print("default_total_corr:", sum(corr_matrix[i, i] for i in range(len(names))))

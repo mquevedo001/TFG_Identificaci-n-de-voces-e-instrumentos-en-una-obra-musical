@@ -1,0 +1,64 @@
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+Usando dispositivo: cuda
+Using device: cuda | nf=257 | channels=1 | hidden=50 | stems=2 | loss=deep_feature
+Batch settings: actual_batch=4 | accum_steps=8 | effective_batch=32
+05/16/2026 08:56:03 AM | engine.py:906 Engine run starting with max_epochs=100.
+Training model with training mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_train
+Validating data with validation mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_valid
+[DEBUG] Num de sources: 2
+[DEBUG]Pipeline de 2 fuentes
+0.061486244201660156 GB allocated
+0.08203125 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+Batch keys: dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+mixture_phase shape: torch.Size([4, 257, 1723])
+source_phase shape: torch.Size([4, 257, 2, 1723])
+source_magnitudes shape: torch.Size([4, 1724, 257, 1, 2])
+Estimates stats - mean: 0.0010, std: 0.0045
+est shape: torch.Size([4, 1724, 257, 1, 2])
+tgt shape: torch.Size([4, 1724, 257, 1, 2])
+05/16/2026 08:56:04 AM | engine.py:1149 Current run is terminating due to exception: Input type (float) and bias type (struct c10::Half) should be the same
+05/16/2026 08:56:04 AM | engine.py:1041 Engine run is terminating due to exception: Input type (float) and bias type (struct c10::Half) should be the same
+Traceback (most recent call last):
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\main.py", line 103, in <module>
+    main()
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\main.py", line 42, in main
+    training()
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\train.py", line 441, in training
+    trainer.run(
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 924, in run
+    return self._internal_run()
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 967, in _internal_run
+    return next(self._internal_run_generator)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 1042, in _internal_run_as_gen
+    self._handle_exception(e)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 679, in _handle_exception
+    raise e
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 991, in _internal_run_as_gen
+    epoch_time_taken += yield from self._run_once_on_dataset_as_gen()
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 1150, in _run_once_on_dataset_as_gen
+    self._handle_exception(e)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 679, in _handle_exception
+    raise e
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 1132, in _run_once_on_dataset_as_gen
+    self.state.output = self._process_function(self, self.state.batch)
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\train.py", line 277, in train_step
+    loss = compute_training_loss(loss_type, output, batch, kwargs) / accumulation_steps
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\train.py", line 114, in compute_training_loss
+    return loss_fn(estimates, targets)
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\commons\metrics.py", line 161, in <lambda>
+    return lambda est, tgt: deep_feature_loss(
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\commons\metrics.py", line 373, in deep_feature_loss
+    features_hat = phi.extract_features(Y_hat, layers_to_use)
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\commons\model_utils.py", line 18, in extract_features
+    x = self.relu(self.conv1(x))
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\conv.py", line 554, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\torch\nn\modules\conv.py", line 549, in _conv_forward
+    return F.conv2d(
+RuntimeError: Input type (float) and bias type (struct c10::Half) should be the same

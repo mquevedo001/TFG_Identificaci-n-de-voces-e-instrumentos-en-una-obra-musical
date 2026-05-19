@@ -105,39 +105,37 @@ class MaskInference(nn.Module):
         elif mask.dim() != 5:
             raise ValueError(f"Shape inesperada de mask: {mask.shape}")
 
-        # IMPORTANTE:
-        # No normalizar aquí si estás evaluando checkpoints antiguos.
-        # Esa normalización no estaba durante su entrenamiento.
         mix = mix_mag_btf.unsqueeze(3).unsqueeze(-1)
         estimates = mix * mask
 
-        print("\n[MASK STATS]")
-        print("min:", mask.min().item())
-        print("max:", mask.max().item())
-        print("mean:", mask.mean().item())
-        print("std:", mask.std().item())
+        if bool(config.config.get("DEBUG_MODEL_FORWARD", False)):
+            with torch.no_grad():
+                print("\n[MASK STATS]")
+                print("min:", mask.min().item())
+                print("max:", mask.max().item())
+                print("mean:", mask.mean().item())
+                print("std:", mask.std().item())
 
-        with torch.no_grad():
-            m4 = mask[:, :, :, 0, :]
-            print("\n[MASK PER SOURCE]")
-            for s in range(m4.shape[-1]):
-                ms = m4[..., s]
+                m4 = mask[:, :, :, 0, :]
+                print("\n[MASK PER SOURCE]")
+                for s in range(m4.shape[-1]):
+                    ms = m4[..., s]
+                    print(
+                        f"source {s}: "
+                        f"mean={ms.mean().item():.4f}, "
+                        f"std={ms.std().item():.4f}, "
+                        f"min={ms.min().item():.4f}, "
+                        f"max={ms.max().item():.4f}"
+                    )
+
+                mask_sum = m4.sum(dim=-1)
                 print(
-                    f"source {s}: "
-                    f"mean={ms.mean().item():.4f}, "
-                    f"std={ms.std().item():.4f}, "
-                    f"min={ms.min().item():.4f}, "
-                    f"max={ms.max().item():.4f}"
+                    "[MASK SUM] "
+                    f"mean={mask_sum.mean().item():.4f}, "
+                    f"std={mask_sum.std().item():.4f}, "
+                    f"min={mask_sum.min().item():.4f}, "
+                    f"max={mask_sum.max().item():.4f}"
                 )
-
-            mask_sum = m4.sum(dim=-1)
-            print(
-                "[MASK SUM] "
-                f"mean={mask_sum.mean().item():.4f}, "
-                f"std={mask_sum.std().item():.4f}, "
-                f"min={mask_sum.min().item():.4f}, "
-                f"max={mask_sum.max().item():.4f}"
-            )
 
         return {
             "mask": mask,
