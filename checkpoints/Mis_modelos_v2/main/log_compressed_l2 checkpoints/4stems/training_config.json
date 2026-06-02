@@ -1,0 +1,27 @@
+{
+    "version": "v2",
+    "loss": "log_compressed_l2",
+    "group": "main",
+    "num_sources": 4,
+    "model": {
+        "hidden_size": 50,
+        "num_layers": 1,
+        "bidirectional": true,
+        "dropout": 0.0,
+        "activation": "sigmoid",
+        "num_channels": 1
+    },
+    "stft": {
+        "window_length": 512,
+        "hop_length": 128,
+        "window_type": "sqrt_hann"
+    },
+    "training": {
+        "max_epochs": 100,
+        "epoch_length": 100,
+        "learning_rate": 0.001,
+        "weight_decay": 1e-05,
+        "gradient_clip": 1.0,
+        "early_stopping_patience": 15
+    }
+}

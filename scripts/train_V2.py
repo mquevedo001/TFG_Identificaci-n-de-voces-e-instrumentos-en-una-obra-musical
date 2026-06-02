@@ -5,7 +5,7 @@ from pathlib import Path
 from commons.experiment_utils import MAIN_LOSSES, EXPERIMENTAL_LOSSES, ADVANCED_LOSSES
 
 
-NUM_SOURCES_LIST = [2, 4]
+NUM_SOURCES_LIST = [4]
 
 LOSSES = MAIN_LOSSES + EXPERIMENTAL_LOSSES
 

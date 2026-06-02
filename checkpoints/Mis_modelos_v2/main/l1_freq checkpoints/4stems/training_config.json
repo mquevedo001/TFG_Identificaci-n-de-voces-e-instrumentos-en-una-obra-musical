@@ -9,7 +9,6 @@
         "bidirectional": true,
         "dropout": 0.0,
         "activation": "sigmoid",
-        
         "num_channels": 1
     },
     "stft": {
@@ -18,7 +17,7 @@
         "window_type": "sqrt_hann"
     },
     "training": {
-        "max_epochs": 2,
+        "max_epochs": 100,
         "epoch_length": 100,
         "learning_rate": 0.001,
         "weight_decay": 1e-05,

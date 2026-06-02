@@ -4,15 +4,6 @@ from config import config
 
 
 MAIN_LOSSES = [
-    "l1",
-    "l2",
-    "l1_freq",
-    "l2_freq",
-    "logl1",
-    "logl2",
-    "log_mag",
-    "log_compressed_l2",
-    "lpsa",
     "mask_l1",
 ]
 

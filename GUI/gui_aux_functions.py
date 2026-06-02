@@ -70,12 +70,6 @@ def train_param_selection():
                     key='epochs_length_input')
     st.number_input("Gradient clip", min_value=0.0, value=float(config.config['GRADIENT_CLIP']),
                     format="%.2f", key='gradient_clip_input')
-    st.number_input("Learning Rate Schedule", min_value=10,
-                    value=int(config.config['LEARNING_RATE_SCHEDULE']),
-                    key='learning_rate_schedule_input')
-    st.number_input("Early Stopping Patience", min_value=0,
-                    value=int(config.config['EARLY_STOPPING_PATIENCE']),
-                    key='early_stopping_patience_input')
     st.number_input("Weight decay", min_value=0.0, value=float(config.config['WEIGHT_DECAY']),
                     format="%.6f", key='weight_decay_input')
 
@@ -137,7 +131,7 @@ def save_and_exit_param_selection():
     config.config['MAX_EPOCHS'] = int(st.session_state.get('epochs_input'))
     config.config['EPOCH_LENGTH'] = int(st.session_state.get('epochs_length_input'))
     config.config['GRADIENT_CLIP'] = float(st.session_state.get('gradient_clip_input'))
-    config.config['LEARNING_RATE_SCHEDULE'] = int(st.session_state.get('learning_rate_schedule_input'))
+    #config.config['LEARNING_RATE_SCHEDULE'] = int(st.session_state.get('learning_rate_schedule_input'))
     config.config['EARLY_STOPPING_PATIENCE'] = int(st.session_state.get('early_stopping_patience_input'))
     config.config['WEIGHT_DECAY'] = float(st.session_state.get('weight_decay_input'))
 

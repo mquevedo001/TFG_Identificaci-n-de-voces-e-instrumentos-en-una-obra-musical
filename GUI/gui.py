@@ -1,9 +1,12 @@
 import streamlit as st
+import sys
+sys.path.insert(0,"C:\\Users\\rdpuser\\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical")
 from pathlib import Path
 import tempfile
 import time
 import shutil
-from models.Mi_modelo.mask_inference import MaskInference
+from models.Mi_modelo import mask_inference
+
 from gui_aux_functions import live_console
 import torch
 import librosa.display
