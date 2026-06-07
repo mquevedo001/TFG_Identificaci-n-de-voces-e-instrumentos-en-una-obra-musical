@@ -20,9 +20,10 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # CAMBIO: Se crea y congela una única instancia global del extractor de características.
 # Antes se instanciaba dentro de get_loss_fn() en cada batch, lo que provocaba un consumo
 # enorme e innecesario de memoria en deep_feature y deep_feature_emd.
-feature_extractor = FeatureExtractor().to(device)
-if torch.cuda.is_available():
-    feature_extractor = feature_extractor.half()
+
+#CAMBIO V2: se deja el extrator en float32 porque ahora la pipeline pide estabilidad.
+feature_extractor = FeatureExtractor().to(device).float()
+
 feature_extractor.eval()
 for p in feature_extractor.parameters():
     p.requires_grad = False
@@ -363,54 +364,61 @@ def L_MRS(y_hat, y, fft_sizes=[512, 1024, 2048], hop_sizes=[128, 256, 512], win_
 # CAMBIO: Se evita construir gradientes para el target al extraer features.
 # Antes se calculaban features de estimate y target dentro del grafo, lo que incrementaba memoria sin necesidad.
 def deep_feature_loss(Y_hat, Y, layers_to_use, phi):
-
-    dtype = next(phi.parameters()).dtype
     dev = next(phi.parameters()).device
 
-    Y_hat = Y_hat.to(device=dev, dtype=dtype)
-    Y = Y.to(device=dev, dtype=dtype)
+    Y_hat = Y_hat.to(device=dev, dtype=torch.float32)
+    Y = Y.to(device=dev, dtype=torch.float32)
 
-    features_hat = phi.extract_features(Y_hat, layers_to_use)
-    with torch.no_grad():
-        features = phi.extract_features(Y, layers_to_use)
+    with torch.amp.autocast("cuda", enabled=False):
+        features_hat = phi.extract_features(Y_hat, layers_to_use)
 
-    loss = 0.0
-    for j in layers_to_use:
-        F_hat = features_hat[j]
-        F_true = features[j]
-        loss_j = F.mse_loss(F_hat, F_true, reduction='mean')
-        loss += loss_j
-    return loss / len(layers_to_use)
+        with torch.no_grad():
+            features = phi.extract_features(Y, layers_to_use)
+
+        loss = torch.tensor(0.0, device=dev, dtype=torch.float32)
+
+        for j in layers_to_use:
+            F_hat = features_hat[j]
+            F_true = features[j]
+            loss = loss + F.mse_loss(F_hat, F_true, reduction="mean")
+
+        return loss / len(layers_to_use)
 
 
 def deep_feature_loss_emd(Y_hat, Y, layers_to_use, phi, max_points=256):
-
-    dtype = next(phi.parameters()).dtype
     dev = next(phi.parameters()).device
 
-    Y_hat = Y_hat.to(device=dev, dtype=dtype)
-    Y = Y.to(device=dev, dtype=dtype)
+    Y_hat = Y_hat.to(device=dev, dtype=torch.float32)
+    Y = Y.to(device=dev, dtype=torch.float32)
 
-    features_hat = phi.extract_features(Y_hat, layers_to_use)
-    with torch.no_grad():
-        features = phi.extract_features(Y, layers_to_use)
+    with torch.amp.autocast("cuda", enabled=False):
+        features_hat = phi.extract_features(Y_hat, layers_to_use)
 
-    total_loss = torch.tensor(0.0, device=dev, dtype=dtype)
-    for layer in layers_to_use:
-        F_hat = features_hat[layer]
-        F_true = features[layer]
+        with torch.no_grad():
+            features = phi.extract_features(Y, layers_to_use)
 
-        F_hat_flat = F_hat.reshape(F_hat.size(0), -1)
-        F_true_flat = F_true.reshape(F_true.size(0), -1)
+        total_loss = torch.tensor(0.0, device=dev, dtype=torch.float32)
 
-        batch_loss = torch.tensor(0.0, device=dev, dtype=dtype)
-        for b in range(F_hat_flat.size(0)):
-            loss_b = emd_loss(F_hat_flat[b], F_true_flat[b], max_points=max_points)
-            batch_loss += loss_b
+        for layer in layers_to_use:
+            F_hat = features_hat[layer]
+            F_true = features[layer]
 
-        total_loss += batch_loss / F_hat_flat.size(0)
+            F_hat_flat = F_hat.reshape(F_hat.size(0), -1)
+            F_true_flat = F_true.reshape(F_true.size(0), -1)
 
-    return total_loss / len(layers_to_use)
+            batch_loss = torch.tensor(0.0, device=dev, dtype=torch.float32)
+
+            for b in range(F_hat_flat.size(0)):
+                loss_b = emd_loss(
+                    F_hat_flat[b],
+                    F_true_flat[b],
+                    max_points=max_points,
+                )
+                batch_loss = batch_loss + loss_b
+
+            total_loss = total_loss + batch_loss / F_hat_flat.size(0)
+
+        return total_loss / len(layers_to_use)
 
 
 def run_training_and_capture_logs():

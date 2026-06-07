@@ -32,7 +32,7 @@ MODELS = [
     "l1_freq",
     "logl1",
     "mask_l1",
-    "lpsa",
+#    "lpsa",
     "l1",
     "l2",
     "l2_freq",
@@ -49,7 +49,7 @@ MODELS_PROVISIONAL = [
     "l2_freq",
 ]
 
-MODELS_V2 = MAIN_LOSSES + EXPERIMENTAL_LOSSES
+MODELS_V2 = MODELS 
 
 # ========================
 # HELPERS

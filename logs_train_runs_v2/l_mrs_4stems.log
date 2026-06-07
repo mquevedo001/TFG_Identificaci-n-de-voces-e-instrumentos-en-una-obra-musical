@@ -1,0 +1,365 @@
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+Usando dispositivo: cuda
+Using device: cuda | nf=257 | channels=1 | hidden=50 | stems=4 | loss=l_mrs
+Batch settings: actual_batch=24 | accum_steps=4 | effective_batch=96
+05/30/2026 03:01:57 PM | engine.py:906 Engine run starting with max_epochs=100.
+Training model with training mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_train
+Validating data with validation mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_valid
+[DEBUG] Num de sources: 4
+[DEBUG] Pipeline de 4 fuentes
+0.7929577827453613 GB allocated
+0.8046875 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+Batch keys: dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+mixture_phase shape: torch.Size([32, 257, 1723])
+source_phase shape: torch.Size([32, 4, 257, 1723])
+source_magnitudes shape: torch.Size([32, 1724, 257, 1, 4])
+Estimates stats - mean: 0.0009, std: 0.0037
+est shape: torch.Size([32, 1724, 257, 1, 4])
+tgt shape: torch.Size([32, 1724, 257, 1, 4])
+0.8096809387207031 GB allocated
+8.220703125 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8096809387207031 GB allocated
+8.220703125 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8096809387207031 GB allocated
+8.220703125 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.220703125 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+05/30/2026 03:22:06 PM | engine.py:906 Engine run starting with max_epochs=1.
+05/30/2026 03:22:16 PM | engine.py:1149 Current run is terminating due to exception: Para 'l_mrs' necesitas pasar mixture_phase a get_loss_fn().
+05/30/2026 03:22:16 PM | engine.py:1041 Engine run is terminating due to exception: Para 'l_mrs' necesitas pasar mixture_phase a get_loss_fn().
+05/30/2026 03:22:16 PM | engine.py:1041 Engine run is terminating due to exception: Para 'l_mrs' necesitas pasar mixture_phase a get_loss_fn().
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8105340003967285 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+0.8113870620727539 GB allocated
+8.22265625 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+Traceback (most recent call last):
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\main.py", line 103, in <module>
+    main()
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\main.py", line 42, in main
+    training()
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\train.py", line 441, in training
+    trainer.run(
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 924, in run
+    return self._internal_run()
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 967, in _internal_run
+    return next(self._internal_run_generator)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 1042, in _internal_run_as_gen
+    self._handle_exception(e)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 679, in _handle_exception
+    raise e
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 998, in _internal_run_as_gen
+    self._fire_event(Events.EPOCH_COMPLETED)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 454, in _fire_event
+    func(*first, *(event_args + others), **kwargs)
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\train.py", line 427, in run_validation
+    validator.run(val_dataloader)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 924, in run
+    return self._internal_run()
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 967, in _internal_run
+    return next(self._internal_run_generator)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 1042, in _internal_run_as_gen
+    self._handle_exception(e)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 679, in _handle_exception
+    raise e
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 991, in _internal_run_as_gen
+    epoch_time_taken += yield from self._run_once_on_dataset_as_gen()
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 1150, in _run_once_on_dataset_as_gen
+    self._handle_exception(e)
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 679, in _handle_exception
+    raise e
+  File "C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\engine\engine.py", line 1132, in _run_once_on_dataset_as_gen
+    self.state.output = self._process_function(self, self.state.batch)
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\train.py", line 321, in val_step
+    loss = compute_training_loss(loss_type, output, batch, kwargs)
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\pipeline\train.py", line 113, in compute_training_loss
+    loss_fn = get_loss_fn(loss_type, kwargs)
+  File "C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\commons\metrics.py", line 156, in get_loss_fn
+    raise ValueError("Para 'l_mrs' necesitas pasar mixture_phase a get_loss_fn().")
+ValueError: Para 'l_mrs' necesitas pasar mixture_phase a get_loss_fn().

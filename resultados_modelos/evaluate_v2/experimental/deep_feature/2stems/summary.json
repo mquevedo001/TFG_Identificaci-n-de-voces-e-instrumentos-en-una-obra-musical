@@ -1,0 +1,39 @@
+{
+    "model": "deep_feature",
+    "version": "v2",
+    "sources": 2,
+    "checkpoint": "checkpoints\\Mis_modelos_v2\\experimental\\deep_feature checkpoints\\2stems\\best_checkpoint_20_val_loss=-0.0000.pt",
+    "si_sdr_mean": -0.10921906400471926,
+    "si_sdr_median": -0.10433553718030453,
+    "si_sdr_std": 0.09100230797740778,
+    "num_tracks": 20,
+    "baseline_mixture_si_sdr": -0.03977375663816929,
+    "beats_mixture_baseline": false,
+    "config": {
+        "version": "v2",
+        "loss": "deep_feature",
+        "group": "experimental",
+        "num_sources": 2,
+        "model": {
+            "hidden_size": 50,
+            "num_layers": 1,
+            "bidirectional": true,
+            "dropout": 0.0,
+            "activation": "sigmoid",
+            "num_channels": 1
+        },
+        "stft": {
+            "window_length": 512,
+            "hop_length": 128,
+            "window_type": "sqrt_hann"
+        },
+        "training": {
+            "max_epochs": 100,
+            "epoch_length": 100,
+            "learning_rate": 0.001,
+            "weight_decay": 1e-05,
+            "gradient_clip": 1.0,
+            "early_stopping_patience": 15
+        }
+    }
+}

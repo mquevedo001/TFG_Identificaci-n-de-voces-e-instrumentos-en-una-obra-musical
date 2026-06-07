@@ -16,7 +16,31 @@ ADVANCED_LOSSES = [
     "l_mrs",
     "lpsa_phase",
 ]
+"""
+MAIN_LOSSES = [
+    "l1",
+    "l2",
+    "l1_freq",
+    "l2_freq",
+    "logl1",
+    "logl2",
+    "log_mag",
+    "log_compressed_l2",
+    "lpsa",
+    "mask_l1",
+]
 
+EXPERIMENTAL_LOSSES = [
+    "deep_feature",
+    "deep_feature_emd",
+]
+
+ADVANCED_LOSSES = [
+    "l_mrs",
+    "lpsa_phase",
+]
+
+"""
 
 def get_loss_group(loss_name: str) -> str:
     loss_name = str(loss_name).lower()

@@ -1,0 +1,39 @@
+{
+    "model": "l1_freq",
+    "version": "v2",
+    "sources": 2,
+    "checkpoint": "checkpoints\\Mis_modelos_v2\\main\\l1_freq checkpoints\\2stems\\best_checkpoint_13_val_loss=-0.0006.pt",
+    "si_sdr_mean": -7.175931895151734,
+    "si_sdr_median": -6.9756705313920975,
+    "si_sdr_std": 1.7340499333018433,
+    "num_tracks": 20,
+    "baseline_mixture_si_sdr": -0.03977375663816929,
+    "beats_mixture_baseline": false,
+    "config": {
+        "version": "v2",
+        "loss": "l1_freq",
+        "group": "main",
+        "num_sources": 2,
+        "model": {
+            "hidden_size": 50,
+            "num_layers": 1,
+            "bidirectional": true,
+            "dropout": 0.0,
+            "activation": "sigmoid",
+            "num_channels": 1
+        },
+        "stft": {
+            "window_length": 512,
+            "hop_length": 128,
+            "window_type": "sqrt_hann"
+        },
+        "training": {
+            "max_epochs": 100,
+            "epoch_length": 100,
+            "learning_rate": 0.001,
+            "weight_decay": 1e-05,
+            "gradient_clip": 1.0,
+            "early_stopping_patience": 15
+        }
+    }
+}
