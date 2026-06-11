@@ -1,5 +1,5 @@
 # Identificación y separación de voces e instrumentos
-![Facultad Informática de Gipuzkoa](images_in_readme/Facultad_Informatica_Guipuzkoa_bilingue_negativo_alta.png)
+![Facultad Informática de Gipuzkoa](images_in_readme/Facultad_Informatica_Gipuzkoa_bilingue_negativo_alta.jpg)
 ## 1. Requisitos
 - Python 3.10
 - Conda
