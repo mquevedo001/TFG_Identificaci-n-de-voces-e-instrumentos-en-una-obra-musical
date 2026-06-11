@@ -1,8 +1,14 @@
 {
     "model": "deep_feature",
     "sources": 2,
+    "num_tracks": 20,
     "si_sdr_mean": -4.242724194773473,
     "si_sdr_median": -4.224168211221695,
-    "si_sdr_std": 0.9629521624859326,
-    "num_tracks": 20
+    "si_sdr_std": 0.9629521624859327,
+    "si_sar_mean": 6.87267844658345,
+    "si_sar_median": 6.832028478384018,
+    "si_sar_std": 1.2802199433723958,
+    "baseline_si_sdr_mean": -0.03977375663816929,
+    "baseline_si_sar_mean": 24.31703019142151,
+    "beats_baseline": false
 }

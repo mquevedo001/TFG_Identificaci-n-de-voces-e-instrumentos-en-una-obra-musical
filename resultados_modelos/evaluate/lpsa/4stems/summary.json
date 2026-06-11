@@ -1,9 +1,14 @@
 {
     "model": "lpsa",
     "sources": 4,
-    "checkpoint": "checkpoints\\Mis_modelos\\lpsa checkpoints\\4stems\\best_checkpoint_96_val_loss=-1.4411.pt",
+    "num_tracks": 20,
     "si_sdr_mean": -11.029977068305016,
     "si_sdr_median": -11.002551391720772,
     "si_sdr_std": 1.7782441455520221,
-    "num_tracks": 20
+    "si_sar_mean": -3.1958984196244273,
+    "si_sar_median": -3.0084397830069065,
+    "si_sar_std": 1.3995087880061208,
+    "baseline_si_sdr_mean": -5.393059898167849,
+    "baseline_si_sar_mean": 21.395664662122726,
+    "beats_baseline": false
 }

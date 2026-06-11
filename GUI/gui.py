@@ -232,7 +232,6 @@ class StreamlitConsoleWriter:
         if text and text.strip():
             append_console(text)
 
-            # Evita redibujar demasiadas veces si hay muchos prints.
             now = time.time()
             if self.placeholder is not None and (now - self.last_update) > 0.2:
                 render_console(self.placeholder, height=200)
@@ -356,7 +355,6 @@ def candidate_checkpoint_folders(model_selected: str, loss_name: str, num_source
         ])
 
     else:
-        # Modelo base / self.
         folders.extend([
             CHECKPOINTS_ROOT / "Modelo_base" / f"{loss_name} checkpoints" / f"{num_sources}stems",
             CHECKPOINTS_ROOT / "Modelo_base",
@@ -364,7 +362,6 @@ def candidate_checkpoint_folders(model_selected: str, loss_name: str, num_source
             GUI_DIR / "checkpoints" / "Modelo_base",
         ])
 
-    # Quitar duplicados conservando orden.
     unique = []
     seen = set()
     for folder in folders:
@@ -388,12 +385,8 @@ def list_checkpoints(model_selected: str, loss_name: str, num_sources: int):
             candidates.extend(folder.rglob("*.pt"))
             candidates.extend(folder.rglob("*.pth"))
 
-    # Quitar duplicados.
     candidates = list(dict.fromkeys(candidates))
 
-    # Orden:
-    #   1. Preferir nombres con 'best'.
-    #   2. Preferir modificados recientemente.
     candidates = sorted(
         candidates,
         key=lambda p: (
@@ -464,7 +457,6 @@ def infer_model_arch_from_state_dict(state_dict, default_nf: int, default_num_so
     bidirectional = bool(config.config.get("MODEL_BIDIRECTIONAL", True))
     nf = int(default_nf)
 
-    # Buscar pesos LSTM.
     weight_hh_key = None
     weight_ih_key = None
 
@@ -475,11 +467,9 @@ def infer_model_arch_from_state_dict(state_dict, default_nf: int, default_num_so
             weight_ih_key = key
 
     if weight_hh_key is not None:
-        # En LSTM: weight_hh_l0 tiene forma [4*hidden_size, hidden_size]
         hidden_size = int(state_dict[weight_hh_key].shape[1])
 
     if weight_ih_key is not None:
-        # En LSTM: weight_ih_l0 tiene forma [4*hidden_size, input_size]
         nf = int(state_dict[weight_ih_key].shape[1])
 
     layer_ids = []
@@ -632,7 +622,6 @@ def save_audio_signal(audio_signal, output_path: Path):
     try:
         audio_signal.write_audio_to_file(str(output_path))
     except Exception:
-        # Por si el AudioSignal solo tiene STFT y necesita reconstrucción previa.
         if hasattr(audio_signal, "istft"):
             audio_signal.istft()
             audio_signal.write_audio_to_file(str(output_path))
@@ -652,11 +641,9 @@ def materialize_audio_output(value, source_name: str, output_dir: Path) -> Path:
     """
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Caso 1: ya es una ruta.
     if isinstance(value, (str, Path)):
         return Path(value)
 
-    # Caso 2: nussl.AudioSignal u objeto similar.
     if hasattr(value, "write_audio_to_file"):
         output_path = output_dir / f"{safe_filename(source_name)}.wav"
         return save_audio_signal(value, output_path)
@@ -674,7 +661,6 @@ def normalize_sources_dict(stem_paths, sources_dict, output_dir: Path):
     """
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Caso 1: deploy devuelve diccionario {source: path o AudioSignal}
     if isinstance(sources_dict, dict) and sources_dict:
         normalized = {}
 
@@ -687,7 +673,6 @@ def normalize_sources_dict(stem_paths, sources_dict, output_dir: Path):
 
         return normalized
 
-    # Caso 2: stem_paths es diccionario {source: path o AudioSignal}
     if isinstance(stem_paths, dict) and stem_paths:
         normalized = {}
 
@@ -700,7 +685,6 @@ def normalize_sources_dict(stem_paths, sources_dict, output_dir: Path):
 
         return normalized
 
-    # Caso 3: stem_paths es lista de paths o AudioSignals
     if isinstance(stem_paths, (list, tuple)) and stem_paths:
         names_2 = ["vocals", "accompaniment"]
         names_4 = ["vocals", "bass", "drums", "other"]
@@ -943,7 +927,6 @@ with st.sidebar.expander("Sobre el modelo", expanded=True):
     )
     st.markdown(desc)
 
-# Base de datos.
 if model_selected == "modelo_de_martin":
     database_selection = st.sidebar.selectbox(
         "Bases de datos disponibles",
@@ -958,7 +941,6 @@ else:
         options=["MUSDB18", "Rock DB", "HipHop DB"],
     )
 
-# Loss.
 default_loss_index = 1 if model_selected == "modelo_de_martin" else 0
 loss_fn_selection = st.sidebar.selectbox(
     "Función de pérdida",
@@ -1203,7 +1185,6 @@ with col_console:
 
 st.markdown("---")
 
-# Zona inferior
 col_audio, col_graphs = st.columns([1, 1])
 
 # ============================================================

@@ -39,6 +39,7 @@ def main():
         out_dir.mkdir(parents=True, exist_ok=True)
 
         sisdr_scores = []
+        sisar_scores = []
 
         for i, item in enumerate(dataset):
             mixture = ensure_mono(nussl.AudioSignal(str(item["mixture"])))
@@ -79,16 +80,26 @@ def main():
 
             track_sisdr = np.mean([
                 float(scores[source]["SI-SDR"][0])
-                for source in ["vocals", "accompaniment"]
-                if source in scores
+                for source in sources_dict.keys()
+                if source in scores and "SI-SDR" in scores[source]
+            ])
+
+            track_sisar = np.mean([
+                float(scores[source]["SI-SAR"][0])
+                for source in sources_dict.keys()
+                if source in scores and "SI-SAR" in scores[source]
             ])
             sisdr_scores.append(track_sisdr)
+            sisar_scores.append(track_sisar)
+
 
         summary = {
             "model": "mixture_as_all_sources_baseline",
             "sources": num_sources,
             "si_sdr_mean": float(np.nanmean(sisdr_scores)),
             "si_sdr_median": float(np.nanmedian(sisdr_scores)),
+            "si_sar_mean": float(np.nanmean(sisar_scores)),
+            "si_sar_median": float(np.nanmedian(sisar_scores)),
             "si_sdr_std": float(np.nanstd(sisdr_scores)),
             "num_tracks": len(sisdr_scores),
         }

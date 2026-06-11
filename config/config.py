@@ -5,10 +5,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 config = {
     "TRAIN_VERSION": "v2",                                      # Versión del entrenamiento
 
-    "CHECKPOINTS_ROOT": "checkpoints",                          # Nombre de la carpeta de checkpoints                              
+    "CHECKPOINTS_ROOT": str(PROJECT_ROOT / "checkpoints"),      # Nombre de la carpeta de checkpoints                              
     "CHECKPOINTS_GROUP": "Mis_modelos_v2",                      # Nombre de la carpeta de checkpoints de entrenamiento
 
-    "RESULTS_ROOT": "resultados_modelos",                       # Nombre de la carpeta de resultados
+    "RESULTS_ROOT": str(PROJECT_ROOT / "resultados_modelos"),   # Nombre de la carpeta de resultados
     "RESULTS_EVAL_GROUP": "evaluate_v2",                        # Nombre del grupo de evaluación
 
     "DEVICE": "cuda",                                           # Dispositivo donde se ejecuta el modelo ('cuda' para GPU, 'cpu' para procesador).

@@ -302,7 +302,7 @@ def compare_shapes(model, state_dict):
 # MAIN LOAD FUNCTION
 # -----------------------------
 
-def load_model(loss_fn, num_sources):
+def load_model(loss_fn, num_sources,checkpoint_path):
 
     sys.modules.setdefault("numpy._core", np)
 
@@ -320,11 +320,19 @@ def load_model(loss_fn, num_sources):
     # -----------------------------
     # LOAD CHECKPOINT FIRST 
     # -----------------------------
-    checkpoint = torch.load(
-        model_path,
-        map_location=config.config['DEVICE'],
-        weights_only=True
-    )
+
+    if checkpoint is None:
+        checkpoint = torch.load(
+            model_path,
+            map_location=config.config['DEVICE'],
+            weights_only=True
+        )
+    else:
+        checkpoint = torch.load(
+            checkpoint_path,
+            map_location=config.config['DEVICE'],
+            weights_only=True
+        )
     
 
     print_checkpoint_keys(checkpoint)

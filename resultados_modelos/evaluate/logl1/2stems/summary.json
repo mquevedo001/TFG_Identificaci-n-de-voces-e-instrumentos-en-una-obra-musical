@@ -1,9 +1,14 @@
 {
     "model": "logl1",
     "sources": 2,
-    "checkpoint": "checkpoints\\Mis_modelos\\logl1 checkpoints\\2stems\\best_checkpoint_96_val_loss=-22.7278.pt",
+    "num_tracks": 20,
     "si_sdr_mean": -10.593462772667408,
     "si_sdr_median": -10.421139895915985,
     "si_sdr_std": 2.3042138715885634,
-    "num_tracks": 20
+    "si_sar_mean": -1.6103748102905229,
+    "si_sar_median": -2.079826444387436,
+    "si_sar_std": 1.8944804924350194,
+    "baseline_si_sdr_mean": -0.03977375663816929,
+    "baseline_si_sar_mean": 24.31703019142151,
+    "beats_baseline": false
 }

@@ -1,8 +1,14 @@
 {
     "model": "logl2",
     "sources": 2,
+    "num_tracks": 20,
     "si_sdr_mean": -5.076842968352139,
     "si_sdr_median": -5.002324134111404,
-    "si_sdr_std": 1.6289124275201792,
-    "num_tracks": 20
+    "si_sdr_std": 1.6289124275201794,
+    "si_sar_mean": 8.765036571770906,
+    "si_sar_median": 9.040523320436478,
+    "si_sar_std": 1.2956014022184232,
+    "baseline_si_sdr_mean": -0.03977375663816929,
+    "baseline_si_sar_mean": 24.31703019142151,
+    "beats_baseline": false
 }

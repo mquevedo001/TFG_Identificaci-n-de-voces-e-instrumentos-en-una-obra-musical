@@ -20,10 +20,15 @@ device = torch.device(config.config.get(
 ))
 
 
-def deploy(output_dir=None, audio_path=None):
+def deploy(output_dir=None, audio_path=None,checkpoint_path=None):
     num_sources = config.config['MODEL_NUM_SOURCES']
     loss_fn = config.config['MODEL_LOSS_FUNCTION'].lower()
     audio_name = None
+    
+    if output_dir is None:
+        base_out = Path(config.config["RESULTS_ROOT"]) / "deployment" / loss_fn / f"{num_sources}stems"
+    else:
+        base_out = Path(output_dir)
     # 1) Carga del audio
     if audio_path:
         audio_signal = nussl.AudioSignal(audio_path, stft_params=stft_params)
@@ -32,17 +37,17 @@ def deploy(output_dir=None, audio_path=None):
         test_folder = "~/.nussl/tutorial/test/"
         audio_signal = conseguirAudioDatabase(test_folder, stft_params)
 
-    # 2) Cargar tu modelo (MaskInference.SeparationModel)
+    # 2) Carga de modelo 
     print("\n[DEPLOY MODEL CONFIG]")
     print("hidden_size:", config.config['MODEL_HIDDEN_SIZE'])
     print("bidirectional:", config.config['MODEL_BIDIRECTIONAL'])
     print("num_layers:", config.config['MODEL_NUM_LAYERS'])
     separator = load_model(loss_fn=loss_fn, num_sources=num_sources)
-    # 3) Ejecutar inferencia usando exactamente el mismo pipeline que evaluate_models.py
+    
+    # 3) Ejecutar inferencia 
     estimates = run_inference(separator, audio_signal, num_sources)
 
     # 4) Guardar resultados
-    base_out = Path('.') / 'Results' / 'Separation tests' / loss_fn / f'{num_sources}stems'
     base_out.mkdir(parents=True, exist_ok=True)
 
     stems, sources_dict = save_sources(
@@ -52,7 +57,8 @@ def deploy(output_dir=None, audio_path=None):
         audio_name,
     )
     print_stem_diagnostics(audio_signal, sources_dict)
-    # 5) Guardar gráfica en una ruta válida y no hardcodeada de Linux
+   
+    # 5) Guardar gráfica 
     graphs_dir = base_out / "graphs"
     graphs_dir.mkdir(parents=True, exist_ok=True)
 
