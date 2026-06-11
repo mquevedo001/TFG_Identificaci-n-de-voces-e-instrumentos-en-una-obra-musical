@@ -67,11 +67,15 @@ def get_results_base() -> Path:
 
 
 def checkpoint_dir(loss_name: str, num_sources: int) -> Path:
+    group_root = config.config.get("CHECKPOINTS_GROUP", "Mis_modelos_v2")
+    loss_group = get_loss_group(loss_name)
+
     return (
-        get_checkpoint_base()
-        / get_loss_group(loss_name)
+        Path("checkpoints")
+        / group_root
+        / loss_group
         / f"{loss_name} checkpoints"
-        / f"{int(num_sources)}stems"
+        / f"{num_sources}stems"
     )
 
 

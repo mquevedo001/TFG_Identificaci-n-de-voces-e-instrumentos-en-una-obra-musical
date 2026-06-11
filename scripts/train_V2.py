@@ -1,13 +1,14 @@
 import subprocess
 import sys
 from pathlib import Path
-
+sys.path.insert(0,"C:\\Users\\rdpuser\\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\\")
 from commons.experiment_utils import MAIN_LOSSES, EXPERIMENTAL_LOSSES, ADVANCED_LOSSES
+from config.config import config
 
 
-NUM_SOURCES_LIST = [2]
+NUM_SOURCES_LIST = [4]
 
-LOSSES = EXPERIMENTAL_LOSSES + ADVANCED_LOSSES
+LOSSES = ADVANCED_LOSSES
 
 MAX_EPOCHS = 100
 
@@ -16,6 +17,7 @@ LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def run_training(loss_name, num_sources):
+    config['CHECKPOINTS_GROUP'] = 'Mis_modelos_v2'
     log_file = LOG_DIR / f"{loss_name}_{num_sources}stems.log"
 
     cmd = [

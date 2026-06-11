@@ -3,9 +3,180 @@ import contextlib
 import logging
 import streamlit as st
 from config import config
+from pathlib import Path
+from commons.experiment_utils import MAIN_LOSSES,EXPERIMENTAL_LOSSES,ADVANCED_LOSSES
 
 
+PROJECT_ROOT = Path(
+    r"C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical"
+)
 
+CHECKPOINTS_ROOT = PROJECT_ROOT / "checkpoints" / "Mis_modelos_v2"
+
+# ============================================================
+# UTILIDADES: AYUDA DE PARÁMETROS
+# ============================================================
+
+def get_parameter_help_text() -> str:
+    """
+    Devuelve una explicación resumida de los parámetros configurables
+    desde la interfaz avanzada.
+    """
+    return """PARÁMETROS STFT
+
+STFT_WINDOW_LENGTH:
+Tamaño de la ventana usada en la STFT. Define cuántas muestras de audio se analizan en cada frame temporal. Una ventana mayor ofrece más resolución en frecuencia, pero menor resolución temporal.
+
+STFT_HOP_LENGTH:
+Número de muestras que avanza la ventana entre frames consecutivos. Un hop menor produce más solapamiento entre ventanas y una representación temporal más densa.
+
+STFT_WINDOW_TYPE:
+Tipo de ventana aplicada antes de la transformada de Fourier. En este proyecto se utiliza habitualmente sqrt_hann, que ayuda a reducir discontinuidades entre ventanas.
+
+SAMPLE_RATE:
+Frecuencia de muestreo del audio. Indica cuántas muestras por segundo se utilizan para representar la señal.
+
+
+PARÁMETROS DEL MODELO
+
+MODEL_NUM_SOURCES:
+Número de fuentes o stems que el modelo debe separar. En este trabajo se usan configuraciones de 2 stems y 4 stems.
+
+MODEL_NUM_CHANNELS:
+Número de canales de audio procesados por el modelo. En este proyecto se trabaja normalmente en mono, por lo que el valor habitual es 1.
+
+MODEL_HIDDEN_SIZE:
+Tamaño del estado oculto de la LSTM. Controla la capacidad interna de la red recurrente. Un valor mayor aumenta la capacidad del modelo, pero también el coste computacional.
+
+MODEL_NUM_LAYERS:
+Número de capas recurrentes apiladas en la LSTM. Más capas permiten aprender representaciones más complejas, aunque pueden dificultar el entrenamiento.
+
+MODEL_BIDIRECTIONAL:
+Indica si la LSTM procesa la secuencia en ambas direcciones temporales. Si está activado, el modelo utiliza información de frames anteriores y posteriores.
+
+MODEL_DROPOUT:
+Técnica de regularización que desactiva aleatoriamente parte de las conexiones durante el entrenamiento para reducir sobreajuste.
+
+MODEL_ACTIVATION:
+Función de activación usada en la salida del modelo. En inferencia de máscaras se utiliza habitualmente sigmoid para limitar los valores de máscara al intervalo [0, 1].
+
+
+PARÁMETROS DE ENTRENAMIENTO
+
+MODEL_LOSS_FUNCTION:
+Función de pérdida empleada para comparar la salida del modelo con la referencia. Permite estudiar cómo afectan distintas formulaciones del error al rendimiento de separación.
+
+BATCH_SIZE:
+Número de ejemplos procesados antes de actualizar los pesos del modelo. Un batch mayor puede estabilizar el entrenamiento, pero requiere más memoria.
+
+LEARNING_RATE:
+Tasa de aprendizaje del optimizador. Controla cuánto se modifican los pesos del modelo en cada actualización.
+
+WEIGHT_DECAY:
+Regularización aplicada sobre los pesos del modelo. Ayuda a reducir el sobreajuste penalizando pesos excesivamente grandes.
+
+MAX_EPOCHS:
+Número máximo de épocas de entrenamiento. Una época corresponde a recorrer una vez el conjunto de entrenamiento.
+
+PATIENCE:
+Número de épocas sin mejora antes de detener el entrenamiento de forma temprana mediante early stopping.
+
+GRAD_CLIP:
+Valor máximo usado para recortar gradientes. Ayuda a evitar explosiones de gradiente durante el entrenamiento recurrente.
+
+DEVICE:
+Dispositivo utilizado para entrenar o ejecutar el modelo. Puede ser cpu o cuda, dependiendo de si se dispone de GPU.
+
+
+PARÁMETROS DE GENERACIÓN DE MEZCLAS
+
+MIXTURE_DURATION:
+Duración de los fragmentos de audio usados durante el entrenamiento.
+
+NUM_WORKERS:
+Número de procesos utilizados para cargar datos. Un valor mayor puede acelerar la carga, aunque depende del equipo.
+
+SHUFFLE:
+Indica si los ejemplos de entrenamiento se barajan antes de cada época. Esto ayuda a mejorar la generalización del modelo.
+
+
+PARÁMETROS DE INFERENCIA Y EVALUACIÓN
+
+CHECKPOINT_PATH:
+Ruta del checkpoint que se desea cargar para inferencia o evaluación.
+
+MODEL_PATH:
+Ruta del modelo seleccionado desde la interfaz.
+
+EVALUATION_FRAMES:
+Número de frames o fragmentos utilizados durante la evaluación desde la GUI.
+
+OUTPUT_DIR:
+Carpeta donde se guardan los audios separados, gráficos y logs generados desde la interfaz.
+"""
+
+def get_loss_group_from_name(loss_name: str) -> str:
+    loss_name = loss_name.lower()
+
+    if loss_name in MAIN_LOSSES:
+        return "main"
+
+    if loss_name in EXPERIMENTAL_LOSSES:
+        return "experimental"
+
+    return "advanced"
+
+def get_checkpoint_folder(loss_name: str, num_sources: int) -> Path:
+    """
+    Devuelve la carpeta donde deberían estar los checkpoints
+    para una loss y número de stems concretos.
+    """
+    loss_name = str(loss_name).lower()
+    group = get_loss_group_from_name(loss_name)
+
+    return (
+        CHECKPOINTS_ROOT
+        / group
+        / f"{loss_name} checkpoints"
+        / f"{num_sources}stems"
+    )
+
+
+def list_checkpoints(loss_name: str, num_sources: int):
+    """
+    Busca checkpoints .pt y .pth dentro de la carpeta correspondiente.
+    Usa rglob para encontrar también checkpoints si están en subcarpetas.
+    """
+    checkpoint_folder = get_checkpoint_folder(loss_name, num_sources)
+
+    if not checkpoint_folder.exists():
+        return []
+
+    candidates = []
+    candidates.extend(checkpoint_folder.rglob("*.pt"))
+    candidates.extend(checkpoint_folder.rglob("*.pth"))
+
+    # Ordenar primero los que contienen 'best', luego por fecha reciente
+    candidates = sorted(
+        candidates,
+        key=lambda p: (
+            "best" not in p.name.lower(),
+            -p.stat().st_mtime
+        )
+    )
+
+    return candidates
+
+def get_loss_group_from_name(loss_name: str) -> str:
+    loss_name = loss_name.lower()
+
+    if loss_name in MAIN_LOSSES:
+        return "main"
+
+    if loss_name in EXPERIMENTAL_LOSSES:
+        return "experimental"
+
+   
 class _StreamToWidget(io.StringIO):
     """Un stream que vuelca todo a un placeholder de Streamlit en vivo."""
     def __init__(self, placeholder):

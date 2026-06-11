@@ -112,6 +112,32 @@ def compute_training_loss(loss_type, output, batch, kwargs):
 
     loss_fn = get_loss_fn(loss_type, kwargs)
     return loss_fn(estimates, targets)
+
+def build_loss_kwargs(loss_type, batch):
+    loss_type = str(loss_type).lower()
+    kwargs = {}
+
+    if loss_type == 'lpsa_phase':
+        if 'mixture_phase' not in batch:
+            raise ValueError("El batch no contiene 'mixture_phase'.")
+        if 'source_phase' not in batch:
+            raise ValueError("El batch no contiene 'source_phase'.")
+
+        kwargs['mixture_phase'] = batch['mixture_phase']
+        kwargs['source_phase'] = batch['source_phase']
+
+    if loss_type in ['lmrs', 'l_mrs']:
+        if 'mixture_magnitude' not in batch:
+            raise ValueError("El batch no contiene 'mixture_magnitude'.")
+        kwargs['mix_mag'] = batch['mixture_magnitude']
+
+    if loss_type == 'l_mrs':
+        if 'mixture_phase' not in batch:
+            raise ValueError("El batch no contiene 'mixture_phase'.")
+        kwargs['mixture_phase'] = batch['mixture_phase']
+
+    return kwargs
+    
 # ============================
 # TRAINING
 # ============================
@@ -245,21 +271,7 @@ def training():
             if 'source_magnitudes' in batch:
                 print("source_magnitudes shape:", batch['source_magnitudes'].shape, flush=True)
         # kwargs depende del loss
-        kwargs = {}
-        if loss_type == 'lpsa_phase':
-            if 'mixture_phase' not in batch:
-                raise ValueError("El batch no contiene 'mixture_phase'.")
-            if 'source_phase' not in batch:
-                raise ValueError("El batch no contiene 'source_phase'.")
-            kwargs['mixture_phase'] = batch['mixture_phase']
-            kwargs['source_phase'] = batch['source_phase']
-        if loss_type in ['l_mrs', 'lmrs']:
-            if 'mixture_magnitude' not in batch:
-                raise ValueError("El batch no contiene 'mixture_magnitude'.")
-            kwargs['mix_mag'] = batch['mixture_magnitude']
-
-        if loss_type == 'l_mrs':
-            kwargs['mixture_phase'] = batch['mixture_phase']
+        kwargs = build_loss_kwargs(loss_type, batch)
 
         # forward + loss
         with torch.amp.autocast('cuda', enabled=use_cuda_amp):
@@ -301,18 +313,7 @@ def training():
         model.eval()
         batch = prepare_batch(batch, device=device)
 
-        kwargs = {}
-        if loss_type == 'lpsa_phase':
-            if 'mixture_phase' not in batch:
-                raise ValueError("El batch no contiene 'mixture_phase'.")
-            if 'source_phase' not in batch:
-                raise ValueError("El batch no contiene 'source_phase'.")
-            kwargs['mixture_phase'] = batch['mixture_phase']
-            kwargs['source_phase'] = batch['source_phase']
-        if loss_type in ['l_mrs', 'lmrs']:
-            if 'mixture_magnitude' not in batch:
-                raise ValueError("El batch no contiene 'mixture_magnitude'.")
-            kwargs['mix_mag'] = batch['mixture_magnitude']
+        kwargs = build_loss_kwargs(loss_type, batch)
 
         with torch.no_grad(), torch.amp.autocast('cuda', enabled=use_cuda_amp):
             output = model(batch)

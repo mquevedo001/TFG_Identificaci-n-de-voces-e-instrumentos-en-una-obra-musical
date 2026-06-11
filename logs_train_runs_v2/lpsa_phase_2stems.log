@@ -1,0 +1,17 @@
+C:\Users\rdpuser\miniconda3\envs\tfg_py310\lib\site-packages\ignite\handlers\checkpoint.py:16: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import ZeroRedundancyOptimizer
+Usando dispositivo: cuda
+Using device: cuda | nf=257 | channels=1 | hidden=50 | stems=2 | loss=lpsa_phase
+Batch settings: actual_batch=32 | accum_steps=3 | effective_batch=96
+06/09/2026 08:47:44 PM | engine.py:906 Engine run starting with max_epochs=100.
+Training model with training mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_train
+Validating data with validation mixes in: C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_valid
+[DEBUG] Num de sources: 2
+[DEBUG]Pipeline de 2 fuentes
+0.4759187698364258 GB allocated
+0.48828125 GB reserved
+dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+Batch keys: dict_keys(['index', 'mixture_magnitude', 'mixture_phase', 'source_phase', 'mix_magnitude', 'ideal_binary_mask', 'source_magnitudes'])
+mixture_phase shape: torch.Size([32, 257, 1723])
+source_phase shape: torch.Size([32, 257, 2, 1723])
+source_magnitudes shape: torch.Size([32, 1724, 257, 1, 2])
