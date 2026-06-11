@@ -1,5 +1,5 @@
 # Identificación y separación de voces e instrumentos
-https://raw.githubusercontent.com/mquevedo001/TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical/entrega-final/images_in_readme/Facultad Informatica_Guipuzkoa_bilingue_negativo_alta.png
+https://raw.githubusercontent.com/mquevedo001/TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical/entrega-final/images_in_readme/Facultad_Informatica_Guipuzkoa_bilingue_negativo_alta.png
 ## 1. Requisitos
 - Python 3.10
 - Conda
