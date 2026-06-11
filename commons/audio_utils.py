@@ -321,7 +321,7 @@ def load_model(loss_fn, num_sources,checkpoint_path):
     # LOAD CHECKPOINT FIRST 
     # -----------------------------
 
-    if checkpoint is None:
+    if checkpoint_path is None:
         checkpoint = torch.load(
             model_path,
             map_location=config.config['DEVICE'],

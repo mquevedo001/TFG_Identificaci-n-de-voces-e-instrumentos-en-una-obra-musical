@@ -54,6 +54,66 @@ MODELS_V2 = MODELS
 # ========================
 # HELPERS
 # ========================
+
+def metric_values_from_scores(scores, metric_name):
+    values = []
+
+    for source_name, source_scores in scores.items():
+        if source_name in ["combination", "permutation"]:
+            continue
+
+        if not isinstance(source_scores, dict):
+            continue
+
+        if metric_name not in source_scores:
+            continue
+
+        value = source_scores[metric_name]
+
+        if isinstance(value, list):
+            values.extend([float(x) for x in value])
+        else:
+            values.append(float(value))
+
+    return values
+
+
+def mean_or_none(values):
+    if not values:
+        return None
+
+    return float(np.mean(values))
+
+
+def median_or_none(values):
+    if not values:
+        return None
+
+    return float(np.median(values))
+
+
+def std_or_none(values):
+    if not values:
+        return None
+
+    return float(np.std(values))
+
+
+def load_baseline_summary(num_sources):
+    baseline_path = (
+        Path(config.config.get("RESULTS_ROOT", "resultados_modelos"))
+        / "evaluate_baseline"
+        / f"{int(num_sources)}stems"
+        / "summary.json"
+    )
+
+    if not baseline_path.exists():
+        return None
+
+    with open(baseline_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+    
+
 def ensure_mono_2d(signal):
     """
     Fuerza AudioSignal a mono con shape (1, n_samples).
@@ -116,13 +176,16 @@ def evaluate_model(model_name, dataset):
 
         print("Checkpoint:", ckpt_path)
 
-        model = load_model(model_name, num_sources)
+        model = load_model(model_name, num_sources,checkpoint_path=ckpt_path)
 
         model_results_dir = eval_results_dir(model_name, num_sources)
         model_results_dir.mkdir(parents=True, exist_ok=True)
 
         sisdr_scores = []
-
+        sisar_scores = []
+        sisdri_scores = []
+        mix_sisdr_scores = []
+        
         for i, item in enumerate(dataset):
 
             print(f"\nTrack {i}")
@@ -195,41 +258,82 @@ def evaluate_model(model_name, dataset):
             # ========================
             # MÉTRICAS
             # ========================
-            sisdr_values = []
+            sisdr_values = metric_values_from_scores(scores, "SI-SDR")
+            sisar_values = metric_values_from_scores(scores, "SI-SAR")
+            sisdri_values = metric_values_from_scores(scores, "SI-SDRi")
+            mix_sisdr_values = metric_values_from_scores(scores, "MIX-SI-SDR")
 
-            for source_name, source_scores in scores.items():
-                if source_name in ["combination", "permutation"]:
-                    continue
+            track_sisdr = mean_or_none(sisdr_values)
+            track_sisar = mean_or_none(sisar_values)
+            track_sisdri = mean_or_none(sisdri_values)
+            track_mix_sisdr = mean_or_none(mix_sisdr_values)
 
-                if isinstance(source_scores, dict) and "SI-SDR" in source_scores:
-                    sisdr = source_scores["SI-SDR"]
+            if track_sisdr is not None:
+                sisdr_scores.append(track_sisdr)
 
-                    if isinstance(sisdr, list):
-                        sisdr_values.extend([float(x) for x in sisdr])
-                    else:
-                        sisdr_values.append(float(sisdr))
+            if track_sisar is not None:
+                sisar_scores.append(track_sisar)
 
-            track_sisdr = np.mean(sisdr_values)
-            sisdr_scores.append(track_sisdr)
+            if track_sisdri is not None:
+                sisdri_scores.append(track_sisdri)
+
+            if track_mix_sisdr is not None:
+                mix_sisdr_scores.append(track_mix_sisdr)
 
         # ========================
         # SUMMARY POR MODELO
         # ========================
-        baseline_4 = -4.555995227769017
-        baseline_2 = -0.03977375663816929
-        baseline = baseline_2 if int(num_sources) == 2 else baseline_4
+        baseline_summary = load_baseline_summary(num_sources)
+
+        baseline_sisdr = None
+        baseline_sisar = None
+
+        if baseline_summary is not None:
+            baseline_sisdr = baseline_summary.get("si_sdr_mean")
+            baseline_sisar = baseline_summary.get("si_sar_mean")
+
+        model_sisdr_mean = mean_or_none(sisdr_scores)
+        model_sisar_mean = mean_or_none(sisar_scores)
+        model_sisdri_mean = mean_or_none(sisdri_scores)
+        model_mix_sisdr_mean = mean_or_none(mix_sisdr_scores)
 
         summary = {
             "model": model_name,
             "version": config.config.get("TRAIN_VERSION", "v2"),
             "sources": int(num_sources),
             "checkpoint": str(ckpt_path),
-            "si_sdr_mean": float(np.mean(sisdr_scores)),
-            "si_sdr_median": float(np.median(sisdr_scores)),
-            "si_sdr_std": float(np.std(sisdr_scores)),
+
+            "si_sdr_mean": model_sisdr_mean,
+            "si_sdr_median": median_or_none(sisdr_scores),
+            "si_sdr_std": std_or_none(sisdr_scores),
+
+            "si_sar_mean": model_sisar_mean,
+            "si_sar_median": median_or_none(sisar_scores),
+            "si_sar_std": std_or_none(sisar_scores),
+
+            "si_sdr_i_mean": model_sisdri_mean,
+            "si_sdr_i_median": median_or_none(sisdri_scores),
+            "si_sdr_i_std": std_or_none(sisdri_scores),
+
+            "mix_si_sdr_mean_from_tracks": model_mix_sisdr_mean,
+
             "num_tracks": len(sisdr_scores),
-            "baseline_mixture_si_sdr": float(baseline),
-            "beats_mixture_baseline": bool(float(np.mean(sisdr_scores)) > baseline),
+
+            "baseline_mixture_si_sdr": baseline_sisdr,
+            "baseline_mixture_si_sar": baseline_sisar,
+
+            "beats_mixture_baseline": (
+                bool(model_sisdr_mean > baseline_sisdr)
+                if model_sisdr_mean is not None and baseline_sisdr is not None
+                else None
+            ),
+
+            "beats_mixture_baseline_by_sisdri": (
+                bool(model_sisdri_mean > 0)
+                if model_sisdri_mean is not None
+                else None
+            ),
+
             "config": training_config_snapshot(model_name, num_sources),
         }
 

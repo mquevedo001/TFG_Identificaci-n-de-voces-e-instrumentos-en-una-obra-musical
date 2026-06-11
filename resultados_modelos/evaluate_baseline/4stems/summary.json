@@ -1,8 +1,10 @@
 {
     "model": "mixture_as_all_sources_baseline",
     "sources": 4,
-    "si_sdr_mean": -4.555995227769017,
-    "si_sdr_median": -4.563598483800888,
-    "si_sdr_std": 2.908698422870933,
+    "si_sdr_mean": -5.393059898167849,
+    "si_sdr_median": -5.2978170942515135,
+    "si_sar_mean": 21.395664662122726,
+    "si_sar_median": 20.701341927051544,
+    "si_sdr_std": 0.4164849641682056,
     "num_tracks": 20
 }

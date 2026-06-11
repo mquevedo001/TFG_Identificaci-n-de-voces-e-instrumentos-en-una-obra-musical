@@ -136,10 +136,19 @@ def get_loss_fn(loss_type, kwargs):
     elif loss_type == 'lpsa_phase':
         mixture_phase = kwargs.get('mixture_phase', None)
         source_phase = kwargs.get('source_phase', None)
+
         if mixture_phase is None:
             raise ValueError("Para 'lpsa_phase' necesitas pasar mixture_phase a get_loss_fn().")
-        # Para  PSA real hace falta la fase compleja de las fuentes objetivo, no solo su magnitud.
-        return lambda est, tgt: LPSALoss(est, tgt, mixture_phase, source_phase=source_phase)
+
+        if source_phase is None:
+            raise ValueError("Para 'lpsa_phase' necesitas pasar source_phase a get_loss_fn().")
+
+        return lambda est, tgt: LPSALoss(
+            est,
+            tgt,
+            mixture_phase,
+            source_phase=source_phase,
+        )
 
     elif loss_type == 'lmrs':
         mix_mag = kwargs.get('mix_mag', None)
@@ -179,7 +188,7 @@ def get_loss_fn(loss_type, kwargs):
 
 
 # CAMBIO: Se corrige la formulación. Antes se aplicaba el log al error absoluto,
-# lo cual no correspondía a una pérdida log-comprimida estándar y producía escalas poco interpretables.
+# lo cual no correspondía a una pérdida log-comprimida.
 def log_compressed_l2(pred, target, eps=1e-8):
     pred_log = torch.log(torch.abs(pred) + eps)
     target_log = torch.log(torch.abs(target) + eps)
@@ -207,64 +216,89 @@ def l2_freq(mag_estimate, mag_target):
 
 
 def LPSALoss(estimate, target, mixture_phase, source_phase):
-    # estimate/target: [B, T, F, C, S]
-    # mixture_phase:   [B, F, T]
-    # source_phase:    puede llegar como:
-    #                  [B, S, F, T]
-    #                  [B, F, S, T]
-    #                  [B, F, T, S]
+    """
+    estimate/target: [B, T, F, C, S]
+    mixture_phase:  [B, F, T] o [B, T, F]
+    source_phase:   [B, S, F, T], [B, F, S, T], [B, F, T, S] o [B, T, F, S]
+    """
+
+    if source_phase is None:
+        raise ValueError("source_phase no puede ser None en LPSALoss.")
 
     target_mag = torch.abs(target)
     est_mag = torch.abs(estimate)
 
+    if estimate.dim() != 5:
+        raise ValueError(f"estimate debe ser [B,T,F,C,S], recibido {estimate.shape}")
+
+    if target.dim() != 5:
+        raise ValueError(f"target debe ser [B,T,F,C,S], recibido {target.shape}")
+
+    B, T_est, F_est, C, S = est_mag.shape
+
     if mixture_phase.dim() != 3:
         raise ValueError(f"mixture_phase shape inesperada: {mixture_phase.shape}")
+
     if source_phase.dim() != 4:
         raise ValueError(f"source_phase shape inesperada: {source_phase.shape}")
 
-    num_sources = target_mag.shape[-1]
-
-    # [B, F, T] -> [B, T, F]
-    mix_phase = mixture_phase.permute(0, 2, 1)
-
-    # Detectar formato real de source_phase
-    if source_phase.shape[1] == num_sources:
-        # [B, S, F, T] -> [B, T, F, S]
-        src_phase = source_phase.permute(0, 3, 2, 1)
-    elif source_phase.shape[2] == num_sources:
-        # [B, F, S, T] -> [B, T, F, S]
-        src_phase = source_phase.permute(0, 3, 1, 2)
-    elif source_phase.shape[3] == num_sources:
-        # [B, F, T, S] -> [B, T, F, S]
-        src_phase = source_phase.permute(0, 2, 1, 3)
+    # mixture_phase a [B,T,F]
+    if mixture_phase.shape[1] == F_est:
+        mix_phase = mixture_phase.permute(0, 2, 1).contiguous()
+    elif mixture_phase.shape[2] == F_est:
+        mix_phase = mixture_phase.contiguous()
     else:
         raise ValueError(
-            f"No se puede inferir el eje de fuentes en source_phase. "
-            f"shape={source_phase.shape}, num_sources={num_sources}"
+            f"No puedo alinear mixture_phase={mixture_phase.shape} "
+            f"con estimate={estimate.shape}"
         )
 
-    # Alinear T y F
-    T = min(est_mag.shape[1], target_mag.shape[1], mix_phase.shape[1], src_phase.shape[1])
-    F = min(est_mag.shape[2], target_mag.shape[2], mix_phase.shape[2], src_phase.shape[2])
+    # source_phase a [B,T,F,S]
+    if source_phase.shape[1] == S:
+        # [B,S,F,T] -> [B,T,F,S]
+        src_phase = source_phase.permute(0, 3, 2, 1).contiguous()
 
-    est_mag = est_mag[:, :T, :F, :, :]
-    target_mag = target_mag[:, :T, :F, :, :]
-    mix_phase = mix_phase[:, :T, :F]
-    src_phase = src_phase[:, :T, :F, :]
+    elif source_phase.shape[2] == S:
+        # [B,F,S,T] -> [B,T,F,S]
+        src_phase = source_phase.permute(0, 3, 1, 2).contiguous()
 
-    # Broadcasting
-    mix_phase = mix_phase.unsqueeze(-1).unsqueeze(-1)  # [B, T, F, 1, 1]
-    src_phase = src_phase.unsqueeze(3)                 # [B, T, F, 1, S]
+    elif source_phase.shape[3] == S:
+        # Puede ser [B,F,T,S] o [B,T,F,S]
+        if source_phase.shape[1] == F_est:
+            src_phase = source_phase.permute(0, 2, 1, 3).contiguous()
+        else:
+            src_phase = source_phase.contiguous()
+
+    else:
+        raise ValueError(
+            f"No se puede inferir eje de fuentes en source_phase={source_phase.shape}; "
+            f"num_sources={S}"
+        )
+
+    T = min(
+        est_mag.shape[1],
+        target_mag.shape[1],
+        mix_phase.shape[1],
+        src_phase.shape[1],
+    )
+
+    Freq = min(
+        est_mag.shape[2],
+        target_mag.shape[2],
+        mix_phase.shape[2],
+        src_phase.shape[2],
+    )
+
+    est_mag = est_mag[:, :T, :Freq, :, :]
+    target_mag = target_mag[:, :T, :Freq, :, :]
+    mix_phase = mix_phase[:, :T, :Freq]
+    src_phase = src_phase[:, :T, :Freq, :]
+
+    mix_phase = mix_phase.unsqueeze(-1).unsqueeze(-1)  # [B,T,F,1,1]
+    src_phase = src_phase.unsqueeze(3)                 # [B,T,F,1,S]
 
     phase_diff = mix_phase - src_phase
     y_psa = target_mag * torch.cos(phase_diff)
-
-    if not hasattr(LPSALoss, "_debug_printed"):
-        print("target_mag shape:", target_mag.shape, flush=True)
-        print("mix_phase shape:", mix_phase.shape, flush=True)
-        print("src_phase shape:", src_phase.shape, flush=True)
-        print("phase_diff shape:", phase_diff.shape, flush=True)
-        LPSALoss._debug_printed = True
 
     return torch.mean((est_mag - y_psa) ** 2)
 

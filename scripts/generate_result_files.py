@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-RESULTS_ROOT = Path("resultados_modelos/evaluate")
+RESULTS_ROOT = Path("resultados_modelos/evaluate_v2")
 BASELINE_ROOT = Path("resultados_modelos/evaluate_baseline")
 OUT_ROOT = Path("resultados_modelos/resumenes")
 
@@ -98,45 +98,15 @@ def collect_model_rows():
     if not RESULTS_ROOT.exists():
         raise FileNotFoundError(f"No existe {RESULTS_ROOT}")
 
-    for model_dir in sorted(RESULTS_ROOT.iterdir()):
-        if not model_dir.is_dir():
+    for summary_path in sorted(RESULTS_ROOT.rglob("summary.json")):
+        with open(summary_path, "r", encoding="utf-8") as f:
+            row = json.load(f)
+
+        if "model" not in row or "sources" not in row:
             continue
 
-        model_name = model_dir.name
-
-        for num_sources in [2, 4]:
-            stems_dir = model_dir / f"{num_sources}stems"
-
-            if not stems_dir.exists():
-                continue
-
-            summary = summarize_track_files(stems_dir)
-            baseline = load_baseline(num_sources)
-
-            row = {
-                "model": model_name,
-                "sources": num_sources,
-                "num_tracks": summary.get("num_tracks", 0),
-                "si_sdr_mean": summary.get("si_sdr_mean"),
-                "si_sdr_median": summary.get("si_sdr_median"),
-                "si_sdr_std": summary.get("si_sdr_std"),
-                "si_sar_mean": summary.get("si_sar_mean"),
-                "si_sar_median": summary.get("si_sar_median"),
-                "si_sar_std": summary.get("si_sar_std"),
-                "baseline_si_sdr_mean": baseline.get("si_sdr_mean"),
-                "baseline_si_sar_mean": baseline.get("si_sar_mean"),
-            }
-
-            if row["si_sdr_mean"] is not None and row["baseline_si_sdr_mean"] is not None:
-                row["beats_baseline"] = row["si_sdr_mean"] > row["baseline_si_sdr_mean"]
-            else:
-                row["beats_baseline"] = None
-
-            # Actualiza/crea summary.json enriquecido.
-            with open(stems_dir / "summary.json", "w", encoding="utf-8") as f:
-                json.dump(row, f, indent=4, ensure_ascii=False)
-
-            rows.append(row)
+        row["_summary_path"] = str(summary_path)
+        rows.append(row)
 
     return rows
 
@@ -149,16 +119,32 @@ def write_csv(rows, out_file: Path):
     fieldnames = [
         "rank",
         "model",
+        "version",
         "sources",
         "num_tracks",
+
         "si_sdr_mean",
         "si_sdr_median",
         "si_sdr_std",
+
         "si_sar_mean",
         "si_sar_median",
         "si_sar_std",
-        "baseline_si_sdr_mean",
-        "beats_baseline",
+
+        "si_sdr_i_mean",
+        "si_sdr_i_median",
+        "si_sdr_i_std",
+
+        "mix_si_sdr_mean_from_tracks",
+
+        "baseline_mixture_si_sdr",
+        "baseline_mixture_si_sar",
+
+        "beats_mixture_baseline",
+        "beats_mixture_baseline_by_sisdri",
+
+        "checkpoint",
+        "_summary_path",
     ]
 
     rows = sorted(
@@ -167,7 +153,11 @@ def write_csv(rows, out_file: Path):
     )
 
     with open(out_file, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer = csv.DictWriter(
+            f,
+            fieldnames=fieldnames,
+            extrasaction="ignore",
+        )
         writer.writeheader()
 
         for i, row in enumerate(rows, start=1):
