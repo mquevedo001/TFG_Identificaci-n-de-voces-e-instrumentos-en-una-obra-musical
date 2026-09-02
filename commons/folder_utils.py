@@ -5,6 +5,7 @@ import numpy as np
 import numpy as np
 import matplotlib.pyplot as plt
 import librosa, librosa.display
+import os
 
 def _is_audiosignal(x):
     return hasattr(x, "audio_data") and hasattr(x, "sample_rate")
@@ -162,7 +163,7 @@ def save_sources(estimates, audio_signal, output_dir,audio_name=None):
 
     elif num_sources == 4:
         # Orden por convención MUSDB: vocals, drums, bass, other
-        stem_names = ['vocals', 'bass', 'drums', 'other']
+        stem_names = ['vocals', 'drums', 'bass', 'other']
         stems_dir = output_dir / 'stems'
         stems_dir.mkdir(parents=True, exist_ok=True)
 
@@ -177,3 +178,19 @@ def save_sources(estimates, audio_signal, output_dir,audio_name=None):
         raise ValueError(f"Se esperaban 2 o 4 fuentes, pero el modelo tiene {num_sources_estimates}.")
 
     return stems, sources_dict
+
+def get_model_full_path_from_loss_func(folder_path,loss_func:str):
+    MAIN_LOSSES = ["l1","l2","l1_freq","l2_freq","logl1","logl2","log_mag","log_compressed_l2","lpsa","mask_l1"]
+    EXPERIMENTAL_LOSSES = ["deep_feature","deep_feature_emd"]
+    ADVANCED_LOSSES = ["l_mrs","lpsa_phase",]
+
+    if (loss_func not in MAIN_LOSSES) and (loss_func not in EXPERIMENTAL_LOSSES) and (loss_func not in ADVANCED_LOSSES):
+        raise ValueError("La función de pérdida no está en ningún grupo.")
+    else:
+        if loss_func in MAIN_LOSSES:
+            return os.path.join(folder_path,'main')
+        elif loss_func in EXPERIMENTAL_LOSSES:
+            return os.path.join(folder_path,'experimental')
+        elif loss_func in ADVANCED_LOSSES:
+            return os.path.join(folder_path,'advanced')
+    

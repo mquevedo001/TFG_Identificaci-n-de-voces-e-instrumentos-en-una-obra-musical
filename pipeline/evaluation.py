@@ -9,10 +9,7 @@ def evaluation(frames,separator,output_folder='JSONs'):
     output_folder = Path(__file__).parent / output_folder
     output_folder.mkdir(parents=True, exist_ok=True)  # crea carpeta JSONS si no existe
 
-    tfm = nussl_tfm.Compose([
-        nussl_tfm.SumSources([['bass', 'drums', 'other']]),
-    ])
-
+    tfm = nussl_tfm.Compose([nussl_tfm.SumSources([['bass', 'drums', 'other']])])
     test_dataset = nussl.datasets.MUSDB18(subsets=['test'], transform=tfm)
 
     # Evaluamos

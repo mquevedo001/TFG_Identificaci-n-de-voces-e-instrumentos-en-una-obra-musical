@@ -35,25 +35,20 @@ def reshape_if_needed(estimates, targets, to='spectrogram'):
     - to='spectrogram': [B, F, T, S] → [B*S, 1, F, T]
     - to='freq': [B, F, T, S] → [B*S, F, T]
     """
+
     B, F, T, S = estimates.shape
-    if to == 'spectrogram':
-        return (
-            estimates.permute(0, 3, 1, 2).reshape(B * S, 1, F, T),
-            targets.permute(0, 3, 1, 2).reshape(B * S, 1, F, T)
-        )
-    elif to == 'freq':
-        return (
-            estimates.permute(0, 3, 1, 2).reshape(B * S, F, T),
-            targets.permute(0, 3, 1, 2).reshape(B * S, F, T)
-        )
-    else:
-        return estimates, targets
+
+    if to == 'spectrogram': return ( estimates.permute(0, 3, 1, 2).reshape(B * S, 1, F, T),targets.permute(0, 3, 1, 2).reshape(B * S, 1, F, T))
+    elif to == 'freq': return ( estimates.permute(0, 3, 1, 2).reshape(B * S, F, T), targets.permute(0, 3, 1, 2).reshape(B * S, F, T))
+    else: return estimates, targets
+        
 
 def prepare_batch(batch, device, dtype=torch.float32):
     new_batch = {}
+
     for k, v in batch.items():
-        if torch.is_tensor(v):
-            new_batch[k] = v.to(device=device, dtype=dtype)
-        else:
-            new_batch[k] = v
+        
+        if torch.is_tensor(v): new_batch[k] = v.to(device=device, dtype=dtype)
+        else: new_batch[k] = v
+            
     return new_batch

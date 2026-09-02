@@ -2,21 +2,6 @@ from pathlib import Path
 import json
 from config import config
 
-
-MAIN_LOSSES = [
-    "mask_l1",
-]
-
-EXPERIMENTAL_LOSSES = [
-    "deep_feature",
-    "deep_feature_emd",
-]
-
-ADVANCED_LOSSES = [
-    "l_mrs",
-    "lpsa_phase",
-]
-"""
 MAIN_LOSSES = [
     "l1",
     "l2",
@@ -40,7 +25,7 @@ ADVANCED_LOSSES = [
     "lpsa_phase",
 ]
 
-"""
+
 
 def get_loss_group(loss_name: str) -> str:
     loss_name = str(loss_name).lower()

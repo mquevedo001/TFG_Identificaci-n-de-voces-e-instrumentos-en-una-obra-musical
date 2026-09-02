@@ -25,8 +25,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 feature_extractor = FeatureExtractor().to(device).float()
 
 feature_extractor.eval()
-for p in feature_extractor.parameters():
-    p.requires_grad = False
+for p in feature_extractor.parameters(): p.requires_grad = False
+    
 
 
 def evaluarFrames(frames, test_dataset, output_folder, separator):

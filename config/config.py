@@ -20,9 +20,9 @@ config = {
     "LEARNING_RATE": 1e-3,                                      # Tasa de aprendizaje del optimizador (qué tan rápido se ajustan los pesos).
     "WEIGHT_DECAY": 1e-5,                                       # Regularización de L2 para evitar overfitting.
     "GRADIENT_CLIP": 1.0,                                       # Limitar la magnitud de los gradientes y evitar explosiones en el entrenamiento.  
-    "EARLY_STOPPING_PATIENCE": 15,                              # Número de iteraciones sin mejora tras las cuales detener el entrenamiento.
+    "EARLY_STOPPING_PATIENCE": 10,                              # Número de iteraciones sin mejora tras las cuales detener el entrenamiento.
 
-    "BATCH SIZE"                                                # Cantidad de mezclas procesadas antes de actualizar los pesos (una mini-batch).
+    "BATCH SIZE":100,                                           # Cantidad de mezclas procesadas antes de actualizar los pesos (una mini-batch).
     "EFFECTIVE_BATCH_SIZE_MAIN": 96,                            # Cantidad de mezclas procesadas antes de actualizar los pesos en el conjunto de entrenamiento principal (una mini-batch).
     "EFFECTIVE_BATCH_SIZE_EXPERIMENTAL": 32,                    # Cantidad de mezclas procesadas antes de actualizar los pesos en el conjunto de entrenamiento experimental.
 
@@ -58,7 +58,5 @@ config = {
 
     "USE_SOX_EFFECTS": False,                                   # Aplicar data augmentation o no
 
-    "TRAIN_VERSION": "estándar",                                # Versión del entrenamiento
-    "CHECKPOINTS_GROUP": "Mis_modelos_v2"                       # Nombre de la carpeta de guardado de checkpoints
 }
 

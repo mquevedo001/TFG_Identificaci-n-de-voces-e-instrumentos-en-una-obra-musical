@@ -141,8 +141,8 @@ class MixClosure:
 from pathlib import Path
 
 def create_database():
-    bg_folder = Path('mix_generation/background')
-    fg_folder = Path('mix_generation/foreground')
+    bg_folder = os.path.join(Path('.' /  'datasets/mix_generation/background'))
+    fg_folder = os.path.join(Path('.' /  'datasets/mix_generation/foreground'))
 
     musdb_train = nussl.datasets.MUSDB18(download=True, subsets=['train'])
 
@@ -162,8 +162,8 @@ def get_source_files(fg_folder, label='vocals'):
     return files
 
 def generate_mix_generations(num_mixtures):
-    bg_folder = 'mix_generation/background'
-    fg_folder = 'mix_generation/foreground'
+    bg_folder = os.path.join(Path('.' /  'datasets/mix_generation/background'))
+    fg_folder = os.path.join(Path('.' /  'datasets/mix_generation/foreground'))
     dir = os.listdir(fg_folder)
 
     if not(os.listdir(bg_folder + '/bass')):
@@ -181,10 +181,10 @@ def generate_mix_generations(num_mixtures):
     mix_func = MixClosure(fg_folder, bg_folder, event_template)
 
     # Crear las mezclas con NUSSL
-    nussl.datasets.OnTheFly(
-        num_mixtures = num_mixtures,
-        mix_closure = mix_func
-    )
+    on_the_fly = nussl.datasets.OnTheFly( num_mixtures = num_mixtures, mix_closure = mix_func )
+        
+        
+    
 
     print(f"¡Generadas {num_mixtures} mezclas con éxito!")
 

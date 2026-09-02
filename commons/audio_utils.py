@@ -133,16 +133,11 @@ def extract_val_loss(file):
 
 
 def load_best_model(stems_folder_model_path):
-    checkpoint_names = [
-        f for f in os.listdir(stems_folder_model_path)
-        if f.endswith(".pt")
-    ]
 
-    if not checkpoint_names:
-        raise FileNotFoundError(
-            f"No hay checkpoints .pt en {stems_folder_model_path}"
-        )
+    checkpoint_names = [ f for f in os.listdir(stems_folder_model_path) if (f.endswith(".pt") or f.endswith(".pth"))]
 
+    if not checkpoint_names: raise FileNotFoundError(f"No hay checkpoints .pt en {stems_folder_model_path}" )
+        
     # En train.py se guarda score_function = -val_loss.
     # Por tanto, el mejor checkpoint es el de mayor score,
     return max(checkpoint_names, key=extract_val_loss)
@@ -169,13 +164,9 @@ def get_state_dict_from_checkpoint(checkpoint):
     - state_dict plano
     """
     if isinstance(checkpoint, dict):
-
-        if "model" in checkpoint and isinstance(checkpoint["model"], dict):
-            return checkpoint["model"]
-
-        if "state_dict" in checkpoint:
-            return checkpoint["state_dict"]
-
+        if "model" in checkpoint and isinstance(checkpoint["model"], dict):return checkpoint["model"]
+        if "state_dict" in checkpoint: return checkpoint["state_dict"]
+            
         return checkpoint
 
     raise ValueError("Checkpoint no válido")
@@ -302,14 +293,14 @@ def compare_shapes(model, state_dict):
 # MAIN LOAD FUNCTION
 # -----------------------------
 
-def load_model(loss_fn, num_sources,checkpoint_path):
+def load_model(loss_fn, num_sources,checkpoint_path=None):
 
     sys.modules.setdefault("numpy._core", np)
 
-    model_path = resolve_checkpoint_dir(loss_fn, num_sources)
+    
 
-    best_model_tag = load_best_model(model_path)
-    model_path = model_path / best_model_tag
+    
+    
 
     if not os.path.exists(model_path):
         raise FileNotFoundError(f'No existe la ruta: {model_path}')
@@ -321,20 +312,16 @@ def load_model(loss_fn, num_sources,checkpoint_path):
     # LOAD CHECKPOINT FIRST 
     # -----------------------------
 
-    if checkpoint_path is None:
-        checkpoint = torch.load(
-            model_path,
-            map_location=config.config['DEVICE'],
-            weights_only=True
-        )
-    else:
-        checkpoint = torch.load(
-            checkpoint_path,
-            map_location=config.config['DEVICE'],
-            weights_only=True
-        )
-    
+    if checkpoint_path is None: 
+        
+        model_path = resolve_checkpoint_dir(loss_fn, num_sources)
+        best_model_tag = load_best_model(model_path)
+        model_path = model_path / best_model_tag
 
+        if not os.path.exists(model_path): raise FileNotFoundError(f"No existe la ruta: {model_path}")
+    else: 
+        checkpoint = torch.load(checkpoint_path,map_location=config.config['DEVICE'],weights_only=True)
+    
     print_checkpoint_keys(checkpoint)
 
     state_dict = get_state_dict_from_checkpoint(checkpoint)
@@ -352,26 +339,24 @@ def load_model(loss_fn, num_sources,checkpoint_path):
     # -----------------------------
     model = MaskInference.build(
         nf,
-        num_audio_channels=config.config['MODEL_NUM_CHANNELS'],
-        hidden_size=hidden_size,
-        num_layers=config.config['MODEL_NUM_LAYERS'],
-        bidirectional=bidirectional,
-        dropout=config.config['MODEL_DROPOUT'],
-        num_sources=num_sources,
-        activation=config.config['MODEL_ACTIVATION'],
+        num_audio_channels      = config.config['MODEL_NUM_CHANNELS'],
+        hidden_size             = hidden_size,
+        num_layers              = config.config['MODEL_NUM_LAYERS'],
+        bidirectional           = bidirectional,
+        dropout                 = config.config['MODEL_DROPOUT'],
+        num_sources             = num_sources,
+        activation              = config.config['MODEL_ACTIVATION'],
     )
 
     print("\n[MODEL CONFIG USED]")
     print("hidden_size:", hidden_size)
     print("bidirectional:", bidirectional)
     print("num_layers:", config.config['MODEL_NUM_LAYERS'])
-
     # -----------------------------
     # DEBUG BEFORE LOAD
     # -----------------------------
     compare_shapes(model, state_dict)
     print_model_parameter_norms(model)
-
     # -----------------------------
     # LOAD WEIGHTS
     # -----------------------------
