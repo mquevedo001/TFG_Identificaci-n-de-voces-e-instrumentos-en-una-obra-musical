@@ -162,186 +162,36 @@ def crop_all_to_same_length(signals):
 # ========================
 # MAIN EVAL
 # ========================
-def evaluate_model(model_name, dataset,source_counts=(2,4)):
+def evaluate_model(
+    model_name,
+    dataset,
+    source_counts=(2, 4),
+):
+    """
+    Evalúa un modelo para uno o varios números de fuentes.
+    """
 
+    if isinstance(
+        source_counts,
+        (int, np.integer),
+    ):
+        source_counts = (
+            int(source_counts),
+        )
 
-    print(f"\n========== {model_name} ==========")
+    summaries = []
 
     for num_sources in source_counts:
 
-        print(f"\n--- Sources: {num_sources} ---")
-        config.config["MODEL_NUM_SOURCES"] = int(num_sources)
-        ckpt_dir = resolve_checkpoint_dir(model_name, num_sources)
-        best_ckpt = load_best_model(ckpt_dir)
-        ckpt_path = ckpt_dir / best_ckpt
+        summary = evaluate_checkpoint(
+            model_name=model_name,
+            num_sources=int(num_sources),
+            dataset=dataset,
+        )
 
-        print("Checkpoint:", ckpt_path)
+        summaries.append(summary)
 
-        model = load_model(model_name, num_sources,checkpoint_path=ckpt_path)
-
-        model_results_dir = eval_results_dir(model_name, num_sources)
-        model_results_dir.mkdir(parents=True, exist_ok=True)
-
-        sisdr_scores = []
-        sisar_scores = []
-        sisdri_scores = []
-        mix_sisdr_scores = []
-        
-        for i, item in enumerate(dataset):
-
-            print(f"\nTrack {i}")
-
-            mixture = load_audio(item['mixture'])
-            sources = {k: load_audio(v) for k, v in item['sources'].items()}
-
-            estimates = run_inference(model, mixture, num_sources)
-
-            # ========================
-            # FORMATEAR SEGÚN SOURCES
-            # ========================
-            if num_sources == 2:
-
-                estimates_dict = {
-                    "vocals": estimates[0],
-                    "accompaniment": estimates[1]
-                }
-
-                sources_dict = {
-                    "vocals": sources["vocals"],
-                    "accompaniment": (
-                        sources["bass"] +
-                        sources["drums"] +
-                        sources["other"]
-                    )
-                }
-
-            else:
-                keys = ['vocals', 'bass', 'drums', 'other']
-                estimates_dict = dict(zip(keys, estimates))
-                sources_dict = sources
-
-            # ========================
-            # EVALUACIÓN, NORMALIZAR CANALES Y LONGITUD
-            # ========================
-
-            for key in sources_dict:
-                sources_dict[key] = ensure_mono_2d(sources_dict[key])
-
-            for key in estimates_dict:
-                estimates_dict[key] = ensure_mono_2d(estimates_dict[key])
-
-            common_len = crop_all_to_same_length(
-            list(sources_dict.values()) + list(estimates_dict.values())
-            )
-
-            print("[EVAL SHAPES]")
-            for k, v in sources_dict.items():
-                print("REF", k, v.audio_data.shape)
-            for k, v in estimates_dict.items():
-                print("EST", k, v.audio_data.shape)
-            print("common_len:", common_len)
-            
-            evaluator = nussl.evaluation.BSSEvalScale(
-                list(sources_dict.values()),
-                list(estimates_dict.values()),
-                source_labels=list(sources_dict.keys()),
-            )
-
-            scores = evaluator.evaluate()
-
-            # ========================
-            # GUARDAR JSON
-            # ========================
-            out_file = model_results_dir / f"track_{i}.json"
-            with open(out_file, "w") as f:
-                json.dump(scores, f, indent=4)
-
-            # ========================
-            # MÉTRICAS
-            # ========================
-            sisdr_values = metric_values_from_scores(scores, "SI-SDR")
-            sisar_values = metric_values_from_scores(scores, "SI-SAR")
-            sisdri_values = metric_values_from_scores(scores, "SI-SDRi")
-            mix_sisdr_values = metric_values_from_scores(scores, "MIX-SI-SDR")
-
-            track_sisdr = mean_or_none(sisdr_values)
-            track_sisar = mean_or_none(sisar_values)
-            track_sisdri = mean_or_none(sisdri_values)
-            track_mix_sisdr = mean_or_none(mix_sisdr_values)
-
-            if track_sisdr is not None:
-                sisdr_scores.append(track_sisdr)
-
-            if track_sisar is not None:
-                sisar_scores.append(track_sisar)
-
-            if track_sisdri is not None:
-                sisdri_scores.append(track_sisdri)
-
-            if track_mix_sisdr is not None:
-                mix_sisdr_scores.append(track_mix_sisdr)
-
-        # ========================
-        # SUMMARY POR MODELO
-        # ========================
-        baseline_summary = load_baseline_summary(num_sources)
-
-        baseline_sisdr = None
-        baseline_sisar = None
-
-        if baseline_summary is not None:
-            baseline_sisdr = baseline_summary.get("si_sdr_mean")
-            baseline_sisar = baseline_summary.get("si_sar_mean")
-
-        model_sisdr_mean = mean_or_none(sisdr_scores)
-        model_sisar_mean = mean_or_none(sisar_scores)
-        model_sisdri_mean = mean_or_none(sisdri_scores)
-        model_mix_sisdr_mean = mean_or_none(mix_sisdr_scores)
-
-        summary = {
-            "model": model_name,
-            "version": config.config.get("TRAIN_VERSION", "v2"),
-            "sources": int(num_sources),
-            "checkpoint": str(ckpt_path),
-
-            "si_sdr_mean": model_sisdr_mean,
-            "si_sdr_median": median_or_none(sisdr_scores),
-            "si_sdr_std": std_or_none(sisdr_scores),
-
-            "si_sar_mean": model_sisar_mean,
-            "si_sar_median": median_or_none(sisar_scores),
-            "si_sar_std": std_or_none(sisar_scores),
-
-            "si_sdr_i_mean": model_sisdri_mean,
-            "si_sdr_i_median": median_or_none(sisdri_scores),
-            "si_sdr_i_std": std_or_none(sisdri_scores),
-
-            "mix_si_sdr_mean_from_tracks": model_mix_sisdr_mean,
-
-            "num_tracks": len(sisdr_scores),
-
-            "baseline_mixture_si_sdr": baseline_sisdr,
-            "baseline_mixture_si_sar": baseline_sisar,
-
-            "beats_mixture_baseline": (
-                bool(model_sisdr_mean > baseline_sisdr)
-                if model_sisdr_mean is not None and baseline_sisdr is not None
-                else None
-            ),
-
-            "beats_mixture_baseline_by_sisdri": (
-                bool(model_sisdri_mean > 0)
-                if model_sisdri_mean is not None
-                else None
-            ),
-
-            "config": training_config_snapshot(model_name, num_sources),
-        }
-
-        with open(model_results_dir / "summary.json", "w") as f:
-            json.dump(summary, f, indent=4)
-
-        print("\nSummary:", summary)
+    return summaries
 
 def evaluate_checkpoint(
     model_name,
@@ -350,355 +200,419 @@ def evaluate_checkpoint(
     checkpoint_path=None,
     output_dir=None,
 ):
-    print(f"\n========== {model_name} ==========")
+    """
+    Evalúa un checkpoint concreto utilizando el protocolo final.
 
+    Parameters
+    ----------
+    model_name : str
+        Nombre de la función de pérdida/modelo.
+
+    num_sources : int
+        Número de fuentes: 2 o 4.
+
+    dataset : list
+        Dataset generado mediante load_test_dataset().
+
+    checkpoint_path : str | Path | None
+        Checkpoint concreto. Si es None, se selecciona automáticamente
+        el mejor checkpoint disponible.
+
+    output_dir : str | Path | None
+        Carpeta donde guardar track_*.json y summary.json.
+        Si es None, se utiliza la carpeta oficial de evaluate_v2.
+    """
+
+    model_name = str(model_name).lower()
+    num_sources = int(num_sources)
+
+    if num_sources not in (2, 4):
+        raise ValueError(
+            f"num_sources debe ser 2 o 4, recibido {num_sources}"
+        )
+
+    print(f"\n========== {model_name} ==========")
     print(f"\n--- Sources: {num_sources} ---")
-    config.config["MODEL_NUM_SOURCES"] = int(num_sources)
-    ckpt_dir = resolve_checkpoint_dir(model_name, num_sources)
-    best_ckpt = load_best_model(ckpt_dir)
-    ckpt_path = ckpt_dir / best_ckpt
+
+    config.config["MODEL_NUM_SOURCES"] = num_sources
+    config.config["MODEL_LOSS_FUNCTION"] = model_name
+
+    # =========================================================
+    # CHECKPOINT
+    # =========================================================
+
+    if checkpoint_path is None:
+        ckpt_dir = resolve_checkpoint_dir(
+            model_name,
+            num_sources,
+        )
+
+        best_ckpt = load_best_model(ckpt_dir)
+        ckpt_path = ckpt_dir / best_ckpt
+
+    else:
+        ckpt_path = Path(checkpoint_path)
+
+    if not ckpt_path.exists():
+        raise FileNotFoundError(
+            f"No existe el checkpoint: {ckpt_path}"
+        )
 
     print("Checkpoint:", ckpt_path)
 
-    model = load_model(model_name, num_sources,checkpoint_path=ckpt_path)
+    model = load_model(
+        model_name,
+        num_sources,
+        checkpoint_path=ckpt_path,
+    )
 
-    model_results_dir = eval_results_dir(model_name, num_sources)
-    model_results_dir.mkdir(parents=True, exist_ok=True)
+    # =========================================================
+    # OUTPUT
+    # =========================================================
+
+    if output_dir is None:
+        model_results_dir = eval_results_dir(
+            model_name,
+            num_sources,
+        )
+    else:
+        model_results_dir = Path(output_dir)
+
+    model_results_dir.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    # =========================================================
+    # ACUMULADORES
+    # =========================================================
 
     sisdr_scores = []
     sisar_scores = []
     sisdri_scores = []
     mix_sisdr_scores = []
-    
+
+    # =========================================================
+    # TRACKS
+    # =========================================================
+
     for i, item in enumerate(dataset):
 
         print(f"\nTrack {i}")
 
-        mixture = load_audio(item['mixture'])
-        sources = {k: load_audio(v) for k, v in item['sources'].items()}
+        mixture = load_audio(item["mixture"])
 
-        estimates = run_inference(model, mixture, num_sources)
+        sources = {
+            key: load_audio(path)
+            for key, path in item["sources"].items()
+        }
 
-        # ========================
-        # FORMATEAR SEGÚN SOURCES
-        # ========================
+        estimates = run_inference(
+            model,
+            mixture,
+            num_sources,
+        )
+
+        # -----------------------------------------------------
+        # ORGANIZAR FUENTES
+        # -----------------------------------------------------
+
         if num_sources == 2:
 
             estimates_dict = {
                 "vocals": estimates[0],
-                "accompaniment": estimates[1]
+                "accompaniment": estimates[1],
             }
 
             sources_dict = {
                 "vocals": sources["vocals"],
                 "accompaniment": (
-                    sources["bass"] +
-                    sources["drums"] +
-                    sources["other"]
-                )
+                    sources["bass"]
+                    + sources["drums"]
+                    + sources["other"]
+                ),
             }
 
         else:
-            keys = ['vocals', 'bass', 'drums', 'other']
-            estimates_dict = dict(zip(keys, estimates))
-            sources_dict = sources
 
-        # ========================
-        # EVALUACIÓN, NORMALIZAR CANALES Y LONGITUD
-        # ========================
+            source_order = [
+                "vocals",
+                "bass",
+                "drums",
+                "other",
+            ]
+
+            estimates_dict = dict(
+                zip(source_order, estimates)
+            )
+
+            sources_dict = {
+                key: sources[key]
+                for key in source_order
+            }
+
+        # -----------------------------------------------------
+        # MONO + ALINEACIÓN
+        # -----------------------------------------------------
 
         for key in sources_dict:
-            sources_dict[key] = ensure_mono_2d(sources_dict[key])
+            sources_dict[key] = ensure_mono_2d(
+                sources_dict[key]
+            )
 
         for key in estimates_dict:
-            estimates_dict[key] = ensure_mono_2d(estimates_dict[key])
+            estimates_dict[key] = ensure_mono_2d(
+                estimates_dict[key]
+            )
 
         common_len = crop_all_to_same_length(
-        list(sources_dict.values()) + list(estimates_dict.values())
+            list(sources_dict.values())
+            + list(estimates_dict.values())
         )
 
         print("[EVAL SHAPES]")
-        for k, v in sources_dict.items():
-            print("REF", k, v.audio_data.shape)
-        for k, v in estimates_dict.items():
-            print("EST", k, v.audio_data.shape)
+
+        for key, value in sources_dict.items():
+            print(
+                "REF",
+                key,
+                value.audio_data.shape,
+            )
+
+        for key, value in estimates_dict.items():
+            print(
+                "EST",
+                key,
+                value.audio_data.shape,
+            )
+
         print("common_len:", common_len)
-        
+
+        # -----------------------------------------------------
+        # BSSEval
+        # -----------------------------------------------------
+
         evaluator = nussl.evaluation.BSSEvalScale(
             list(sources_dict.values()),
             list(estimates_dict.values()),
-            source_labels=list(sources_dict.keys()),
+            source_labels=list(
+                sources_dict.keys()
+            ),
         )
 
         scores = evaluator.evaluate()
 
-        # ========================
-        # GUARDAR JSON
-        # ========================
-        out_file = model_results_dir / f"track_{i}.json"
-        with open(out_file, "w") as f:
-            json.dump(scores, f, indent=4)
+        # -----------------------------------------------------
+        # RESULTADO DE LA PISTA
+        # -----------------------------------------------------
 
-        # ========================
+        out_file = (
+            model_results_dir
+            / f"track_{i}.json"
+        )
+
+        with open(
+            out_file,
+            "w",
+            encoding="utf-8",
+        ) as f:
+            json.dump(
+                scores,
+                f,
+                indent=4,
+                ensure_ascii=False,
+            )
+
+        # -----------------------------------------------------
         # MÉTRICAS
-        # ========================
-        sisdr_values = metric_values_from_scores(scores, "SI-SDR")
-        sisar_values = metric_values_from_scores(scores, "SI-SAR")
-        sisdri_values = metric_values_from_scores(scores, "SI-SDRi")
-        mix_sisdr_values = metric_values_from_scores(scores, "MIX-SI-SDR")
+        # -----------------------------------------------------
 
-        track_sisdr = mean_or_none(sisdr_values)
-        track_sisar = mean_or_none(sisar_values)
-        track_sisdri = mean_or_none(sisdri_values)
-        track_mix_sisdr = mean_or_none(mix_sisdr_values)
+        sisdr_values = metric_values_from_scores(
+            scores,
+            "SI-SDR",
+        )
+
+        sisar_values = metric_values_from_scores(
+            scores,
+            "SI-SAR",
+        )
+
+        sisdri_values = metric_values_from_scores(
+            scores,
+            "SI-SDRi",
+        )
+
+        mix_sisdr_values = metric_values_from_scores(
+            scores,
+            "MIX-SI-SDR",
+        )
+
+        track_sisdr = mean_or_none(
+            sisdr_values
+        )
+
+        track_sisar = mean_or_none(
+            sisar_values
+        )
+
+        track_sisdri = mean_or_none(
+            sisdri_values
+        )
+
+        track_mix_sisdr = mean_or_none(
+            mix_sisdr_values
+        )
 
         if track_sisdr is not None:
-            sisdr_scores.append(track_sisdr)
+            sisdr_scores.append(
+                track_sisdr
+            )
 
         if track_sisar is not None:
-            sisar_scores.append(track_sisar)
+            sisar_scores.append(
+                track_sisar
+            )
 
         if track_sisdri is not None:
-            sisdri_scores.append(track_sisdri)
+            sisdri_scores.append(
+                track_sisdri
+            )
 
         if track_mix_sisdr is not None:
-            mix_sisdr_scores.append(track_mix_sisdr)
-
-        # ========================
-        # SUMMARY POR MODELO
-        # ========================
-        baseline_summary = load_baseline_summary(num_sources)
-
-        baseline_sisdr = None
-        baseline_sisar = None
-
-        if baseline_summary is not None:
-            baseline_sisdr = baseline_summary.get("si_sdr_mean")
-            baseline_sisar = baseline_summary.get("si_sar_mean")
-
-        model_sisdr_mean = mean_or_none(sisdr_scores)
-        model_sisar_mean = mean_or_none(sisar_scores)
-        model_sisdri_mean = mean_or_none(sisdri_scores)
-        model_mix_sisdr_mean = mean_or_none(mix_sisdr_scores)
-
-        summary = {
-            "model": model_name,
-            "version": config.config.get("TRAIN_VERSION", "v2"),
-            "sources": int(num_sources),
-            "checkpoint": str(ckpt_path),
-
-            "si_sdr_mean": model_sisdr_mean,
-            "si_sdr_median": median_or_none(sisdr_scores),
-            "si_sdr_std": std_or_none(sisdr_scores),
-
-            "si_sar_mean": model_sisar_mean,
-            "si_sar_median": median_or_none(sisar_scores),
-            "si_sar_std": std_or_none(sisar_scores),
-
-            "si_sdr_i_mean": model_sisdri_mean,
-            "si_sdr_i_median": median_or_none(sisdri_scores),
-            "si_sdr_i_std": std_or_none(sisdri_scores),
-
-            "mix_si_sdr_mean_from_tracks": model_mix_sisdr_mean,
-
-            "num_tracks": len(sisdr_scores),
-
-            "baseline_mixture_si_sdr": baseline_sisdr,
-            "baseline_mixture_si_sar": baseline_sisar,
-
-            "beats_mixture_baseline": (
-                bool(model_sisdr_mean > baseline_sisdr)
-                if model_sisdr_mean is not None and baseline_sisdr is not None
-                else None
-            ),
-
-            "beats_mixture_baseline_by_sisdri": (
-                bool(model_sisdri_mean > 0)
-                if model_sisdri_mean is not None
-                else None
-            ),
-
-            "config": training_config_snapshot(model_name, num_sources),
-        }
-
-        with open(model_results_dir / "summary.json", "w") as f:
-            json.dump(summary, f, indent=4)
-
-        print("\nSummary:", summary)    
-        print(f"\n========== {model_name} ==========")
-        print(f"\n--- Sources: {num_sources} ---")
-        config.config["MODEL_NUM_SOURCES"] = int(num_sources)
-        ckpt_dir = resolve_checkpoint_dir(model_name, num_sources)
-        best_ckpt = load_best_model(ckpt_dir)
-        ckpt_path = ckpt_dir / best_ckpt
-
-        print("Checkpoint:", ckpt_path)
-
-        model = load_model(model_name, num_sources,checkpoint_path=ckpt_path)
-
-        model_results_dir = eval_results_dir(model_name, num_sources)
-        model_results_dir.mkdir(parents=True, exist_ok=True)
-
-        sisdr_scores = []
-        sisar_scores = []
-        sisdri_scores = []
-        mix_sisdr_scores = []
-        
-        for i, item in enumerate(dataset):
-
-            print(f"\nTrack {i}")
-
-            mixture = load_audio(item['mixture'])
-            sources = {k: load_audio(v) for k, v in item['sources'].items()}
-
-            estimates = run_inference(model, mixture, num_sources)
-
-            # ========================
-            # FORMATEAR SEGÚN SOURCES
-            # ========================
-            if num_sources == 2:
-
-                estimates_dict = {
-                    "vocals": estimates[0],
-                    "accompaniment": estimates[1]
-                }
-
-                sources_dict = {
-                    "vocals": sources["vocals"],
-                    "accompaniment": (
-                        sources["bass"] +
-                        sources["drums"] +
-                        sources["other"]
-                    )
-                }
-
-            else:
-                keys = ['vocals', 'bass', 'drums', 'other']
-                estimates_dict = dict(zip(keys, estimates))
-                sources_dict = sources
-
-            # ========================
-            # EVALUACIÓN, NORMALIZAR CANALES Y LONGITUD
-            # ========================
-
-            for key in sources_dict:
-                sources_dict[key] = ensure_mono_2d(sources_dict[key])
-
-            for key in estimates_dict:
-                estimates_dict[key] = ensure_mono_2d(estimates_dict[key])
-
-            common_len = crop_all_to_same_length(
-            list(sources_dict.values()) + list(estimates_dict.values())
+            mix_sisdr_scores.append(
+                track_mix_sisdr
             )
 
-            print("[EVAL SHAPES]")
-            for k, v in sources_dict.items():
-                print("REF", k, v.audio_data.shape)
-            for k, v in estimates_dict.items():
-                print("EST", k, v.audio_data.shape)
-            print("common_len:", common_len)
-            
-            evaluator = nussl.evaluation.BSSEvalScale(
-                list(sources_dict.values()),
-                list(estimates_dict.values()),
-                source_labels=list(sources_dict.keys()),
+    # =========================================================
+    # SUMMARY
+    # =========================================================
+
+    baseline_summary = load_baseline_summary(
+        num_sources
+    )
+
+    baseline_sisdr = None
+    baseline_sisar = None
+
+    if baseline_summary is not None:
+        baseline_sisdr = baseline_summary.get(
+            "si_sdr_mean"
+        )
+
+        baseline_sisar = baseline_summary.get(
+            "si_sar_mean"
+        )
+
+    model_sisdr_mean = mean_or_none(
+        sisdr_scores
+    )
+
+    model_sisar_mean = mean_or_none(
+        sisar_scores
+    )
+
+    model_sisdri_mean = mean_or_none(
+        sisdri_scores
+    )
+
+    model_mix_sisdr_mean = mean_or_none(
+        mix_sisdr_scores
+    )
+
+    summary = {
+        "model": model_name,
+        "version": config.config.get(
+            "TRAIN_VERSION",
+            "v2",
+        ),
+        "sources": num_sources,
+        "checkpoint": str(ckpt_path),
+
+        "si_sdr_mean": model_sisdr_mean,
+        "si_sdr_median": median_or_none(
+            sisdr_scores
+        ),
+        "si_sdr_std": std_or_none(
+            sisdr_scores
+        ),
+
+        "si_sar_mean": model_sisar_mean,
+        "si_sar_median": median_or_none(
+            sisar_scores
+        ),
+        "si_sar_std": std_or_none(
+            sisar_scores
+        ),
+
+        "si_sdr_i_mean": model_sisdri_mean,
+        "si_sdr_i_median": median_or_none(
+            sisdri_scores
+        ),
+        "si_sdr_i_std": std_or_none(
+            sisdri_scores
+        ),
+
+        "mix_si_sdr_mean_from_tracks":
+            model_mix_sisdr_mean,
+
+        "num_tracks": len(
+            sisdr_scores
+        ),
+
+        "baseline_mixture_si_sdr":
+            baseline_sisdr,
+
+        "baseline_mixture_si_sar":
+            baseline_sisar,
+
+        "beats_mixture_baseline": (
+            bool(
+                model_sisdr_mean
+                > baseline_sisdr
             )
+            if (
+                model_sisdr_mean is not None
+                and baseline_sisdr is not None
+            )
+            else None
+        ),
 
-            scores = evaluator.evaluate()
+        "beats_mixture_baseline_by_sisdri": (
+            bool(model_sisdri_mean > 0)
+            if model_sisdri_mean is not None
+            else None
+        ),
 
-            # ========================
-            # GUARDAR JSON
-            # ========================
-            out_file = model_results_dir / f"track_{i}.json"
-            with open(out_file, "w") as f:
-                json.dump(scores, f, indent=4)
+        "config": training_config_snapshot(
+            model_name,
+            num_sources,
+        ),
+    }
 
-            # ========================
-            # MÉTRICAS
-            # ========================
-            sisdr_values = metric_values_from_scores(scores, "SI-SDR")
-            sisar_values = metric_values_from_scores(scores, "SI-SAR")
-            sisdri_values = metric_values_from_scores(scores, "SI-SDRi")
-            mix_sisdr_values = metric_values_from_scores(scores, "MIX-SI-SDR")
+    summary_path = (
+        model_results_dir
+        / "summary.json"
+    )
 
-            track_sisdr = mean_or_none(sisdr_values)
-            track_sisar = mean_or_none(sisar_values)
-            track_sisdri = mean_or_none(sisdri_values)
-            track_mix_sisdr = mean_or_none(mix_sisdr_values)
+    with open(
+        summary_path,
+        "w",
+        encoding="utf-8",
+    ) as f:
+        json.dump(
+            summary,
+            f,
+            indent=4,
+            ensure_ascii=False,
+        )
 
-            if track_sisdr is not None:
-                sisdr_scores.append(track_sisdr)
+    print("\nSummary:", summary)
+    print(
+        f"Resultados guardados en: "
+        f"{model_results_dir.resolve()}"
+    )
 
-            if track_sisar is not None:
-                sisar_scores.append(track_sisar)
-
-            if track_sisdri is not None:
-                sisdri_scores.append(track_sisdri)
-
-            if track_mix_sisdr is not None:
-                mix_sisdr_scores.append(track_mix_sisdr)
-
-        # ========================
-        # SUMMARY POR MODELO
-        # ========================
-        baseline_summary = load_baseline_summary(num_sources)
-
-        baseline_sisdr = None
-        baseline_sisar = None
-
-        if baseline_summary is not None:
-            baseline_sisdr = baseline_summary.get("si_sdr_mean")
-            baseline_sisar = baseline_summary.get("si_sar_mean")
-
-        model_sisdr_mean = mean_or_none(sisdr_scores)
-        model_sisar_mean = mean_or_none(sisar_scores)
-        model_sisdri_mean = mean_or_none(sisdri_scores)
-        model_mix_sisdr_mean = mean_or_none(mix_sisdr_scores)
-
-        summary = {
-            "model": model_name,
-            "version": config.config.get("TRAIN_VERSION", "v2"),
-            "sources": int(num_sources),
-            "checkpoint": str(ckpt_path),
-
-            "si_sdr_mean": model_sisdr_mean,
-            "si_sdr_median": median_or_none(sisdr_scores),
-            "si_sdr_std": std_or_none(sisdr_scores),
-
-            "si_sar_mean": model_sisar_mean,
-            "si_sar_median": median_or_none(sisar_scores),
-            "si_sar_std": std_or_none(sisar_scores),
-
-            "si_sdr_i_mean": model_sisdri_mean,
-            "si_sdr_i_median": median_or_none(sisdri_scores),
-            "si_sdr_i_std": std_or_none(sisdri_scores),
-
-            "mix_si_sdr_mean_from_tracks": model_mix_sisdr_mean,
-
-            "num_tracks": len(sisdr_scores),
-
-            "baseline_mixture_si_sdr": baseline_sisdr,
-            "baseline_mixture_si_sar": baseline_sisar,
-
-            "beats_mixture_baseline": (
-                bool(model_sisdr_mean > baseline_sisdr)
-                if model_sisdr_mean is not None and baseline_sisdr is not None
-                else None
-            ),
-
-            "beats_mixture_baseline_by_sisdri": (
-                bool(model_sisdri_mean > 0)
-                if model_sisdri_mean is not None
-                else None
-            ),
-
-            "config": training_config_snapshot(model_name, num_sources),
-        }
-
-        with open(model_results_dir / "summary.json", "w") as f:
-            json.dump(summary, f, indent=4)
-
-        print("\nSummary:", summary)
+    return summary
     
 # ========================
 # ENTRYPOINT

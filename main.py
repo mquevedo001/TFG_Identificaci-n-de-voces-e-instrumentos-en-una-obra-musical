@@ -1,16 +1,15 @@
-from pipeline.evaluation import evaluation
-from pipeline.train import training
-from commons.generation import generate_mix_generations
-from commons.folder_utils import * 
-from data.test_loader import load_test_dataset
-from config import config
-from scripts.evaluate_models import evaluate_model
-from pipeline.deployment import deploy
 import argparse
-import nussl
-from pathlib import Path
 import torch
 import os
+
+from pathlib import Path
+
+from scripts.evaluate_models import evaluate_model
+from pipeline.deployment import deploy
+from data.test_loader import load_test_dataset
+from commons.folder_utils import * 
+from config import config
+from pipeline.train import training
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -58,7 +57,7 @@ def main():
         
         dataset = load_test_dataset(TEST_DATA_PATH)
         
-        evaluate_model(str(args.lossfn),dataset,source_counts=int(args.numsources))
+        evaluate_model(str(args.lossfn),dataset,source_counts=int(args.numsources),)
         
         
     elif args.mode == 'deploy':

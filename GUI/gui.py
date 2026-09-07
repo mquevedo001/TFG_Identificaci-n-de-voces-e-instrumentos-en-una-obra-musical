@@ -53,9 +53,7 @@ from GUI.gui_aux_functions import get_parameter_help_text
 
 from commons.metrics import run_training_and_capture_logs
 from commons.runtime import resolve_device
-from commons.experiment_utils import checkpoint_dir
 from scripts.evaluate_models import evaluate_checkpoint
-from pipeline.evaluation import evaluation
 from pipeline.deployment import deploy
 from data.test_loader import load_test_dataset
 from config import config
@@ -1271,26 +1269,28 @@ with col_audio:
 
             with capture_logs_to_gui(console_placeholder, "Iniciando evaluación del modelo"):
 
+                eval_run_id = time.strftime("%Y%m%d_%H%M%S")
                 dataset = load_test_dataset(config.config['TEST_DATA_PATH'])
+                eval_output_dir = (config.config['GUI_RESULTS_ROOT'] / f"evaluation_{eval_run_id}")
 
-                separator = load_separator(
-                    checkpoint_path,
-                    int(st.session_state.get("loaded_num_sources", normalized_num_sources)),
-                    st.session_state.get("loaded_loss_name", normalized_loss_name),
-                )
-
-                evaluate_checkpoint(
+                summary = evaluate_checkpoint(
                     model_name= str(st.session_state.get("loaded_loss_name", normalized_loss_name)),
                     num_sources=int(st.session_state.get("loaded_num_sources", normalized_num_sources)),
                     dataset=dataset,
                     checkpoint_path=checkpoint_path,
-                    output_dir=None
+                    output_dir=eval_output_dir
                 )
+
+
 
             append_console("Evaluación finalizada correctamente.")
             render_console(console_placeholder, height=200)
 
             st.success("Evaluación finalizada.")
+            st.caption("Resultados de evaluación:" f"`{eval_output_dir}`")
+
+            if summary.get("si_sdr_mean") is not None: st.metric("SI-SDR medio" f"{summary['si_sdr_mean']:3f} dB")
+            if summary.get("si_sdr_i_mean") is not None: st.metric("SI-SDRi medio" f"{summary['si_sdr_i_mean']:.3f} dB")
 
     else:
         st.info("Sube un archivo para interactuar con el modelo.")

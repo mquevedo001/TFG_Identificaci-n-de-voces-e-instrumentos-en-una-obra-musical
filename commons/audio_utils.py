@@ -134,9 +134,6 @@ def extract_val_loss(file):
 
 
 def load_best_model(stems_folder_model_path):
-    device = resolve_device(    config.config.get("DEVICE", "auto"))
-
-
 
     checkpoint_names = [ f for f in os.listdir(stems_folder_model_path) if (f.endswith(".pt") or f.endswith(".pth"))]
 
@@ -327,22 +324,22 @@ def load_model(loss_fn, num_sources,checkpoint_path=None):
     # -----------------------------
     # ARCH INFERENCE
     # -----------------------------
-    inferred_hidden = infer_arch_from_state_dict(state_dict)
-
-    hidden_size = inferred_hidden['hidden_size']
-    nf = inferred_hidden['num_features']
-    bidirectional = inferred_hidden['bidirectional']
+    inferred_hidden         = infer_arch_from_state_dict(state_dict)
+    num_layers              = inferred_hidden["num_layers"]
+    hidden_size             = inferred_hidden['hidden_size']
+    nf                      = inferred_hidden['num_features']
+    bidirectional           = inferred_hidden['bidirectional']
     # -----------------------------
     # MODEL BUILD
     # -----------------------------
     model = MaskInference.build(
         nf,
-        num_audio_channels      = config.config['MODEL_NUM_CHANNELS'],
+        num_audio_channels      = int(config.config['MODEL_NUM_CHANNELS']),
         hidden_size             = hidden_size,
-        num_layers              = config.config['MODEL_NUM_LAYERS'],
+        num_layers              = num_layers,
         bidirectional           = bidirectional,
-        dropout                 = config.config['MODEL_DROPOUT'],
-        num_sources             = num_sources,
+        dropout                 = float(config.config['MODEL_DROPOUT']),
+        num_sources             = int(num_sources),
         activation              = config.config['MODEL_ACTIVATION'],
     )
 

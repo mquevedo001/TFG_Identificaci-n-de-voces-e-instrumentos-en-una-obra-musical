@@ -201,13 +201,14 @@ def live_console():
 
 def stft_param_selection():
 
+    st.subheader('Parámetros de la formación de transformadas de Fourier')
+
+    window_length = st.selectbox("Tamaño de la ventana STFT", options=[512, 1024, 2048, 4096],index=[512, 1024, 2048, 4096].index(config.config.get('STFT_WINDOW_LENGTH')),key='stft_window_input')
 
     hop_options = [window_length // 2 , window_length // 4]
     current_hop = int(config.config["STFT_HOP_LENGTH"])
     hop_index = (hop_options.index(current_hop) if current_hop in hop_options else 1)
-    st.subheader('Parámetros de la formación de transformadas de Fourier')
-
-    window_length = st.selectbox("Tamaño de la ventana STFT", options=[512, 1024, 2048, 4096],index=[512, 1024, 2048, 4096].index(config.config.get('STFT_WINDOW_LENGTH')),key='stft_window_input')
+    
     st.selectbox("Desplazamiento entre ventanas STFT",options=hop_options,index=hop_index,key='stft_hop_length_input')
     st.selectbox("Tipo de ventana utilizada para la STFT",options=["sqrt_hann", "hann", "hamming", "blackman", "bartlett"],index=0,key='stft_window_type_input')
                  
