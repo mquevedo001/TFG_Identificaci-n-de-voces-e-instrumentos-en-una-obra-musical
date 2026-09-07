@@ -39,7 +39,7 @@ def deploy(output_dir=None, audio_path=None,checkpoint_path=None):
     print("bidirectional:", config.config['MODEL_BIDIRECTIONAL'])
     print("num_layers:",    config.config['MODEL_NUM_LAYERS'])
 
-    separator = load_model(loss_fn=loss_fn, num_sources=num_sources)
+    separator = load_model(loss_fn=loss_fn, num_sources=num_sources, checkpoint_path=checkpoint_path)
     estimates = run_inference(separator, audio_signal, num_sources)
 
     base_out.mkdir(parents=True, exist_ok=True)

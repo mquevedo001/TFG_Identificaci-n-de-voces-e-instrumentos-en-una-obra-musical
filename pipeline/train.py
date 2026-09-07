@@ -97,7 +97,7 @@ def build_loss_kwargs(loss_type, batch):
     loss_type = str(loss_type).lower()
     kwargs = {}
 
-    if loss_type == 'lpsa_phase' and ('mixture_phase' or 'source_phase' not in batch): raise ValueError("El batch no contiene 'mixture_phase' o 'source_phase'.")
+    if loss_type == 'lpsa_phase' and ('mixture_phase' not in batch or 'source_phase' not in batch): raise ValueError("El batch no contiene 'mixture_phase' o 'source_phase'.")
     if loss_type in ['lmrs','l_mrs'] and 'mixture_magnitude' not in batch: raise ValueError("El batch no contiene 'mixture_magnitude'.")
     if loss_type == 'l_mrs' and 'mixture_phase' not in batch: raise ValueError('El batch no contiene mixture_phase.')
 
@@ -163,7 +163,6 @@ def training():
     # Loss function 
     # ----------------------------
     loss_type = str(config.config['MODEL_LOSS_FUNCTION']).lower()
-    effective_batch_size = 100
 
     if loss_type == 'deep_feature_emd' or loss_type == 'deep_feature':actual_batch_size = 4
     else: actual_batch_size = 32
@@ -307,7 +306,7 @@ def training():
     # ============================================================
 
     early_stopper = EarlyStopping(
-        patience                    = config.config['EARLY_STOPPING_RATE'],
+        patience                    = config.config['EARLY_STOPPING_PATIENCE'],
         score_function              = score_function,
         trainer                     = trainer
     )

@@ -64,6 +64,8 @@ def checkpoint_dir(loss_name: str, num_sources: int) -> Path:
     )
 
 
+def has_checkpoint(path: Path) -> bool:
+    return path.exists() and (any(path.glob("*.pth")) or any(path.glob("*.pt")))
 def legacy_checkpoint_dir(loss_name: str, num_sources: int) -> Path:
     return (
         Path("checkpoints")
@@ -78,12 +80,11 @@ def resolve_checkpoint_dir(loss_name: str, num_sources: int) -> Path:
     Primero busca V2. Si no existe, permite seguir usando checkpoints V1.
     """
     v2 = checkpoint_dir(loss_name, num_sources)
-    if v2.exists():
-        return v2
-
     legacy = legacy_checkpoint_dir(loss_name, num_sources)
-    if legacy.exists():
-        return legacy
+    
+    if v2.exists(): return v2
+    if has_checkpoint(legacy): return legacy
+        
 
     return v2
 
