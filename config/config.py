@@ -11,7 +11,6 @@ config = {
     "RESULTS_ROOT": str(PROJECT_ROOT / "resultados_modelos"),   # Nombre de la carpeta de resultados
     "RESULTS_EVAL_GROUP": "evaluate_v2",                        # Nombre del grupo de evaluación
     "TEST_DATA_PATH": PROJECT_ROOT / "datasets" / "representative_test",
-
     "DEVICE": "auto",                                           # Dispositivo donde se ejecuta el modelo ('cuda' para GPU, 'cpu' para procesador).
 
     "MAX_MIXTURES": int(1e8),                                   # Máximo número de mezclas que se generarán o procesarán (en get_data, para entrenar con tantas muestras como sea posible).

@@ -1271,7 +1271,7 @@ with col_audio:
 
                 eval_run_id = time.strftime("%Y%m%d_%H%M%S")
                 dataset = load_test_dataset(config.config['TEST_DATA_PATH'])
-                eval_output_dir = (config.config['GUI_RESULTS_ROOT'] / f"evaluation_{eval_run_id}")
+                eval_output_dir = (GUI_RESULTS_ROOT/ f"evaluation_{eval_run_id}")
 
                 summary = evaluate_checkpoint(
                     model_name= str(st.session_state.get("loaded_loss_name", normalized_loss_name)),
@@ -1287,10 +1287,10 @@ with col_audio:
             render_console(console_placeholder, height=200)
 
             st.success("Evaluación finalizada.")
-            st.caption("Resultados de evaluación:" f"`{eval_output_dir}`")
+            st.caption("Resultados de evaluación:", f"`{eval_output_dir}`")
 
-            if summary.get("si_sdr_mean") is not None: st.metric("SI-SDR medio" f"{summary['si_sdr_mean']:3f} dB")
-            if summary.get("si_sdr_i_mean") is not None: st.metric("SI-SDRi medio" f"{summary['si_sdr_i_mean']:.3f} dB")
+            if summary.get("si_sdr_mean") is not None: st.metric("SI-SDR medio", f"{summary['si_sdr_mean']:3f} dB")
+            if summary.get("si_sdr_i_mean") is not None: st.metric("SI-SDRi medio", f"{summary['si_sdr_i_mean']:.3f} dB")
 
     else:
         st.info("Sube un archivo para interactuar con el modelo.")

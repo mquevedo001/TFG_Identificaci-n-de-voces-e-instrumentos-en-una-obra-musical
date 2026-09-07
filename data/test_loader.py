@@ -7,27 +7,12 @@ def load_test_dataset(root):
     tracks = []
 
     for track_dir in sorted(root.iterdir()):
-        if not track_dir.is_dir():
-            continue
+        if not track_dir.is_dir():continue
+            
+        required = ["mixture.wav","vocals.wav","bass.wav","drums.wav","other.wav"]
+        missing = [filename for filename in required if not (track_dir / filename).exists()]
 
-        required = [
-            "mixture.wav",
-            "vocals.wav",
-            "bass.wav",
-            "drums.wav",
-            "other.wav",
-        ]
-
-        missing = [
-            filename
-            for filename in required
-            if not (track_dir / filename).exists()
-        ]
-
-        if missing:
-            raise FileNotFoundError(
-                f"Faltan archivos en {track_dir}: {missing}"
-            )
+        if missing:raise FileNotFoundError(f"Faltan archivos en {track_dir}: {missing}")
 
         tracks.append({
             "mixture": track_dir / "mixture.wav",

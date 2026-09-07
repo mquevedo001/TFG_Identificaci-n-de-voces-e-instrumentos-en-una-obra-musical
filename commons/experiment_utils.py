@@ -68,12 +68,8 @@ def checkpoint_dir(loss_name: str, num_sources: int) -> Path:
 def has_checkpoint(path: Path) -> bool:
     return path.exists() and (any(path.glob("*.pth")) or any(path.glob("*.pt")))
 def legacy_checkpoint_dir(loss_name: str, num_sources: int) -> Path:
-    return (
-        Path("checkpoints")
-        / "Mis_modelos"
-        / f"{loss_name} checkpoints"
-        / f"{int(num_sources)}stems"
-    )
+    return (Path(config.config["CHECKPOINTS_ROOT"]) / "Mis modelos" / f"{loss_name} checkpoints" / f"{int(num_sources)}stems")
+
 
 
 def resolve_checkpoint_dir(loss_name: str, num_sources: int) -> Path:

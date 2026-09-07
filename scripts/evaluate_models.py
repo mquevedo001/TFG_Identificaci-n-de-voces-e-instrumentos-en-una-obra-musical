@@ -25,23 +25,24 @@ TEST_DATA_PATH = Path("datasets/representative_test")
 CHECKPOINTS_ROOT = Path("checkpoints")
 RESULTS_ROOT = Path("resultados_modelos")
 
-MODELS = [
-    
-    "log_compressed_l2",
-    "logl2",
-    "l1_freq",
-    "logl1",
-    "mask_l1",
-#    "lpsa",
-    "l1",
-    "l2",
-    "l2_freq",
-    "log_mag",
-    "deep_feature",
-    "deep_feature_emd",
-  #  "l_mrs",
-    "lpsa_phase",
-]
+EVALUATION_PLAN = {
+    "log_compressed_l2": (2, 4),
+    "logl2": (2, 4),
+    "l1_freq": (2, 4),
+    "logl1": (2, 4),
+    "mask_l1": (2, 4),
+    "l1": (2, 4),
+    "l2": (2, 4),
+    "l2_freq": (2, 4),
+    "log_mag": (2, 4),
+    "deep_feature": (2, 4),
+    "deep_feature_emd": (2, 4),
+    "l_mrs": (2, 4),
+    "lpsa_phase": (2, 4),
+
+    # Solo existe evaluación final válida en 2 stems.
+    "lpsa": (2,),
+}
 MODELS_PROVISIONAL = [
     "logl1",
     "l1_freq",
@@ -620,5 +621,5 @@ def evaluate_checkpoint(
 if __name__ == "__main__":
     dataset = load_test_dataset(TEST_DATA_PATH)
 
-    for model_name in MODELS_V2:
-        evaluate_model(model_name, dataset)
+    for model_name,source_counts in EVALUATION_PLAN.items():evaluate_model(model_name, dataset,source_counts=source_counts)
+        
