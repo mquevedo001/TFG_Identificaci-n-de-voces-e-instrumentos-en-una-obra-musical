@@ -2,40 +2,18 @@ from pathlib import Path
 import json
 from config import config
 
-MAIN_LOSSES = [
-    "l1",
-    "l2",
-    "l1_freq",
-    "l2_freq",
-    "logl1",
-    "logl2",
-    "log_mag",
-    "log_compressed_l2",
-    "lpsa",
-    "mask_l1",
-]
-
-EXPERIMENTAL_LOSSES = [
-    "deep_feature",
-    "deep_feature_emd",
-]
-
-ADVANCED_LOSSES = [
-    "lmrs",
-    "l_mrs",
-    "lpsa_phase",
-]
-
+MAIN_LOSSES = ["l1","l2","l1_freq","l2_freq","logl1","logl2","log_mag","log_compressed_l2","lpsa","mask_l1"]
+EXPERIMENTAL_LOSSES = [ "deep_feature", "deep_feature_emd"] 
+ADVANCED_LOSSES = ["lmrs","l_mrs","lpsa_phase",]
 
 
 def get_loss_group(loss_name: str) -> str:
+
     loss_name = str(loss_name).lower()
 
-    if loss_name in EXPERIMENTAL_LOSSES:
-        return "experimental"
-
-    if loss_name in ADVANCED_LOSSES:
-        return "advanced"
+    if loss_name in EXPERIMENTAL_LOSSES: return "experimental"
+    if loss_name in ADVANCED_LOSSES: return "advanced"
+        
 
     return "main"
 
@@ -56,38 +34,26 @@ def checkpoint_dir(loss_name: str, num_sources: int) -> Path:
     group_root = config.config.get("CHECKPOINTS_GROUP", "Mis_modelos_v2")
     loss_group = get_loss_group(loss_name)
 
-    return (
-        Path(config.config["CHECKPOINTS_ROOT"])
-        / group_root
-        / loss_group
-        / f"{loss_name} checkpoints"
-        / f"{num_sources}stems"
-    )
+    return ( Path(config.config["CHECKPOINTS_ROOT"]) / group_root / loss_group / f"{loss_name} checkpoints" / f"{num_sources}stems")
 
 
 def has_checkpoint(path: Path) -> bool:
     return path.exists() and (any(path.glob("*.pth")) or any(path.glob("*.pt")))
 def legacy_checkpoint_dir(loss_name: str, num_sources: int) -> Path:
-    return (Path(config.config["CHECKPOINTS_ROOT"]) / "Mis modelos" / f"{loss_name} checkpoints" / f"{int(num_sources)}stems")
+    return (Path(config.config["CHECKPOINTS_ROOT"]) / "Mis_modelos" / f"{loss_name} checkpoints" / f"{int(num_sources)}stems")
 
 
 
 def resolve_checkpoint_dir(loss_name: str, num_sources: int) -> Path:
+
     v2 = checkpoint_dir(loss_name, num_sources)
     legacy = legacy_checkpoint_dir(loss_name, num_sources)
 
-    if has_checkpoint(v2):
-        return v2
+    if has_checkpoint(v2): return v2
+    if has_checkpoint(legacy):  return legacy
+       
 
-    if has_checkpoint(legacy):
-        return legacy
-
-    raise FileNotFoundError(
-        f"No se encontró ningún checkpoint para "
-        f"loss={loss_name}, sources={num_sources}. "
-        f"Buscado en '{v2}' y '{legacy}'."
-    )
-
+    raise FileNotFoundError( f"No se encontró ningún checkpoint para " f"loss={loss_name}, sources={num_sources}. " f"Buscado en '{v2}' y '{legacy}'.")
 
 def eval_results_dir(loss_name: str, num_sources: int) -> Path:
     return (get_results_base()/ get_loss_group(loss_name)/ loss_name/ f"{int(num_sources)}stems" )

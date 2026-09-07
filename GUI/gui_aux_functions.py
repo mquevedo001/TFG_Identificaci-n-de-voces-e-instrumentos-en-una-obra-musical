@@ -216,9 +216,10 @@ def stft_param_selection():
     st.selectbox("Tipo de ventana utilizada para la STFT",options=["sqrt_hann", "hann", "hamming", "blackman", "bartlett"],index=0,key='stft_window_type_input')
                  
 def train_param_selection():
+
     default_batch = get_default_batch_size()
     current_override = config.config.get("BATCH_SIZE_OVERRIDE",None)
-    display_batch = (int(current_override) if current_override is None else default_batch)
+    display_batch = (int(current_override) if current_override is not None else default_batch)
     st.subheader("Parámetros de entrenamiento")
 
     st.number_input("Learning Rate", value=float(config.config.get('LEARNING_RATE', 0.001)),format="%.5f", key='learning_rate_input')                 
@@ -239,6 +240,9 @@ def mix_gen_param_selection():
 
 def model_param_selection():
 
+    evaluator_options = [0, 5,10, 50, 100, 500, 1000]
+    current_frames = int(config.config.get("EVALUATOR_FRAMES",10))
+
     st.subheader('Parámetros intrínsecos modelo')
     st.selectbox("Número de canáles de entrada (Mono/Stereo)",options=[1,2], key='num_channels_input')
 
@@ -246,7 +250,7 @@ def model_param_selection():
     st.number_input("Early stopping patience",min_value=1,value=int(config.config["EARLY_STOPPING_PATIENCE"]),key="early_stopping_patience_input")
 
     st.selectbox("Funcion de activación para la capa de salida",options=['softmax', 'relu', 'sigmoid', 'leaky_relu'],index=['softmax', 'relu', 'sigmoid', 'leaky_relu'].index(config.config['MODEL_ACTIVATION']),key='activation_func_input')            
-    st.selectbox("Numero de frames para la evaluación del modelo",options=[0, 5,10, 50, 100, 500, 1000],index=[0, 5, 50, 100, 500, 1000].index(int(config.config.get("EVALUATOR_FRAMES",10))),key='evaluator_frames_input')
+    st.selectbox("Numero de frames para la evaluación del modelo",options=evaluator_options,index=evaluator_options.index(current_frames),key='evaluator_frames_input')
                  
                  
 def fx_param_selection():

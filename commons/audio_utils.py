@@ -11,29 +11,34 @@ from commons.experiment_utils import resolve_checkpoint_dir
 from commons.runtime import resolve_device
 
 def spectral_convergence(y_hat, y, eps=1e-8):
+
     num = torch.norm(torch.abs(y_hat) - torch.abs(y), p='fro')
     denom = torch.norm(torch.abs(y), p='fro') + eps
+
     return num / denom
 
 
 def align_estimates(estimates):
+
     min_length = min([s.signal_length for s in estimates])
     for est in estimates:
         est.truncate_samples(min_length)
+
     return estimates
 
 def print_stem_diagnostics(audio_signal, sources_dict):
-    import numpy as np
 
     mix = audio_signal.audio_data.squeeze()
-    if mix.ndim == 2:
-        mix = mix.mean(axis=0) if mix.shape[0] < mix.shape[1] else mix.mean(axis=1)
 
+    if mix.ndim == 2: mix = mix.mean(axis=0) if mix.shape[0] < mix.shape[1] else mix.mean(axis=1)
+        
     print("\n[STEM DIAGNOSTICS]")
+
     for name, sig in sources_dict.items():
         y = sig.audio_data.squeeze()
-        if y.ndim == 2:
-            y = y.mean(axis=0) if y.shape[0] < y.shape[1] else y.mean(axis=1)
+
+        if y.ndim == 2: y = y.mean(axis=0) if y.shape[0] < y.shape[1] else y.mean(axis=1)
+            
 
         n = min(len(mix), len(y))
         mix_n = mix[:n]
@@ -51,10 +56,10 @@ def build_complex_from_mag_and_phase(magnitude, mixture_phase):
 
     devuelve:      [B, S, C, F, T] complejo
     """
-    if magnitude.dim() != 5:
-        raise ValueError(f"magnitude shape inesperada: {magnitude.shape}")
-    if mixture_phase.dim() != 3:
-        raise ValueError(f"mixture_phase shape inesperada: {mixture_phase.shape}")
+    if magnitude.dim() != 5: raise ValueError(f"magnitude shape inesperada: {magnitude.shape}")
+        
+    if mixture_phase.dim() != 3: raise ValueError(f"mixture_phase shape inesperada: {mixture_phase.shape}")
+        
 
     # [B, F, T] -> [B, T, F]
     phase = mixture_phase.permute(0, 2, 1)
@@ -104,14 +109,14 @@ def reconstruct_waveforms_from_mag_phase(magnitude, mixture_phase):
                 spec = complex_spec[b, s, c]  # [F, T]
                 wav = torch.istft(
                     spec,
-                    n_fft=n_fft,
-                    hop_length=hop_length,
-                    win_length=win_length,
-                    window=window,
-                    center=True,
-                    normalized=False,
-                    onesided=True,
-                    return_complex=False
+                    n_fft           = n_fft,
+                    hop_length      = hop_length,
+                    win_length      = win_length,
+                    window          = window,
+                    center          = True,
+                    normalized      = False,
+                    onesided        = True,
+                    return_complex  = False
                 )
                 source_channels.append(wav)
             source_channels = torch.stack(source_channels, dim=0)  # [C, N]
@@ -127,9 +132,11 @@ def reconstruct_waveforms_from_mag_phase(magnitude, mixture_phase):
 # -----------------------------
 
 def extract_val_loss(file):
+
     match = re.search(r'val_loss=([-+]?\d*\.\d+|\d+)', file)
-    if match:
-        return float(match.group(1))
+
+    if match: return float(match.group(1))
+        
     return float('inf')
 
 
@@ -149,10 +156,12 @@ def load_best_model(stems_folder_model_path):
 # -----------------------------
 
 def print_checkpoint_keys(checkpoint):
+
     print("\n[CHECKPOINT KEYS]")
+
     if isinstance(checkpoint, dict):
-        for k in checkpoint.keys():
-            print(k)
+        for k in checkpoint.keys(): print(k)
+            
     else:
         print("Checkpoint no es dict:", type(checkpoint))
 
@@ -165,6 +174,7 @@ def get_state_dict_from_checkpoint(checkpoint):
     - state_dict plano
     """
     if isinstance(checkpoint, dict):
+
         if "model" in checkpoint and isinstance(checkpoint["model"], dict):return checkpoint["model"]
         if "state_dict" in checkpoint: return checkpoint["state_dict"]
             
@@ -188,41 +198,35 @@ def infer_arch_from_state_dict(state_dict):
     weight_hh_key = None
 
     for k in state_dict.keys():
-        if "recurrent_stack.rnn.weight_ih_l0" in k and "reverse" not in k:
-            weight_ih_key = k
-        if "recurrent_stack.rnn.weight_hh_l0" in k and "reverse" not in k:
-            weight_hh_key = k
+        if "recurrent_stack.rnn.weight_ih_l0" in k and "reverse" not in k: weight_ih_key = k
+            
+        if "recurrent_stack.rnn.weight_hh_l0" in k and "reverse" not in k: weight_hh_key = k
+            
 
-    if weight_ih_key is None or weight_hh_key is None:
-        raise ValueError(
-            "No se han encontrado pesos RNN l0 en el checkpoint. "
-            "No puedo inferir la arquitectura."
-        )
+    if weight_ih_key is None or weight_hh_key is None: raise ValueError( "No se han encontrado pesos RNN l0 en el checkpoint. " "No puedo inferir la arquitectura." ) 
+
 
     input_size = int(state_dict[weight_ih_key].shape[1])
     hidden_size = int(state_dict[weight_hh_key].shape[1])
     gate_rows = int(state_dict[weight_ih_key].shape[0])
     gate_multiplier = gate_rows // hidden_size
 
-    bidirectional = any(
-        "recurrent_stack.rnn.weight_ih_l0_reverse" in k
-        for k in state_dict.keys()
-    )
+    bidirectional = any( "recurrent_stack.rnn.weight_ih_l0_reverse" in k for k in state_dict.keys())
 
     layer_ids = []
+
     for k in state_dict.keys():
+
         match = re.search(r"recurrent_stack\.rnn\.weight_ih_l(\d+)", k)
-        if match:
-            layer_ids.append(int(match.group(1)))
+        if match: layer_ids.append(int(match.group(1)))
+            
 
     num_layers = max(layer_ids) + 1 if layer_ids else 1
 
     num_channels = int(config.config["MODEL_NUM_CHANNELS"])
-    if input_size % num_channels != 0:
-        raise ValueError(
-            f"input_size={input_size} no divisible por num_channels={num_channels}"
-        )
 
+    if input_size % num_channels != 0: raise ValueError( f"input_size={input_size} no divisible por num_channels={num_channels}" )
+        
     num_features = input_size // num_channels
 
     print("\n[CHECKPOINT ARCH INFERENCE]")
@@ -237,8 +241,8 @@ def infer_arch_from_state_dict(state_dict):
         "num_features": num_features,
         "hidden_size": hidden_size,
         "bidirectional": bidirectional,
-        "num_layers": num_layers,
-    }
+        "num_layers": num_layers,}
+    
 
 
 def print_model_parameter_norms(model, max_print=5):
@@ -248,7 +252,9 @@ def print_model_parameter_norms(model, max_print=5):
     count = 0
 
     for name, param in model.named_parameters():
+
         if param.requires_grad:
+
             norm = param.data.norm().item()
             total_norm += norm
             count += 1
@@ -260,20 +266,22 @@ def print_model_parameter_norms(model, max_print=5):
 
 
 def print_load_report(missing, unexpected):
+
     print("\n[LOAD REPORT]")
 
     if missing:
         print(f"[WARN] Missing keys: {len(missing)}")
-        for k in missing[:10]:
-            print("  -", k)
+        for k in missing[:10]: print("  -", k)
+            
 
     if unexpected:
         print(f"[WARN] Unexpected keys: {len(unexpected)}")
-        for k in unexpected[:10]:
-            print("  -", k)
+        for k in unexpected[:10]: print("  -", k)
+            
 
 
 def compare_shapes(model, state_dict):
+    
     print("\n[SHAPE CHECK]")
 
     mismatches = 0
@@ -286,8 +294,8 @@ def compare_shapes(model, state_dict):
                 print(f"   checkpoint:{state_dict[name].shape}")
                 mismatches += 1
 
-    if mismatches == 0:
-        print("No shape mismatches detected before loading")
+    if mismatches == 0: print("No shape mismatches detected before loading")
+        
 
 
 # -----------------------------

@@ -1290,7 +1290,7 @@ with col_audio:
             st.caption( f"Resultados de evaluación: `{eval_output_dir}`")
 
             if summary.get("si_sdr_mean") is not None: st.metric("SI-SDR medio", f"{summary['si_sdr_mean']:3f} dB")
-            if summary.get("si_sdr_i_mean") is not None: st.metric("SI-SDRi medio", f"{summary['si_sdr_mean']:3f} dB")
+            if summary.get("si_sdr_i_mean") is not None: st.metric("SI-SDRi medio", f"{summary['si_sdr_i_mean']:3f} dB")
 
     else:
         st.info("Sube un archivo para interactuar con el modelo.")
