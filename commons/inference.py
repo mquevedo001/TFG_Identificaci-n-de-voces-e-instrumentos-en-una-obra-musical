@@ -2,10 +2,11 @@ import torch
 import nussl
 import numpy as np
 from config import config
+from commons.runtime import resolve_device
 
-device = torch.device(config.config.get(
-    "DEVICE", "cuda" if torch.cuda.is_available() else "cpu"
-))
+device = resolve_device(config.config.get("DEVICE", "auto"))
+    
+
 
 def run_inference(model, mixture_signal, num_sources):
     
@@ -13,25 +14,26 @@ def run_inference(model, mixture_signal, num_sources):
     model.to(device)
 
     stft_params = nussl.STFTParams(
-        window_length   = int(config.config["STFT_WINDOW_LENGTH"]),
-        hop_length      = int(config.config["STFT_HOP_LENGTH"]),
-        window_type     = config.config["STFT_WINDOW_TYPE"],
+    window_length=int(config.config["STFT_WINDOW_LENGTH"]),
+    hop_length=int(config.config["STFT_HOP_LENGTH"]),
+    window_type=config.config["STFT_WINDOW_TYPE"],
     )
+
+    if mixture_signal.num_channels > 1:
+        mixture_signal.to_mono(
+            overwrite=True,
+            keep_dims=True,
+        )
 
     mixture_signal.stft_data = None
     mixture_signal.istft_data = None
     mixture_signal.stft_params = stft_params
     mixture_signal.stft()
 
-    if mixture_signal.num_channels > 1: mixture_signal.to_mono(overwrite=True, keep_dims=True)
-        
+    mixture_stft = mixture_signal.stft_data
 
-    mixture_signal.stft()
-
-    mixture_stft = mixture_signal.stft_data  # [F, T, C]
-
-    mix_mag = np.abs(mixture_stft[:, :, 0])      # [F, T]
-    mix_phase = np.angle(mixture_stft[:, :, 0])      # [F, T]
+    mix_mag = np.abs(mixture_stft[:, :, 0])
+    mix_phase = np.angle(mixture_stft[:, :, 0])
 
     F, T = mix_mag.shape
     expected_F = stft_params.window_length // 2 + 1

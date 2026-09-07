@@ -56,7 +56,7 @@ def checkpoint_dir(loss_name: str, num_sources: int) -> Path:
     loss_group = get_loss_group(loss_name)
 
     return (
-        Path("checkpoints")
+        Path(config.config["CHECKPOINTS_ROOT"])
         / group_root
         / loss_group
         / f"{loss_name} checkpoints"
@@ -76,17 +76,20 @@ def legacy_checkpoint_dir(loss_name: str, num_sources: int) -> Path:
 
 
 def resolve_checkpoint_dir(loss_name: str, num_sources: int) -> Path:
-    """
-    Primero busca V2. Si no existe, permite seguir usando checkpoints V1.
-    """
     v2 = checkpoint_dir(loss_name, num_sources)
     legacy = legacy_checkpoint_dir(loss_name, num_sources)
-    
-    if v2.exists(): return v2
-    if has_checkpoint(legacy): return legacy
-        
 
-    return v2
+    if has_checkpoint(v2):
+        return v2
+
+    if has_checkpoint(legacy):
+        return legacy
+
+    raise FileNotFoundError(
+        f"No se encontró ningún checkpoint para "
+        f"loss={loss_name}, sources={num_sources}. "
+        f"Buscado en '{v2}' y '{legacy}'."
+    )
 
 
 def eval_results_dir(loss_name: str, num_sources: int) -> Path:

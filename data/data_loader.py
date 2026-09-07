@@ -96,7 +96,7 @@ class AddGroupedSourcePhase:
 def get_data(stft_params, max_mixtures=config.config['MAX_MIXTURES'], coherent_prob=config.config['COHERENT_PROB']):
     utils.logger()
 
-    train_folder = PROJECT_ROOT / "datasets" / "mix_generation" / "foreground_test"
+    train_folder = PROJECT_ROOT / "datasets" / "mix_generation" / "foreground_train"
     val_folder = PROJECT_ROOT / "datasets" / "mix_generation" / "foreground_valid"
 
     num_sources = config.config['MODEL_NUM_SOURCES']

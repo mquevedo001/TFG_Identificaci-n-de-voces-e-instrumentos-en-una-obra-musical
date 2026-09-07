@@ -8,6 +8,7 @@ import os
 import re
 from models.Mi_modelo.mask_inference import MaskInference
 from commons.experiment_utils import resolve_checkpoint_dir
+from commons.runtime import resolve_device
 
 def spectral_convergence(y_hat, y, eps=1e-8):
     num = torch.norm(torch.abs(y_hat) - torch.abs(y), p='fro')
@@ -133,6 +134,9 @@ def extract_val_loss(file):
 
 
 def load_best_model(stems_folder_model_path):
+    device = resolve_device(    config.config.get("DEVICE", "auto"))
+
+
 
     checkpoint_names = [ f for f in os.listdir(stems_folder_model_path) if (f.endswith(".pt") or f.endswith(".pth"))]
 
@@ -296,6 +300,8 @@ def compare_shapes(model, state_dict):
 def load_model(loss_fn, num_sources,checkpoint_path=None):
 
     sys.modules.setdefault("numpy._core", np)
+    device = resolve_device(config.config.get("DEVICE", "auto"))
+    
 
     # -----------------------------
     # LOAD CHECKPOINT FIRST 
@@ -309,10 +315,10 @@ def load_model(loss_fn, num_sources,checkpoint_path=None):
 
         if not os.path.exists(model_path): raise FileNotFoundError(f"No existe la ruta: {model_path}")
 
-        checkpoint = torch.load(model_path,map_location=config.config['DEVICE'],weights_only=True)
+        checkpoint = torch.load(model_path,map_location=device,weights_only=True)
 
     else: 
-        checkpoint = torch.load(checkpoint_path,map_location=config.config['DEVICE'],weights_only=True)
+        checkpoint = torch.load(checkpoint_path,map_location=device,weights_only=True)
     
     print_checkpoint_keys(checkpoint)
 
@@ -355,7 +361,7 @@ def load_model(loss_fn, num_sources,checkpoint_path=None):
     missing, unexpected = model.load_state_dict(state_dict, strict=True)
 
     print_load_report(missing, unexpected)
-
+    model.to(device)
     model.eval()
     return model
 

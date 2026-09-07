@@ -15,7 +15,7 @@ stft_params = nussl.STFTParams(
     window_type=config.config['STFT_WINDOW_TYPE'],
 )
 
-device = device = resolve_device(config.config.get("DEVICE", "auto"))
+device = resolve_device(config.config.get("DEVICE", "auto"))
 
 
 def deploy(output_dir=None, audio_path=None,checkpoint_path=None):

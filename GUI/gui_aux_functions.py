@@ -232,11 +232,11 @@ def model_param_selection():
     st.subheader('Parámetros intrínsecos modelo')
     st.selectbox("Número de canáles de entrada (Mono/Stereo)",options=[1,2], key='num_channels_input')
 
-    st.number_input("Dropout",min_value=0.0,max_value=1.0,step=0.5,value=float(config.config['MODEL_DROPOUT']),key='dropout_input')
+    st.number_input("Dropout",min_value=0.0,max_value=1.0,step=0.05,value=float(config.config['MODEL_DROPOUT']),key='dropout_input')
     st.number_input("Early stopping patience",min_value=1,value=int(config.config["EARLY_STOPPING_PATIENCE"]),key="early_stopping_patience_input")
 
-    st.selectbox("Funcion de activación para la capa de salida",options=['softmax', 'relu', 'sigmoid', 'leaky_relu'],key='activation_func_input')            
-    st.selectbox("Numero de frames para la evaluación del modelo",options=[0, 5, 50, 100, 500, 1000],index=[0,10, 5, 50, 100, 500, 1000].index(config.config.get('EVALUATOR_FRAMES', 100)),key='evaluator_frames_input')
+    st.selectbox("Funcion de activación para la capa de salida",options=['softmax', 'relu', 'sigmoid', 'leaky_relu'],index=['softmax', 'relu', 'sigmoid', 'leaky_relu'].index(config.config['MODEL_ACTIVATION']),key='activation_func_input')            
+    st.selectbox("Numero de frames para la evaluación del modelo",options=[0, 5, 50, 100, 500, 1000],index=[0, 5, 50, 100, 500, 1000].index(int(config.config.get("EVALUATOR_FRAMES",10))),key='evaluator_frames_input')
                  
                  
 def fx_param_selection():
@@ -274,8 +274,8 @@ def save_and_exit_param_selection():
     config.config['COHERENT_PROB'] = float(st.session_state.get('coherent_prob_input'))
 
     # Modelo
-    config.config['MODEL_NUM_CHANNELS'] = int(st.session_state.get('num_channels_input').split(',')[0])
-    config.config['MODEL_DROPOUT'] = int(st.session_state.get('dropout_input'))
+    config.config['MODEL_NUM_CHANNELS'] = int(st.session_state.get('num_channels_input'))
+    config.config['MODEL_DROPOUT'] = float(st.session_state.get('dropout_input'))
     config.config['MODEL_ACTIVATION'] = st.session_state.get('activation_func_input')
     config.config['EVALUATOR_FRAMES'] = int(st.session_state.get('evaluator_frames_input'))
 

@@ -352,8 +352,7 @@ def candidate_checkpoint_folders(model_selected: str, loss_name: str, num_source
 
     elif model_selected == "modelo_de_usuario":
         folders.extend([
-            CHECKPOINTS_ROOT / "Modelos_de_usuario" / f"{loss_name} checkpoints" / f"{num_sources}stems",
-            GUI_DIR / "checkpoints" / "Modelos_de_usuario" / f"{loss_name} checkpoints" / f"{num_sources}stems",
+            CHECKPOINTS_ROOT / "Modelos_de_usuario" / group / f"{loss_name} checkpoints" / f"{num_sources}stems",
         ])
 
     else:
@@ -1028,7 +1027,6 @@ if st.sidebar.button("Cargar configuración seleccionada", use_container_width=T
 if st.sidebar.button("Entrenar modelo", use_container_width=True):
     
     config.config["CHECKPOINTS_GROUP"] = "Modelos_de_usuario"
-    checkpoint_dir(normalized_loss_name,normalized_num_sources,"Modelos_de_usuario")
     config.config["TRAIN_VERSION"] = "gui"
     
     st.session_state.page = "train"

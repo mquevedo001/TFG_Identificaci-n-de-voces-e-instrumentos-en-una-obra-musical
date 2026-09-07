@@ -18,7 +18,7 @@ def main():
     torch.cuda.empty_cache()
     print(f"Usando dispositivo: {device}")
     parser = argparse.ArgumentParser()
-    parser.add_argument('--mode', choices=['train', 'eval', 'deploy','mix_generation'], required=True)
+    parser.add_argument('--mode', choices=['train', 'eval', 'deploy'], required=True)
 
 
     parser.add_argument('--input', type=str, help='Ruta del archivo de audio para deploy.')
@@ -49,12 +49,13 @@ def main():
 
         if not args.lossfn: raise ValueError('Es necesario indicar una función de pérdida')
         if not args.numsources: raise ValueError('Es necesario indicar el número de fuentes a evaluar')
+        if args.numsources not in (2,4): raise ValueError("El numero de fuentes debe de ser 2 o 4")
 
         config.config['MODEL_NUM_SOURCES'] = int(args.numsources)
         config.config['MODEL_LOSS_FUNCTION'] = str(args.lossfn())
 
-        TEST_DATA_PATH = config.config['TEST_DATA_PATH']
-
+        TEST_DATA_PATH =  Path(config.config["TEST_DATA_PATH"])
+        
         dataset = load_test_dataset(TEST_DATA_PATH)
         
         evaluate_model(args.lossfn,dataset,source_counts=args.numsources)
