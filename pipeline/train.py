@@ -158,14 +158,16 @@ def training():
     # Effective batch size via GA
     # ----------------------------
     actual_batch_size, accumulation_steps, effective_batch_size = choose_batch_settings(loss_fn_name,num_stems)
-    print(f"Batch settings: actual_batch={actual_batch_size} | "f"accum_steps={accumulation_steps} | effective_batch={effective_batch_size}",flush=True)
+    print(
+        f"Batch settings: actual_batch  = {actual_batch_size} |"
+        f"accum_steps                   = {accumulation_steps} |" 
+        f"effective_batch               = {effective_batch_size}",
+        flush                           = True
+        )
     # ----------------------------
     # Loss function 
     # ----------------------------
     loss_type = str(config.config['MODEL_LOSS_FUNCTION']).lower()
-
-    if loss_type == 'deep_feature_emd' or loss_type == 'deep_feature':actual_batch_size = 4
-    else: actual_batch_size = 32
     
     accumulation_steps = math.ceil(effective_batch_size / actual_batch_size)
     # ----------------------------

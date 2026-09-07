@@ -6,3 +6,15 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+__pycache__/
+*.py[cod]
+
+.idea/
+.vscode/
+
+.pytest_cache/
+.mypy_cache/
+
+*.log
+
+resultados_gui/

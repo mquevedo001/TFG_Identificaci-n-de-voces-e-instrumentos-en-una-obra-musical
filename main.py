@@ -2,7 +2,9 @@ from pipeline.evaluation import evaluation
 from pipeline.train import training
 from commons.generation import generate_mix_generations
 from commons.folder_utils import * 
+from data.test_loader import load_test_dataset
 from config import config
+from scripts.evaluate_models import evaluate_model
 from pipeline.deployment import deploy
 import argparse
 import nussl
@@ -46,25 +48,17 @@ def main():
     elif args.mode == 'eval': 
 
         if not args.lossfn: raise ValueError('Es necesario indicar una función de pérdida')
+        if not args.numsources: raise ValueError('Es necesario indicar el número de fuentes a evaluar')
 
         config.config['MODEL_NUM_SOURCES'] = int(args.numsources)
         config.config['MODEL_LOSS_FUNCTION'] = str(args.lossfn())
 
-        model_path = Path.absolute(Path('.') /'checkpoints'/config.config['CHECKPOINTS_GROUP'])
-        model_path = get_model_full_path_from_loss_func(model_path,args.lossfn)
+        TEST_DATA_PATH = config.config['TEST_DATA_PATH']
 
+        dataset = load_test_dataset(TEST_DATA_PATH)
         
-        if not model_path.exists():
-            raise FileNotFoundError(
-                f"Modelo no encontrado en {model_path.resolve()}. Entrena el modelo primero usando '--mode train'.")
+        evaluate_model(args.lossfn,dataset,source_counts=args.numsources)
         
-        separator = nussl.separation.deep.DeepMaskEstimation(
-            nussl.AudioSignal(),
-            model_path = str(model_path.resolve()),
-            device = config.config['DEVICE']
-        )
-
-        evaluation(frames=5, separator=separator)
         
     elif args.mode == 'deploy':
 
@@ -83,9 +77,9 @@ def main():
             deploy(output_folder,args.input)
 
 
-    elif args.mode == 'mix_generation':
-        if not args.num_generations: raise ValueError('Añade el numero de mezclas a generar <numero_de_mezclas>')
-        generate_mix_generations( int(args.num_generations) )
+    #elif args.mode == 'mix_generation':
+    #    if not args.num_generations: raise ValueError('Añade el numero de mezclas a generar <numero_de_mezclas>')
+    #    generate_mix_generations( int(args.num_generations) )
 
             
 if __name__ == '__main__':

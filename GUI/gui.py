@@ -28,6 +28,7 @@ import numpy as np
 import contextlib
 import traceback
 from datetime import datetime
+from commons.experiment_utils import checkpoint_dir
 
 
 # ============================================================
@@ -51,6 +52,7 @@ from GUI.gui_aux_functions import live_console
 from GUI.gui_aux_functions import get_parameter_help_text
 
 from commons.metrics import run_training_and_capture_logs
+from commons.runtime import resolve_device
 from pipeline.evaluation import evaluation
 from pipeline.deployment import deploy
 from config import config
@@ -521,7 +523,7 @@ def load_separator(checkpoint_path: str, num_sources: int, loss_name: str):
     """
     Carga el separador desde un checkpoint seleccionado.
     """
-    device = config.config.get("DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
+    device = resolve_device(config.config.get("DEVICE", "auto"))
     checkpoint_path = str(checkpoint_path)
 
     checkpoint = torch.load(checkpoint_path, map_location=device)
@@ -1026,6 +1028,7 @@ if st.sidebar.button("Cargar configuración seleccionada", use_container_width=T
 if st.sidebar.button("Entrenar modelo", use_container_width=True):
     
     config.config["CHECKPOINTS_GROUP"] = "Modelos_de_usuario"
+    checkpoint_dir(normalized_loss_name,normalized_num_sources,"Modelos_de_usuario")
     config.config["TRAIN_VERSION"] = "gui"
     
     st.session_state.page = "train"

@@ -5,11 +5,7 @@ import streamlit as st
 from config import config
 from pathlib import Path
 from commons.experiment_utils import MAIN_LOSSES,EXPERIMENTAL_LOSSES,ADVANCED_LOSSES
-
-
-PROJECT_ROOT = Path(
-    r"C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical"
-)
+from config.config import PROJECT_ROOT
 
 CHECKPOINTS_ROOT = PROJECT_ROOT / "checkpoints" / "Mis_modelos_v2"
 
@@ -167,15 +163,6 @@ def list_checkpoints(loss_name: str, num_sources: int):
 
     return candidates
 
-def get_loss_group_from_name(loss_name: str) -> str:
-    loss_name = loss_name.lower()
-
-    if loss_name in MAIN_LOSSES:
-        return "main"
-
-    if loss_name in EXPERIMENTAL_LOSSES:
-        return "experimental"
-
    
 class _StreamToWidget(io.StringIO):
     """Un stream que vuelca todo a un placeholder de Streamlit en vivo."""
@@ -213,81 +200,58 @@ def live_console():
 
 
 def stft_param_selection():
+
     st.subheader('Parámetros de la formación de transformadas de Fourier')
-    st.selectbox("Tamaño de la ventana STFT", options=[512, 1024, 2048, 4096],
-                 index=[512, 1024, 2048, 4096].index(config.config.get('STFT_WINDOW_LENGTH', 1024)),
-                 key='stft_window_input')
 
-    st.selectbox("Desplazamiento entre ventanas STFT",
-                 options=[config.config.get('STFT_WINDOW_LENGTH', 1024) // 2,
-                          config.config.get('STFT_WINDOW_LENGTH', 1024) // 4],
-                 key='stft_hop_length_input')
-
-    st.selectbox("Tipo de ventana utilizada para la STFT",
-                 options=['hann', 'hamming', 'blackman', 'bartlett', 'kaiser', 'rectangular'],
-                 index=0,
-                 key='stft_window_type_input')
-
-
+    st.selectbox("Tamaño de la ventana STFT", options=[512, 1024, 2048, 4096],index=[512, 1024, 2048, 4096].index(config.config.get('STFT_WINDOW_LENGTH', 1024)),key='stft_window_input')
+    st.selectbox("Desplazamiento entre ventanas STFT",options=[config.config.get('STFT_WINDOW_LENGTH', 1024) // 2,config.config.get('STFT_WINDOW_LENGTH', 1024) // 4],key='stft_hop_length_input')
+    st.selectbox("Tipo de ventana utilizada para la STFT",options=["sqrt_hann", "hann", "hamming", "blackman", "bartlett"],index=0,key='stft_window_type_input')
+                 
 def train_param_selection():
+
     st.subheader("Parámetros de entrenamiento")
-    st.number_input("Learning Rate", value=float(config.config.get('LEARNING_RATE', 0.001)),
-                    format="%.5f", key='learning_rate_input')
-    st.number_input("Batch Size", min_value=1, value=int(config.config.get('BATCH_SIZE', 16)),
-                    key='batch_size_input')
-    st.number_input("Épocas", min_value=1, value=int(config.config.get('MAX_EPOCHS', 50)),
-                    key='epochs_input')
-    st.number_input("Tamaño de las épocas", min_value=10, value=int(config.config['EPOCH_LENGTH']),
-                    key='epochs_length_input')
-    st.number_input("Gradient clip", min_value=0.0, value=float(config.config['GRADIENT_CLIP']),
-                    format="%.2f", key='gradient_clip_input')
-    st.number_input("Weight decay", min_value=0.0, value=float(config.config['WEIGHT_DECAY']),
-                    format="%.6f", key='weight_decay_input')
+
+    st.number_input("Learning Rate", value=float(config.config.get('LEARNING_RATE', 0.001)),format="%.5f", key='learning_rate_input')                 
+    st.number_input("Batch Size", min_value=1, value=int(config.config.get('BATCH_SIZE', 16)),key='batch_size_input')                 
+    st.number_input("Épocas", min_value=1, value=int(config.config.get('MAX_EPOCHS', 50)),key='epochs_input')                 
+    st.number_input("Tamaño de las épocas", min_value=10, value=int(config.config['EPOCH_LENGTH']),key='epochs_length_input')                   
+    st.number_input("Gradient clip", min_value=0.0, value=float(config.config['GRADIENT_CLIP']),format="%.2f", key='gradient_clip_input')            
+    st.number_input("Weight decay", min_value=0.0, value=float(config.config['WEIGHT_DECAY']),format="%.6f", key='weight_decay_input')
+                    
 
 
 def mix_gen_param_selection():
+
     st.subheader("Parámetros de generación de mezclas")
-    st.number_input("Coherent prob", min_value=0.0, max_value=1.0,
-                    value=float(config.config['COHERENT_PROB']), key='coherent_prob_input')
+    st.number_input("Coherent prob", min_value=0.0, max_value=1.0,value=float(config.config['COHERENT_PROB']), key='coherent_prob_input')
+                    
 
 
 def model_param_selection():
+
     st.subheader('Parámetros intrínsecos modelo')
-    st.selectbox("Número de canáles de entrada (Mono/Stereo)",
-                 options=['1,2'], key='num_channels_input')
-    st.number_input("Porcentaje de dropout", min_value=0, max_value=100,
-                    value=int(config.config['MODEL_DROPOUT']), key='dropout_input')
-    st.selectbox("Funcion de activación para la capa de salida",
-                 options=['softmax', 'relu', 'sigmoid', 'leaky_relu'],
-                 key='activation_func_input')
-    st.selectbox("Numero de frames para la evaluación del modelo",
-                 options=[0, 5, 50, 100, 500, 1000],
-                 index=[0,10, 5, 50, 100, 500, 1000].index(config.config.get('EVALUATOR_FRAMES', 100)),
-                 key='evaluator_frames_input')
+    st.selectbox("Número de canáles de entrada (Mono/Stereo)",options=[1,2], key='num_channels_input')
 
+    st.number_input("Dropout",min_value=0.0,max_value=1.0,step=0.5,value=float(config.config['MODEL_DROPOUT']),key='dropout_input')
+    st.number_input("Early stopping patience",min_value=1,value=int(config.config["EARLY_STOPPING_PATIENCE"]),key="early_stopping_patience_input")
 
+    st.selectbox("Funcion de activación para la capa de salida",options=['softmax', 'relu', 'sigmoid', 'leaky_relu'],key='activation_func_input')            
+    st.selectbox("Numero de frames para la evaluación del modelo",options=[0, 5, 50, 100, 500, 1000],index=[0,10, 5, 50, 100, 500, 1000].index(config.config.get('EVALUATOR_FRAMES', 100)),key='evaluator_frames_input')
+                 
+                 
 def fx_param_selection():
+
     st.subheader('Parámetros de efectos para entrenamiento y de audio')
 
-    st.number_input("Prob. de aplicar efectos (reverb,pitch,shift,noise ... )",
-                    min_value=0.0, max_value=1.0,
-                    value=float(config.config['AUGMENTATION_PROB']),
-                    key='augmentation_prob_input')
-    st.number_input("Nivel de ruido", min_value=0.0, max_value=0.3,
-                    value=float(config.config['NOISE_LEVEL']),
-                    format="%.2f", key='noise_level_input')
-    st.selectbox("Frecuencia de muestreo (sample rate)",
-                 options=[16000, 22050, 44100, 48000],
-                 index=[16000, 22050, 44100, 48000].index(config.config['SAMPLE_RATE']),
-                 key='sample_rate_input')
-    st.selectbox("Ref. en decibelios para normalizar espectrogramas",
-                 options=[-10, -20, -30],
-                 index=[-10, -20, -30].index(config.config['REF_DB']),
-                 key='ref_db_input')
-    st.selectbox("Normalización de audio (recomendable si los datos vienen de diferentes fuentes)",
-                 options=['Si', 'No'],
-                 index=0 if config.config['NORMALIZE_AUDIO'] else 1,
-                 key='normalized_audio_input')
+    st.number_input("Prob. de aplicar efectos (reverb,pitch,shift,noise ... )",min_value=0.0, max_value=1.0,value=float(config.config['AUGMENTATION_PROB']),key='augmentation_prob_input')                                                       
+    st.number_input("Nivel de ruido", min_value=0.0, max_value=0.3,value=float(config.config['NOISE_LEVEL']),format="%.2f", key='noise_level_input')
+                                      
+    st.selectbox("Frecuencia de muestreo (sample rate)",options=[16000, 22050, 44100, 48000],index=[16000, 22050, 44100, 48000].index(config.config['SAMPLE_RATE']),key='sample_rate_input')                                      
+    st.selectbox("Ref. en decibelios para normalizar espectrogramas",options=[-10, -20, -30],index=[-10, -20, -30].index(config.config['REF_DB']),key='ref_db_input')         
+    st.selectbox("Normalización de audio (recomendable si los datos vienen de diferentes fuentes)",options=['Si', 'No'],index=0 if config.config['NORMALIZE_AUDIO'] else 1,key='normalized_audio_input')
+                 
+                 
+                 
 
 
 def save_and_exit_param_selection():

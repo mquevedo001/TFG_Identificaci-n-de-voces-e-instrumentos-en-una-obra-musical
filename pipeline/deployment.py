@@ -4,6 +4,7 @@ from config import config
 from commons.audio_utils import load_model, conseguirAudioDatabase, print_stem_diagnostics
 from commons.folder_utils import generateSourcesGraph, save_sources
 from commons.inference import run_inference
+from commons.runtime import resolve_device
 
 import os
 import torch
@@ -14,9 +15,7 @@ stft_params = nussl.STFTParams(
     window_type=config.config['STFT_WINDOW_TYPE'],
 )
 
-device = torch.device(config.config.get(
-    "DEVICE", "cuda" if torch.cuda.is_available() else "cpu"
-))
+device = device = resolve_device(config.config.get("DEVICE", "auto"))
 
 
 def deploy(output_dir=None, audio_path=None,checkpoint_path=None):

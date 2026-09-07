@@ -1,6 +1,7 @@
 from nussl.datasets import transforms as nussl_tfm
 from pathlib import Path
 from config import config
+from config.config import PROJECT_ROOT
 from common import data,utils
 import torch
 import torchaudio
@@ -95,8 +96,9 @@ class AddGroupedSourcePhase:
 def get_data(stft_params, max_mixtures=config.config['MAX_MIXTURES'], coherent_prob=config.config['COHERENT_PROB']):
     utils.logger()
 
-    train_folder = r'C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_train'
-    val_folder = r'C:\Users\rdpuser\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\datasets\mix_generation\foreground_valid'
+    train_folder = PROJECT_ROOT / "datasets" / "mix_generation" / "foreground_test"
+    val_folder = PROJECT_ROOT / "datasets" / "mix_generation" / "foreground_valid"
+
     num_sources = config.config['MODEL_NUM_SOURCES']
 
     print(f"Training model with training mixes in: {train_folder}")

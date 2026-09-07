@@ -1,7 +1,6 @@
 import subprocess
 import sys
 from pathlib import Path
-sys.path.insert(0,"C:\\Users\\rdpuser\\TFG_Identificaci-n-de-voces-e-instrumentos-en-una-obra-musical\\")
 from commons.experiment_utils import MAIN_LOSSES, EXPERIMENTAL_LOSSES, ADVANCED_LOSSES
 from config.config import config
 

@@ -90,13 +90,7 @@ def resolve_checkpoint_dir(loss_name: str, num_sources: int) -> Path:
 
 
 def eval_results_dir(loss_name: str, num_sources: int) -> Path:
-    return (
-        get_results_base()
-        / get_loss_group(loss_name)
-        / loss_name
-        / f"{int(num_sources)}stems"
-    )
-
+    return (get_results_base()/ get_loss_group(loss_name)/ loss_name/ f"{int(num_sources)}stems" )
 
 def training_config_snapshot(loss_name: str, num_sources: int) -> dict:
     return {

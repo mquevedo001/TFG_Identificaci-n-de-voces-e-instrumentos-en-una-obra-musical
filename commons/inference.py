@@ -23,9 +23,14 @@ def run_inference(model, mixture_signal, num_sources):
     mixture_signal.stft_params = stft_params
     mixture_signal.stft()
 
+    if mixture_signal.num_channels > 1: mixture_signal.to_mono(overwrite=True, keep_dims=True)
+        
+
+    mixture_signal.stft()
+
     mixture_stft = mixture_signal.stft_data  # [F, T, C]
 
-    mix_mag = np.abs(mixture_stft).mean(axis=2)      # [F, T]
+    mix_mag = np.abs(mixture_stft[:, :, 0])      # [F, T]
     mix_phase = np.angle(mixture_stft[:, :, 0])      # [F, T]
 
     F, T = mix_mag.shape

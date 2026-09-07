@@ -162,11 +162,12 @@ def crop_all_to_same_length(signals):
 # ========================
 # MAIN EVAL
 # ========================
-def evaluate_model(model_name, dataset):
+def evaluate_model(model_name, dataset,source_counts=(2,4)):
+
 
     print(f"\n========== {model_name} ==========")
 
-    for num_sources in [2, 4]:
+    for num_sources in source_counts:
 
         print(f"\n--- Sources: {num_sources} ---")
         config.config["MODEL_NUM_SOURCES"] = int(num_sources)
