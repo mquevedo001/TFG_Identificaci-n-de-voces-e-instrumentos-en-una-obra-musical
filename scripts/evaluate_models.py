@@ -21,7 +21,7 @@ from commons.experiment_utils import (
 # ========================
 # CONFIG
 # ========================
-TEST_DATA_PATH = Path("datasets/representative_test")
+TEST_DATA_PATH = Path(config.config["TEST_DATA_PATH"])
 CHECKPOINTS_ROOT = Path("checkpoints")
 RESULTS_ROOT = Path("resultados_modelos")
 
@@ -43,14 +43,6 @@ EVALUATION_PLAN = {
     # Solo existe evaluación final válida en 2 stems.
     "lpsa": (2,),
 }
-MODELS_PROVISIONAL = [
-    "logl1",
-    "l1_freq",
-    "lpsa",
-    "l2_freq",
-]
-
-MODELS_V2 = MODELS 
 
 # ========================
 # HELPERS

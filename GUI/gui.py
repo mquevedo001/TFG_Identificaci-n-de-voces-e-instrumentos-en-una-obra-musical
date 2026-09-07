@@ -1287,10 +1287,10 @@ with col_audio:
             render_console(console_placeholder, height=200)
 
             st.success("Evaluación finalizada.")
-            st.caption("Resultados de evaluación:", f"`{eval_output_dir}`")
+            st.caption( f"Resultados de evaluación: `{eval_output_dir}`")
 
             if summary.get("si_sdr_mean") is not None: st.metric("SI-SDR medio", f"{summary['si_sdr_mean']:3f} dB")
-            if summary.get("si_sdr_i_mean") is not None: st.metric("SI-SDRi medio", f"{summary['si_sdr_i_mean']:.3f} dB")
+            if summary.get("si_sdr_i_mean") is not None: st.metric("SI-SDRi medio", f"{summary['si_sdr_mean']:3f} dB")
 
     else:
         st.info("Sube un archivo para interactuar con el modelo.")

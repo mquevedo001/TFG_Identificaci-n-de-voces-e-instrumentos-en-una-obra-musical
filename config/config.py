@@ -22,7 +22,7 @@ config = {
     "GRADIENT_CLIP": 1.0,                                       # Limitar la magnitud de los gradientes y evitar explosiones en el entrenamiento.  
     "EARLY_STOPPING_PATIENCE": 10,                              # Número de iteraciones sin mejora tras las cuales detener el entrenamiento.
 
-    "BATCH SIZE":100,                                           # Cantidad de mezclas procesadas antes de actualizar los pesos (una mini-batch).
+    "BATCH_SIZE_OVERRIDE": None,                                # None = utilizar los valores experimentales anteriores. Un entero permite sobrescribir el microbatch desde la GUI.
     "EFFECTIVE_BATCH_SIZE_MAIN": 96,                            # Cantidad de mezclas procesadas antes de actualizar los pesos en el conjunto de entrenamiento principal (una mini-batch).
     "EFFECTIVE_BATCH_SIZE_EXPERIMENTAL": 32,                    # Cantidad de mezclas procesadas antes de actualizar los pesos en el conjunto de entrenamiento experimental.
 

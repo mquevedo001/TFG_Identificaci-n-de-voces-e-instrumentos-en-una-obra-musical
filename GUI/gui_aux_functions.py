@@ -136,6 +136,15 @@ def get_checkpoint_folder(loss_name: str, num_sources: int) -> Path:
         / f"{loss_name} checkpoints"
         / f"{num_sources}stems"
     )
+def get_default_batch_size():
+
+    loss_type = str(config.config.get("MODEL_LOSS_FUNCTION","l1",)).lower()
+    num_sources = int( config.config.get("MODEL_NUM_SOURCES",2,))
+
+    if loss_type in EXPERIMENTAL_LOSSES: return int(config.config["BATCH_SIZE_EXPERIMENTAL"])
+    if num_sources == 4:return int(config.config["BATCH_SIZE_4STEMS_MAIN"])
+
+    return int(config.config["BATCH_SIZE_2STEMS_MAIN"])
 
 
 def list_checkpoints(loss_name: str, num_sources: int):
@@ -153,13 +162,7 @@ def list_checkpoints(loss_name: str, num_sources: int):
     candidates.extend(checkpoint_folder.rglob("*.pth"))
 
     # Ordenar primero los que contienen 'best', luego por fecha reciente
-    candidates = sorted(
-        candidates,
-        key=lambda p: (
-            "best" not in p.name.lower(),
-            -p.stat().st_mtime
-        )
-    )
+    candidates = sorted(candidates,key=lambda p: ("best" not in p.name.lower(),-p.stat().st_mtime))
 
     return candidates
 
@@ -213,11 +216,13 @@ def stft_param_selection():
     st.selectbox("Tipo de ventana utilizada para la STFT",options=["sqrt_hann", "hann", "hamming", "blackman", "bartlett"],index=0,key='stft_window_type_input')
                  
 def train_param_selection():
-
+    default_batch = get_default_batch_size()
+    current_override = config.config.get("BATCH_SIZE_OVERRIDE",None)
+    display_batch = (int(current_override) if current_override is None else default_batch)
     st.subheader("Parámetros de entrenamiento")
 
     st.number_input("Learning Rate", value=float(config.config.get('LEARNING_RATE', 0.001)),format="%.5f", key='learning_rate_input')                 
-    st.number_input("Batch Size", min_value=1, value=int(config.config.get('BATCH_SIZE', 16)),key='batch_size_input')                 
+    st.number_input("Batch Size", min_value=1, value=display_batch,step=1,key='batch_size_input')                 
     st.number_input("Épocas", min_value=1, value=int(config.config.get('MAX_EPOCHS', 50)),key='epochs_input')                 
     st.number_input("Tamaño de las épocas", min_value=10, value=int(config.config['EPOCH_LENGTH']),key='epochs_length_input')                   
     st.number_input("Gradient clip", min_value=0.0, value=float(config.config['GRADIENT_CLIP']),format="%.2f", key='gradient_clip_input')            
@@ -241,7 +246,7 @@ def model_param_selection():
     st.number_input("Early stopping patience",min_value=1,value=int(config.config["EARLY_STOPPING_PATIENCE"]),key="early_stopping_patience_input")
 
     st.selectbox("Funcion de activación para la capa de salida",options=['softmax', 'relu', 'sigmoid', 'leaky_relu'],index=['softmax', 'relu', 'sigmoid', 'leaky_relu'].index(config.config['MODEL_ACTIVATION']),key='activation_func_input')            
-    st.selectbox("Numero de frames para la evaluación del modelo",options=[0, 5, 50, 100, 500, 1000],index=[0, 5, 50, 100, 500, 1000].index(int(config.config.get("EVALUATOR_FRAMES",10))),key='evaluator_frames_input')
+    st.selectbox("Numero de frames para la evaluación del modelo",options=[0, 5,10, 50, 100, 500, 1000],index=[0, 5, 50, 100, 500, 1000].index(int(config.config.get("EVALUATOR_FRAMES",10))),key='evaluator_frames_input')
                  
                  
 def fx_param_selection():
@@ -267,7 +272,7 @@ def save_and_exit_param_selection():
 
     # Entrenamiento
     config.config['LEARNING_RATE'] = float(st.session_state.get('learning_rate_input'))
-    config.config['BATCH_SIZE'] = int(st.session_state.get('batch_size_input'))
+    config.config["BATCH_SIZE_OVERRIDE"] = int(st.session_state.get('batch_size_input'))
     config.config['MAX_EPOCHS'] = int(st.session_state.get('epochs_input'))
     config.config['EPOCH_LENGTH'] = int(st.session_state.get('epochs_length_input'))
     config.config['GRADIENT_CLIP'] = float(st.session_state.get('gradient_clip_input'))

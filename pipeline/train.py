@@ -27,24 +27,87 @@ from commons.experiment_utils import (
 # HELPERS
 # ============================
 def choose_batch_settings(loss_type, num_stems):
-
     loss_type = str(loss_type).lower()
     group = get_loss_group(loss_type)
 
+    # -------------------------------------------------
+    # Configuración por defecto utilizada en el TFG
+    # -------------------------------------------------
     if group == "experimental":
+        default_batch_size = int(
+            config.config.get(
+                "BATCH_SIZE_EXPERIMENTAL",
+                4,
+            )
+        )
 
-        actual_batch_size = int(config.config.get("BATCH_SIZE_EXPERIMENTAL", 4))
-        effective_batch_size = int(config.config.get("EFFECTIVE_BATCH_SIZE_EXPERIMENTAL", 32))
+        target_effective_batch = int(
+            config.config.get(
+                "EFFECTIVE_BATCH_SIZE_EXPERIMENTAL",
+                32,
+            )
+        )
 
     else:
-        if int(num_stems) == 4: actual_batch_size = int(config.config.get("BATCH_SIZE_4STEMS_MAIN", 24))
-        else: actual_batch_size = int(config.config.get("BATCH_SIZE_2STEMS_MAIN", 32))
-    
-        effective_batch_size = int(config.config.get("EFFECTIVE_BATCH_SIZE_MAIN", 96))
+        if int(num_stems) == 4:
+            default_batch_size = int(
+                config.config.get(
+                    "BATCH_SIZE_4STEMS_MAIN",
+                    24,
+                )
+            )
+        else:
+            default_batch_size = int(
+                config.config.get(
+                    "BATCH_SIZE_2STEMS_MAIN",
+                    32,
+                )
+            )
 
-    accumulation_steps = math.ceil(effective_batch_size / actual_batch_size)
+        target_effective_batch = int(
+            config.config.get(
+                "EFFECTIVE_BATCH_SIZE_MAIN",
+                96,
+            )
+        )
 
-    return actual_batch_size, accumulation_steps, effective_batch_size
+    # -------------------------------------------------
+    # Override opcional desde GUI
+    # -------------------------------------------------
+    override = config.config.get(
+        "BATCH_SIZE_OVERRIDE",
+        None,
+    )
+
+    if override is None:
+        actual_batch_size = default_batch_size
+    else:
+        actual_batch_size = int(override)
+
+    if actual_batch_size < 1:
+        raise ValueError(
+            "BATCH_SIZE_OVERRIDE debe ser >= 1."
+        )
+
+    accumulation_steps = max(
+        1,
+        math.ceil(
+            target_effective_batch
+            / actual_batch_size
+        ),
+    )
+
+    # Tamaño efectivo REAL.
+    effective_batch_size = (
+        actual_batch_size
+        * accumulation_steps
+    )
+
+    return (
+        actual_batch_size,
+        accumulation_steps,
+        effective_batch_size,
+    )
 
 
 def get_mix_magnitude_btf(batch, targets):
@@ -277,6 +340,11 @@ def training():
     output_folder.mkdir(parents=True, exist_ok=True)
 
     snapshot = training_config_snapshot(loss_fn_name, num_stems)
+
+    snapshot['training']['batch_size'] = (actual_batch_size)
+    snapshot['training']["accumulation_steps"] = (accumulation_steps)
+    snapshot['training']['effective_batch_size'] = (effective_batch_size)
+
     save_json(output_folder / "training_config.json", snapshot)
 
     nussl.ml.train.add_stdout_handler(trainer, validator)
