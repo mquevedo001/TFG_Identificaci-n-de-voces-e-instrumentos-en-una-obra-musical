@@ -52,13 +52,13 @@ def main():
         if args.numsources not in (2,4): raise ValueError("El numero de fuentes debe de ser 2 o 4")
 
         config.config['MODEL_NUM_SOURCES'] = int(args.numsources)
-        config.config['MODEL_LOSS_FUNCTION'] = str(args.lossfn())
+        config.config['MODEL_LOSS_FUNCTION'] = str(args.lossfn)
 
         TEST_DATA_PATH =  Path(config.config["TEST_DATA_PATH"])
         
         dataset = load_test_dataset(TEST_DATA_PATH)
         
-        evaluate_model(args.lossfn,dataset,source_counts=args.numsources)
+        evaluate_model(str(args.lossfn),dataset,source_counts=int(args.numsources))
         
         
     elif args.mode == 'deploy':

@@ -8,5 +8,4 @@ __pycache__/
 .mypy_cache/
 
 *.log
-
 resultados_gui/

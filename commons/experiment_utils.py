@@ -21,6 +21,7 @@ EXPERIMENTAL_LOSSES = [
 ]
 
 ADVANCED_LOSSES = [
+    "lmrs",
     "l_mrs",
     "lpsa_phase",
 ]

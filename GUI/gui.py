@@ -28,7 +28,7 @@ import numpy as np
 import contextlib
 import traceback
 from datetime import datetime
-from commons.experiment_utils import checkpoint_dir
+
 
 
 # ============================================================
@@ -53,8 +53,11 @@ from GUI.gui_aux_functions import get_parameter_help_text
 
 from commons.metrics import run_training_and_capture_logs
 from commons.runtime import resolve_device
+from commons.experiment_utils import checkpoint_dir
+from scripts.evaluate_models import evaluate_checkpoint
 from pipeline.evaluation import evaluation
 from pipeline.deployment import deploy
+from data.test_loader import load_test_dataset
 from config import config
 from config import loss_functions_help
 from config import help_quotes
@@ -91,7 +94,6 @@ LOSS_OPTIONS = [
     "L_MRS",
     "Deep-feature",
     "MSE",
-    "SDR",
     "Deep-feature-EMD",
 ]
 
@@ -112,7 +114,6 @@ LOSS_DISPLAY_TO_KEY = {
     "Deep-feature": "deep_feature",
     "Deep-feature-EMD": "deep_feature_emd",
     "MSE": "l2",
-    "SDR": "sdr",
 }
 
 MAIN_LOSSES_FALLBACK = {
@@ -137,7 +138,6 @@ ADVANCED_LOSSES_FALLBACK = {
     "l_mrs",
     "lmrs",
     "lpsa_phase",
-    "sdr",
 }
 
 
@@ -909,45 +909,21 @@ for key in [
 
 st.sidebar.title("Funcionalidades para tu propio modelo")
 
-num_sources_selection = st.sidebar.selectbox(
-    "Número de fuentes (stems)",
-    options=[2, 4],
-    index=0,
-)
-
-model_selected = st.sidebar.selectbox(
-    "Modelos disponibles",
-    options=["self", "modelo_de_martin", "modelo_de_usuario"],
-    index=1,
-)
-
+num_sources_selection = st.sidebar.selectbox("Número de fuentes (stems)",options=[2, 4],index=0,)
+model_selected = st.sidebar.selectbox("Modelos disponibles",options=["self", "modelo_de_martin", "modelo_de_usuario"],index=1,)
+    
 with st.sidebar.expander("Sobre el modelo", expanded=True):
-    desc = help_quotes.model_descriptions.get(
-        model_selected,
-        "Sin descripción disponible para este modelo."
-    )
+    desc = help_quotes.model_descriptions.get(model_selected,"Sin descripción disponible para este modelo.")
     st.markdown(desc)
 
 if model_selected == "modelo_de_martin":
-    database_selection = st.sidebar.selectbox(
-        "Bases de datos disponibles",
-        options=["MUSDB18", "Rock DB", "HipHop DB"],
-        index=0,
-        disabled=True,
-        key="db_locked_martin",
-    )
+    database_selection = st.sidebar.selectbox("Bases de datos disponibles",options=["MUSDB18", "Rock DB", "HipHop DB"],index=0,disabled=True,key="db_locked_martin",)
+
 else:
-    database_selection = st.sidebar.selectbox(
-        "Bases de datos disponibles",
-        options=["MUSDB18", "Rock DB", "HipHop DB"],
-    )
+    database_selection = st.sidebar.selectbox("Bases de datos disponibles",options=["MUSDB18", "Rock DB", "HipHop DB"])
 
 default_loss_index = 1 if model_selected == "modelo_de_martin" else 0
-loss_fn_selection = st.sidebar.selectbox(
-    "Función de pérdida",
-    options=LOSS_OPTIONS,
-    index=default_loss_index,
-)
+loss_fn_selection = st.sidebar.selectbox("Función de pérdida",options=LOSS_OPTIONS,index=default_loss_index)
 
 normalized_loss_name = normalize_loss_name(loss_fn_selection)
 normalized_num_sources = int(num_sources_selection)
@@ -1294,13 +1270,22 @@ with col_audio:
                 st.stop()
 
             with capture_logs_to_gui(console_placeholder, "Iniciando evaluación del modelo"):
+
+                dataset = load_test_dataset(config.config['TEST_DATA_PATH'])
+
                 separator = load_separator(
                     checkpoint_path,
                     int(st.session_state.get("loaded_num_sources", normalized_num_sources)),
                     st.session_state.get("loaded_loss_name", normalized_loss_name),
                 )
 
-                evaluation(frames=5, separator=separator)
+                evaluate_checkpoint(
+                    model_name= str(st.session_state.get("loaded_loss_name", normalized_loss_name)),
+                    num_sources=int(st.session_state.get("loaded_num_sources", normalized_num_sources)),
+                    dataset=dataset,
+                    checkpoint_path=checkpoint_path,
+                    output_dir=None
+                )
 
             append_console("Evaluación finalizada correctamente.")
             render_console(console_placeholder, height=200)
