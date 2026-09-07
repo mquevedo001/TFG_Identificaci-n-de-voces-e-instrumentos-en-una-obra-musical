@@ -297,17 +297,6 @@ def load_model(loss_fn, num_sources,checkpoint_path=None):
 
     sys.modules.setdefault("numpy._core", np)
 
-    
-
-    
-    
-
-    if not os.path.exists(model_path):
-        raise FileNotFoundError(f'No existe la ruta: {model_path}')
-
-    print("\n[MODEL PATH]")
-    print(repr(str(model_path)))
-
     # -----------------------------
     # LOAD CHECKPOINT FIRST 
     # -----------------------------
@@ -319,6 +308,9 @@ def load_model(loss_fn, num_sources,checkpoint_path=None):
         model_path = model_path / best_model_tag
 
         if not os.path.exists(model_path): raise FileNotFoundError(f"No existe la ruta: {model_path}")
+
+        checkpoint = torch.load(model_path,map_location=config.config['DEVICE'],weights_only=True)
+
     else: 
         checkpoint = torch.load(checkpoint_path,map_location=config.config['DEVICE'],weights_only=True)
     
