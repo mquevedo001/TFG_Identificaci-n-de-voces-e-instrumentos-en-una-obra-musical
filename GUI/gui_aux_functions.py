@@ -211,9 +211,13 @@ def stft_param_selection():
     hop_options = [window_length // 2 , window_length // 4]
     current_hop = int(config.config["STFT_HOP_LENGTH"])
     hop_index = (hop_options.index(current_hop) if current_hop in hop_options else 1)
+
+    window_types = ["sqrt_hann", "hann", "hamming", "blackman", "bartlett"]
+    current_window_type = config.config['STFT_WINDOW_TYPE']
+
     
     st.selectbox("Desplazamiento entre ventanas STFT",options=hop_options,index=hop_index,key='stft_hop_length_input')
-    st.selectbox("Tipo de ventana utilizada para la STFT",options=["sqrt_hann", "hann", "hamming", "blackman", "bartlett"],index=0,key='stft_window_type_input')
+    st.selectbox("Tipo de ventana utilizada para la STFT",options=window_types,index = window_types.index(current_window_type),key='stft_window_type_input')
                  
 def train_param_selection():
 
@@ -243,8 +247,11 @@ def model_param_selection():
     evaluator_options = [0, 5,10, 50, 100, 500, 1000]
     current_frames = int(config.config.get("EVALUATOR_FRAMES",10))
 
+    channel_options = [1,2]
+    current_channels = int(config.config['MODE_NUM_CHANNELS'])
+
     st.subheader('Parámetros intrínsecos modelo')
-    st.selectbox("Número de canáles de entrada (Mono/Stereo)",options=[1,2], key='num_channels_input')
+    st.selectbox("Número de canáles de entrada (Mono/Stereo)",options=channel_options,index=channel_options.index(current_channels), key='num_channels_input')
 
     st.number_input("Dropout",min_value=0.0,max_value=1.0,step=0.05,value=float(config.config['MODEL_DROPOUT']),key='dropout_input')
     st.number_input("Early stopping patience",min_value=1,value=int(config.config["EARLY_STOPPING_PATIENCE"]),key="early_stopping_patience_input")

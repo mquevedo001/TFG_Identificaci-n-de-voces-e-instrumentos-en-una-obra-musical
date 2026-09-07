@@ -37,7 +37,8 @@ def main():
         if not args.maxepochs: raise ValueError('Es necesario el argumento del valor del número de iteraciones para el entrenamiento  [ --maxepochs <value> ]')        
         if not args.lossfn: raise ValueError('Es necesario indicar una función de pérdida')
         if not args.numsources: raise ValueError('Es necesario indicar el número de fuentes a separar')
-
+        if args.numsources not in (2,4): raise ValueError("El numero de fuentes debe de ser 2 o 4")
+        
         config.config['MAX_EPOCHS'] = int(args.maxepochs)
         config.config['MODEL_LOSS_FUNCTION'] = str(args.lossfn)
         config.config['MODEL_NUM_SOURCES'] = int(args.numsources)
@@ -64,6 +65,7 @@ def main():
 
         if not args.lossfn: raise ValueError('Es necesario indicar una función de pérdida')
         if not args.numsources: raise ValueError('Es necesario indicar el numero de fuentes a separar')
+        if args.numsources not in (2,4): raise ValueError("El numero de fuentes debe de ser 2 o 4")
 
         config.config['MODEL_LOSS_FUNCTION'] = args.lossfn
         config.config['MODEL_NUM_SOURCES'] = args.numsources

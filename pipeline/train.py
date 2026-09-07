@@ -232,7 +232,6 @@ def training():
     # ----------------------------
     loss_type = str(config.config['MODEL_LOSS_FUNCTION']).lower()
     
-    accumulation_steps = math.ceil(effective_batch_size / actual_batch_size)
     # ----------------------------
     # Data
     # ----------------------------

@@ -30,7 +30,7 @@ def deploy(output_dir=None, audio_path=None,checkpoint_path=None):
         audio_signal = nussl.AudioSignal(audio_path, stft_params=stft_params)
         audio_name = os.path.basename(audio_path)
     else:
-        test_folder = Path("~/.nussl/tutorial/test/")
+        test_folder = Path("~/.nussl/tutorial/test/").expanduser()
         audio_signal = conseguirAudioDatabase(test_folder, stft_params)
 
     print("\n[DEPLOY MODEL CONFIG]")
